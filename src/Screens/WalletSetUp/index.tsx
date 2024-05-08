@@ -15,7 +15,9 @@ const styles = StyleSheet.create({
         gap: 10
     },
     buttonArea: {
-        gap: 16
+        gap: 16,
+        paddingLeft:24,
+        paddingRight:24
     },
     gradiantText: {
         paddingLeft: 24,
@@ -26,7 +28,6 @@ const styles = StyleSheet.create({
 })
 
 function WalletSetUp() {
-    const navigation = useAppNavigation();
     return (
         <View style={styles.container}>
             <View style={{ alignItems: "center", paddingBottom: 0 }}>
@@ -39,7 +40,7 @@ function WalletSetUp() {
 
 
             <View style={styles.buttonArea}>
-                <SecondaryButton page='Walthought' text='Import Using Seed Phrase' />
+                <SecondaryButton page='ImportSeed' text='Import Using Seed Phrase' />
                 <PrimaryButton page='Walthought' text='Create a New Wallet' />
             </View>
 

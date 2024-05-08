@@ -3,6 +3,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import SlashPage from "../Screens/SlashPage";
 import Walthought from "../Screens/Walthought";
 import WalletSetUp from "../Screens/WalletSetUp";
+import ImportSeed from "../Screens/ImportSeed";
 export type RootStackParamList = {
     Onboarding: NavigatorScreenParams<OnboardingStackParamList>;
 }
@@ -10,6 +11,7 @@ export type OnboardingStackParamList = {
     SlashPage: undefined;
     Walthought: undefined;
     WalletSetUp: undefined;
+    ImportSeed: undefined;
 
 }
 
@@ -24,7 +26,7 @@ const OnboardingNavigator = () => {
             <OnboardingStack.Screen name="SlashPage" component={SlashPage} />
             <OnboardingStack.Screen name="Walthought" component={Walthought} />
             <OnboardingStack.Screen name="WalletSetUp" component={WalletSetUp} />
-
+            <OnboardingStack.Screen name="ImportSeed" component={ImportSeed} />
 
         </OnboardingStack.Navigator>
     )

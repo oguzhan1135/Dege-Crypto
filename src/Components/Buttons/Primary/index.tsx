@@ -29,7 +29,7 @@ interface ButtonProp {
 const PrimaryButton: React.FC<ButtonProp> = ({ page, text }) => {
     const navigation = useAppNavigation();
     return (
-        <View style={{ width: "100%", paddingLeft: 24, paddingRight: 24 }}>
+        <View style={{ width: "100%"}}>
             <Pressable
                 onPress={() => {
                     navigation.navigate("Onboarding", {
