@@ -22,20 +22,29 @@ const styles = StyleSheet.create({
 })
 
 interface ButtonProp {
-    page: keyof OnboardingStackParamList;
+    page?: keyof OnboardingStackParamList;
     text: string;
+    onPress?: () => void;
 }
 
-const PrimaryButton: React.FC<ButtonProp> = ({ page, text }) => {
+const PrimaryButton: React.FC<ButtonProp> = ({ page, text, onPress }) => {
     const navigation = useAppNavigation();
+
+    const handlePress = () => {
+        if (onPress && page) {
+            onPress();
+            navigation.navigate("Onboarding", { screen: page });
+        } else if (onPress) {
+            onPress();
+        } else if (page) {
+            navigation.navigate("Onboarding", { screen: page });
+        }
+    };
+
     return (
-        <View style={{ width: "100%"}}>
+        <View style={{ width: "100%" }}>
             <Pressable
-                onPress={() => {
-                    navigation.navigate("Onboarding", {
-                        screen: page,
-                    })
-                }}
+                onPress={handlePress}
                 style={({ pressed }) => [
                     styles.defaultButtonStyle,
                     {

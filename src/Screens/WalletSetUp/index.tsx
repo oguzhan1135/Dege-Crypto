@@ -41,7 +41,7 @@ function WalletSetUp() {
 
             <View style={styles.buttonArea}>
                 <SecondaryButton page='ImportSeed' text='Import Using Seed Phrase' />
-                <PrimaryButton page='Walthought' text='Create a New Wallet' />
+                <PrimaryButton page='CreateNewWallet' text='Create a New Wallet' />
             </View>
 
 
