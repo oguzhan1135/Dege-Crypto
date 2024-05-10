@@ -68,7 +68,7 @@ function Walthought() {
                             <View style={{ marginTop: 126 }}>
                                 {content.image}
                             </View>
-                           <GradiantText fontSize={40} lineHeight={56} text={content.title} maxWidth={250} row={2}/>
+                           <GradiantText fontSize={40} lineHeight={56} text={content.title} width={250} row={2}/>
                         </View>
                     )
                 })}

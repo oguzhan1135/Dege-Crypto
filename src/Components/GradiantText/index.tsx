@@ -1,17 +1,17 @@
 import MaskedView from '@react-native-masked-view/masked-view';
 import { LinearGradient } from 'expo-linear-gradient';
 import React from 'react';
-import { StyleSheet, Text } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 interface TextProps {
     text: string;
     fontSize: number;
     lineHeight: number;
-    maxWidth: number;
+    width: number;
     row: number;
 }
 
-const GradiantText: React.FC<TextProps> = ({ text, fontSize, lineHeight, maxWidth, row }) => {
+const GradiantText: React.FC<TextProps> = ({ text, fontSize, lineHeight, width, row }) => {
     const styles = StyleSheet.create({
         container: {
             flex: 1,
@@ -24,7 +24,7 @@ const GradiantText: React.FC<TextProps> = ({ text, fontSize, lineHeight, maxWidt
         },
         title: {
             fontSize: fontSize,
-            width: maxWidth,
+            width: width,
             lineHeight: lineHeight,
         },
         gradient: {
@@ -33,7 +33,8 @@ const GradiantText: React.FC<TextProps> = ({ text, fontSize, lineHeight, maxWidt
     });
 
     return (
-        <MaskedView maskElement={<Text style={styles.title}>{text}</Text>}>
+        <View style={{width:"100%"}}>
+            <MaskedView maskElement={<Text style={styles.title}>{text}</Text>}>
             <LinearGradient
                 colors={['rgba(169,205,255,1)', 'rgba(114,246,209,1)', 'rgba(160,237,141,1)', 'rgba(254,211,101,1)', 'rgba(250,164,158,1)']}
                 locations={[0, 0.22, 0.56, 0.82, 1]}
@@ -41,9 +42,11 @@ const GradiantText: React.FC<TextProps> = ({ text, fontSize, lineHeight, maxWidt
                 start={{ x: 0, y: 0.5 }}
                 end={{ x: 1, y: 0.5 }}
             >
-                <Text style={{ opacity: 0 }}>{text}</Text>
+                <Text style={{ opacity: 0 }}>{text}     </Text>
             </LinearGradient>
-        </MaskedView>
+        </MaskedView> 
+        </View>
+       
     );
 }
 

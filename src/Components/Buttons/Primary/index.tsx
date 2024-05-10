@@ -25,9 +25,10 @@ interface ButtonProp {
     page?: keyof OnboardingStackParamList;
     text: string;
     onPress?: () => void;
+    disabled?: boolean;
 }
 
-const PrimaryButton: React.FC<ButtonProp> = ({ page, text, onPress }) => {
+const PrimaryButton: React.FC<ButtonProp> = ({ page, text, onPress,disabled=false }) => {
     const navigation = useAppNavigation();
 
     const handlePress = () => {
@@ -49,9 +50,9 @@ const PrimaryButton: React.FC<ButtonProp> = ({ page, text, onPress }) => {
                     styles.defaultButtonStyle,
                     {
                         backgroundColor: pressed ? '#FEE083' : '#FEBF32',
-
                     }
                 ]}
+                disabled={disabled}
             >
                 <Text style={styles.buttonText}>{text}</Text>
             </Pressable>
