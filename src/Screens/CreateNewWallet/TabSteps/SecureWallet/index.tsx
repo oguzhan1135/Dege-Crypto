@@ -1,12 +1,20 @@
-import React, { useState } from "react";
-import { View, TextInput, StyleSheet, Text, Pressable, Modal, TouchableOpacity, TouchableWithoutFeedback } from "react-native";
+import React, { FC, useState } from "react";
+import { View, TextInput, StyleSheet, Text, Pressable, Modal, TouchableOpacity } from "react-native";
 import SafeandConvenient from '../../../../../assets/images/SafeandConvenient.svg'
 import { useAppNavigation } from "../../../../Router/useAppNavigation";
-import { BlurView } from "@react-native-community/blur";
+import { BlurView } from "expo-blur";
+import Checkbox from "expo-checkbox";
+import PrimaryButton from "../../../../Components/Buttons/Primary";
 
-const SecureWallet = () => {
+interface SecureProp {
+    onChangeStep: (step: number) => void;
+}
+
+const SecureWallet: FC<SecureProp> = ({ onChangeStep }) => {
     const navigation = useAppNavigation();
     const [modalVisible, setModalVisible] = useState(false);
+    const [skipCheck, setSkipCheck] = useState(false);
+    const [step, setStep] = useState(1);
 
     return (
         <View style={styles.container}>
@@ -29,44 +37,77 @@ const SecureWallet = () => {
                     setModalVisible(!modalVisible);
                 }}
             >
-                <TouchableWithoutFeedback onPress={() => setModalVisible(!modalVisible)}>
+                <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
                     <View style={styles.modalOverlay} />
-                </TouchableWithoutFeedback>
-                <BlurView
+                </TouchableOpacity>
+                <Modal
                     style={styles.blur}
-                    blurType="light"
-                    blurAmount={10}
-                    reducedTransparencyFallbackColor="white"
+                    visible={modalVisible}
+                    animationType="slide"
+                    transparent={true}
                 >
-                    <View style={styles.centeredView}>
-                        <View style={styles.modalView}>
-                            <Text style={styles.modalText}>Reminder</Text>
-                            <Text style={styles.modalText}>Don't forget to secure your wallet!</Text>
+                    <BlurView intensity={80} style={{ flex: 1 }}>
+                        <View style={styles.centeredView}>
+                            <View style={styles.modalView}>
+                                <Text style={styles.modalText}>Skip Account Security?</Text>
 
-                            <TouchableOpacity
-                                style={{ ...styles.openButton, backgroundColor: "#FEBF32" }}
-                                onPress={() => setModalVisible(!modalVisible)}
-                            >
-                                <Text style={styles.textStyle}>OK</Text>
-                            </TouchableOpacity>
+                                <View style={styles.checkContainer}>
+                                    <Checkbox
+                                        value={skipCheck}
+                                        onValueChange={() => setSkipCheck(!skipCheck)}
+                                        color="#FEBF32"
+                                    />
+                                    <Text style={{ fontSize: 14, lineHeight: 24, color: "white" }}>I understand that if I lose my seed phrase I will not be able to access my wallet
+                                    </Text>
+                                </View>
+                                <View style={styles.buttonContainer}>
+                                    <Pressable onPress={() => {
+                                        setModalVisible(false);
+                                        setStep(step + 1)
+                                        onChangeStep(step + 1)
+                                    }}>
+                                        <Text style={{ fontSize: 16, lineHeight: 24, fontWeight: "bold", color: "#FEBF32", paddingHorizontal: 30 }}>Secure Now</Text>
+                                    </Pressable>
+                                    <View style={{ width: "48%" }}>
+                                        <PrimaryButton text="Skip" />
+
+                                    </View>
+                                </View>
+                            </View>
                         </View>
-                    </View>
-                </BlurView>
+                    </BlurView>
+                </Modal>
             </Modal>
         </View>
     )
 }
 
 const styles = StyleSheet.create({
+    buttonContainer: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        paddingHorizontal: 24,
+        alignItems: "center"
+    },
+
+    checkContainer: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "flex-start",
+        gap: 10,
+        paddingRight: 24,
+        paddingLeft: 24
+    },
     container: {
         alignItems: "center",
+        justifyContent: "center",
         gap: 40
     },
     centeredView: {
         flex: 1,
-        justifyContent: "center",
+        justifyContent: "flex-end",
         alignItems: "center",
-        marginTop: 22
+        backgroundColor: 'rgb(0,0,0,10)'
     },
     modalOverlay: {
         position: "absolute",
@@ -77,25 +118,23 @@ const styles = StyleSheet.create({
         backgroundColor: "rgba(0,0,0,0.5)",
     },
     modalView: {
-        margin: 20,
-        backgroundColor: "white",
-        borderRadius: 20,
-        padding: 35,
-        alignItems: "center",
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 2
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 4,
-        elevation: 5
+        width: "100%",
+        backgroundColor: "#17171A",
+        gap: 45,
+        paddingBottom: 40
     },
-    openButton: {
-        backgroundColor: "#F194FF",
-        borderRadius: 20,
-        padding: 10,
-        elevation: 2
+    button: {
+        width: "48%",
+        height: 48,
+        borderRadius: 8,
+        justifyContent: "center",
+        alignItems: "center"
+    },
+    buttonText: {
+        fontSize: 16,
+        lineHeight: 24,
+        fontWeight: "bold",
+        color: "black"
     },
     textStyle: {
         color: "white",
@@ -103,8 +142,12 @@ const styles = StyleSheet.create({
         textAlign: "center"
     },
     modalText: {
-        marginBottom: 15,
-        textAlign: "center"
+        fontSize: 16,
+        lineHeight: 24,
+        color: "white",
+        fontWeight: "bold",
+        textAlign: "center",
+        paddingTop: 16
     },
     blur: {
         position: "absolute",

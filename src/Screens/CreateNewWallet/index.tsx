@@ -7,6 +7,9 @@ import ConfirmSeed from './TabSteps/ConfirmSeed';
 import CreatePassword, { PasswordData } from './TabSteps/CreatePassword';
 import SecureWallet from './TabSteps/SecureWallet';
 import { useAppNavigation } from '../../Router/useAppNavigation';
+import SecureYourWallet from './TabSteps/SecureWallet/Tabs/SecureYourWallet';
+import WriteYourSeed from './TabSteps/SecureWallet/Tabs/WriteDownYourSeed';
+import ConfirmSeedSuccess from './TabSteps/ConfirmSeed/SuccessTab';
 
 
 const CreateNewWallet = () => {
@@ -18,8 +21,10 @@ const CreateNewWallet = () => {
         passwordRule: false
     });
     const [currentStep, setCurrentStep] = useState(1);
+    const [smallStep, setSmallStep] = useState(1);
+    const [caseNumber, setCaseNumber] = useState(currentStep);
     const renderTab = (step: number) => {
-        const isActive = step <= currentStep;
+        const isActive = currentStep === 3 ? (smallStep >= 2 ? step <= 3 : step <= currentStep) : step <= currentStep;
         return (
             <TouchableOpacity style={{ margin: 0, padding: 0, flex: 1, height: 8 }}>
                 <View style={[isActive ? styles.activeTabBar : styles.inactiveTabBar,]} />
@@ -27,14 +32,26 @@ const CreateNewWallet = () => {
         );
     };
 
+
     const renderStepContent = () => {
-        switch (currentStep) {
+        switch (caseNumber) {
             case 1:
                 return <CreatePassword onPasswordChange={handlePasswordChange} />;
             case 2:
-                return <SecureWallet />;
+                return <SecureWallet onChangeStep={handleStepChange} />;
             case 3:
-                return <ConfirmSeed />;
+                return <SecureYourWallet />
+            case 4:
+                return <WriteYourSeed />;
+            case 5:
+
+                return (
+                    <ConfirmSeed />
+                )
+
+
+            case 6:
+                return <ConfirmSeedSuccess />;
             default:
                 return null;
         }
@@ -43,24 +60,50 @@ const CreateNewWallet = () => {
     const handlePasswordChange = (data: PasswordData) => {
         setPasswordData(data);
     };
-
+    const handleStepChange = (step: number) => {
+        setSmallStep(step)
+        setCaseNumber(caseNumber + 1)
+        console.log(smallStep)
+        console.log("case nuamrası =>", caseNumber)
+    };
     const handleConfirmButtonPress = () => {
+        if (currentStep >= 2) {
+            if (smallStep >= 2) {
+                if (caseNumber === 4) {
+                    setCurrentStep(3)
+                }
+                setCaseNumber(caseNumber + 1);
+            }
+        } else {
+            setCurrentStep(currentStep + 1);
+        }
         console.log(passwordData);
     };
-
+    const handleBackButtonPress = () => {
+        if (currentStep === 1) {
+            navigation.navigate("Onboarding", {
+                screen: 'WalletSetUp',
+            })
+        } else if (currentStep === 2) {
+            if (caseNumber > 2) {
+                setCurrentStep(2);
+                setCaseNumber(2);
+            } else {
+                setCurrentStep(1);
+                setCaseNumber(1);
+            }
+        } else {
+            setCurrentStep((prevStep) => prevStep - 1);
+            setCaseNumber((prevStep) => prevStep - 1);
+        }
+    };
     return (
         <View style={styles.container}>
             <View style={styles.navbarContainer}>
                 <View style={styles.navbarInnerContainer}>
                     <Pressable
                         onPress={() => {
-                            if (currentStep === 1) {
-                                navigation.navigate("Onboarding", {
-                                    screen: 'WalletSetUp',
-                                })
-                            } else {
-                                setCurrentStep((prevStep) => prevStep - 1);
-                            }
+                            handleBackButtonPress()
                         }}
                         style={({ pressed }) => [
                             {
@@ -82,16 +125,17 @@ const CreateNewWallet = () => {
 
             <View style={styles.buttonContainer}>
                 <PrimaryButton
-                    text={currentStep < 2 ? 'Create Password' : 'Start'}
+                    text={currentStep < 2 ? 'Create Password' : 'Next'}
                     onPress={() => {
                         if (currentStep === 3) {
 
                         } else {
-                            setCurrentStep((prevStep) => prevStep + 1);
+                            setCaseNumber(caseNumber + 1)
+
                         }
                         handleConfirmButtonPress();
                     }}
-                    disabled={currentStep === 1 && (passwordData.password === '' || passwordData.confirmPassword === '' || passwordData.passwordRule === false)} // Password girilmediyse butonu pasif yapar
+                    disabled={currentStep === 1 && (passwordData.password === '' || passwordData.confirmPassword === '' || passwordData.passwordRule === false)}
                 />
             </View>
         </View>

@@ -9,7 +9,6 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
         backgroundColor: '#2a2d3c',
-        width: "100%",
         height: "auto",
         padding: 12
     },
@@ -43,7 +42,6 @@ const PrimaryButton: React.FC<ButtonProp> = ({ page, text, onPress,disabled=fals
     };
 
     return (
-        <View style={{ width: "100%" }}>
             <Pressable
                 onPress={handlePress}
                 style={({ pressed }) => [
@@ -56,7 +54,6 @@ const PrimaryButton: React.FC<ButtonProp> = ({ page, text, onPress,disabled=fals
             >
                 <Text style={styles.buttonText}>{text}</Text>
             </Pressable>
-        </View>
     );
 }
 
