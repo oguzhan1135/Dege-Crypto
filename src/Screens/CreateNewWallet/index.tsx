@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
     navbarContainer: {
         padding: 20,
         paddingTop: 20,
-        paddingBottom: 60,
+        paddingBottom: 40,
         paddingHorizontal: 20,
     },
     navbarInnerContainer: {

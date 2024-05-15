@@ -14,39 +14,45 @@ interface TextProps {
 const GradiantText: React.FC<TextProps> = ({ text, fontSize, lineHeight, width, row }) => {
     const styles = StyleSheet.create({
         container: {
-            flex: 1,
-            backgroundColor: '#17171a',
-            paddingTop: 40,
-            paddingBottom: 40,
-            justifyContent: "center",
-            alignItems: "center",
-            gap: 10
+            width: "100%",
         },
         title: {
             fontSize: fontSize,
             width: width,
             lineHeight: lineHeight,
+            fontWeight:"600",
         },
         gradient: {
-            height: row === 2 ? lineHeight * row : lineHeight,
+            justifyContent: "center",
+            alignItems: "center",
+            height:lineHeight * row
+        },
+        maskedView: {
+            width: "100%",
+
+        },
+        transparentText: {
+            color: 'transparent',
+            fontSize: fontSize,
+            lineHeight: lineHeight,
+
         },
     });
 
     return (
-        <View style={{width:"100%"}}>
-            <MaskedView maskElement={<Text style={styles.title}>{text}</Text>}>
-            <LinearGradient
-                colors={['rgba(169,205,255,1)', 'rgba(114,246,209,1)', 'rgba(160,237,141,1)', 'rgba(254,211,101,1)', 'rgba(250,164,158,1)']}
-                locations={[0, 0.22, 0.56, 0.82, 1]}
-                style={styles.gradient}
-                start={{ x: 0, y: 0.5 }}
-                end={{ x: 1, y: 0.5 }}
-            >
-                <Text style={{ opacity: 0 }}>{text}     </Text>
-            </LinearGradient>
-        </MaskedView> 
+        <View style={styles.container}>
+            <MaskedView style={styles.maskedView} maskElement={<Text style={styles.title}>{text}</Text>}>
+                <LinearGradient
+                    colors={['rgba(169,205,255,1)', 'rgba(114,246,209,1)', 'rgba(160,237,141,1)', 'rgba(254,211,101,1)', 'rgba(250,164,158,1)']}
+                    locations={[0, 0.22, 0.56, 0.82, 1]}
+                    style={[styles.gradient, { height: lineHeight * row }]}
+                    start={{ x: 0, y: 0.5 }}
+                    end={{ x: 1, y: 0.5 }}
+                >
+                    <Text style={styles.transparentText}>{text} </Text>
+                </LinearGradient>
+            </MaskedView>
         </View>
-       
     );
 }
 

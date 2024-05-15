@@ -35,7 +35,7 @@ function WalletSetUp() {
             </View>
 
             <View style={styles.gradiantText}>
-                <GradiantText fontSize={40} lineHeight={56} text='Wallet setup' maxWidth={400} row={1} />
+                <GradiantText fontSize={40} lineHeight={56} text='Wallet setup' width={250} row={1} />
             </View>
 
 
