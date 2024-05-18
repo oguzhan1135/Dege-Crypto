@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, Text, Pressable, TouchableOpacity } from 'react-native';
-import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import SuccessContent from './TabSteps/ConfirmSeed';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import PrimaryButton from '../../Components/Buttons/Primary';
 import ConfirmSeed from './TabSteps/ConfirmSeed';
@@ -9,10 +9,8 @@ import SecureWallet from './TabSteps/SecureWallet';
 import { useAppNavigation } from '../../Router/useAppNavigation';
 import SecureYourWallet from './TabSteps/SecureWallet/Tabs/SecureYourWallet';
 import WriteYourSeed from './TabSteps/SecureWallet/Tabs/WriteDownYourSeed';
-import ConfirmSeedSuccess from './TabSteps/ConfirmSeed/SuccessTab';
 
-
-const CreateNewWallet = () => {
+function CreateNewWallet() {
     const navigation = useAppNavigation();
     const [passwordData, setPasswordData] = useState<PasswordData>({
         password: '',
@@ -23,15 +21,16 @@ const CreateNewWallet = () => {
     const [currentStep, setCurrentStep] = useState(1);
     const [smallStep, setSmallStep] = useState(1);
     const [caseNumber, setCaseNumber] = useState(currentStep);
+    const [stepContent, setStepContent] = useState<JSX.Element | null>(null);
+
     const renderTab = (step: number) => {
         const isActive = currentStep === 3 ? (smallStep >= 2 ? step <= 3 : step <= currentStep) : step <= currentStep;
         return (
             <TouchableOpacity style={{ margin: 0, padding: 0, flex: 1, height: 8 }}>
-                <View style={[isActive ? styles.activeTabBar : styles.inactiveTabBar,]} />
+                <View style={[isActive ? styles.activeTabBar : styles.inactiveTabBar]} />
             </TouchableOpacity>
         );
     };
-
 
     const renderStepContent = () => {
         switch (caseNumber) {
@@ -40,18 +39,11 @@ const CreateNewWallet = () => {
             case 2:
                 return <SecureWallet onChangeStep={handleStepChange} />;
             case 3:
-                return <SecureYourWallet />
+                return <SecureYourWallet />;
             case 4:
                 return <WriteYourSeed />;
             case 5:
-
-                return (
-                    <ConfirmSeed />
-                )
-
-
-            case 6:
-                return <ConfirmSeedSuccess />;
+                return <ConfirmSeed />;
             default:
                 return null;
         }
@@ -60,17 +52,19 @@ const CreateNewWallet = () => {
     const handlePasswordChange = (data: PasswordData) => {
         setPasswordData(data);
     };
+
     const handleStepChange = (step: number) => {
-        setSmallStep(step)
-        setCaseNumber(caseNumber + 1)
-        console.log(smallStep)
-        console.log("case nuamrası =>", caseNumber)
+        setSmallStep(step);
+        setCaseNumber(caseNumber + 1);
+        console.log(smallStep);
+        console.log("case numarası =>", caseNumber);
     };
+
     const handleConfirmButtonPress = () => {
         if (currentStep >= 2) {
             if (smallStep >= 2) {
                 if (caseNumber === 4) {
-                    setCurrentStep(3)
+                    setCurrentStep(3);
                 }
                 setCaseNumber(caseNumber + 1);
             }
@@ -78,12 +72,14 @@ const CreateNewWallet = () => {
             setCurrentStep(currentStep + 1);
         }
         console.log(passwordData);
+        console.log(currentStep);
     };
+
     const handleBackButtonPress = () => {
         if (currentStep === 1) {
             navigation.navigate("Onboarding", {
                 screen: 'WalletSetUp',
-            })
+            });
         } else if (currentStep === 2) {
             if (caseNumber > 2) {
                 setCurrentStep(2);
@@ -97,18 +93,29 @@ const CreateNewWallet = () => {
             setCaseNumber((prevStep) => prevStep - 1);
         }
     };
+
+    const handleSuccess = () => {
+        navigation.navigate("Onboarding", {
+            screen: 'Homescreen',
+        });
+    };
+
+    useEffect(() => {
+        const content = renderStepContent();
+        setStepContent(content);
+        if (content === null) {
+            handleSuccess();
+        }
+    }, [caseNumber]);
+
     return (
         <View style={styles.container}>
             <View style={styles.navbarContainer}>
                 <View style={styles.navbarInnerContainer}>
                     <Pressable
-                        onPress={() => {
-                            handleBackButtonPress()
-                        }}
+                        onPress={handleBackButtonPress}
                         style={({ pressed }) => [
-                            {
-                                backgroundColor: pressed ? '#44485F' : 'transparent',
-                            }
+                            { backgroundColor: pressed ? '#44485F' : 'transparent' },
                         ]}
                     >
                         <AntDesign name="left" size={20} color="white" />
@@ -121,44 +128,39 @@ const CreateNewWallet = () => {
                     </View>
                 </View>
             </View>
-            <View style={styles.contentContainer}>{renderStepContent()}</View>
-
+            <View style={styles.contentContainer}>
+                {stepContent}
+            </View>
             <View style={styles.buttonContainer}>
                 <PrimaryButton
                     text={currentStep < 2 ? 'Create Password' : 'Next'}
                     onPress={() => {
-                        if (currentStep === 3) {
-
-                        } else {
-                            setCaseNumber(caseNumber + 1)
-
-                        }
+                        setCaseNumber(caseNumber + 1);
                         handleConfirmButtonPress();
                     }}
                     disabled={currentStep === 1 && (passwordData.password === '' || passwordData.confirmPassword === '' || passwordData.passwordRule === false)}
                 />
             </View>
         </View>
-
     );
-};
+}
 
 const styles = StyleSheet.create({
     contentContainer: {
         flex: 1,
         paddingLeft: 24,
-        paddingRight: 24
+        paddingRight: 24,
     },
     buttonContainer: {
         paddingLeft: 24,
-        paddingRight: 24
+        paddingRight: 24,
     },
     container: {
         flex: 1,
         backgroundColor: '#17171a',
         paddingTop: 40,
         paddingBottom: 40,
-        gap: 10
+        gap: 10,
     },
     navbarContainer: {
         padding: 20,
@@ -170,7 +172,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        gap: 20
+        gap: 20,
     },
     navbarIcon: {
         marginRight: 0,
@@ -179,7 +181,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         gap: 20,
-        paddingRight: 40
+        paddingRight: 40,
     },
     activeTabBar: {
         height: 8,

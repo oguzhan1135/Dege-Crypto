@@ -1,25 +1,36 @@
-import React, { useState } from "react";
-import { View, TextInput, StyleSheet, Text, TouchableOpacity } from "react-native";
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
-import { BlurView } from "expo-blur";
-import SecondaryButton from "../../../../Components/Buttons/Secondary";
+import React, { useState, useEffect } from "react";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import GradiantText from "../../../../Components/GradiantText";
 
+const SuccessContent = () => {
+    return (
+        <View style={{ justifyContent: "center", alignContent: "center", gap: 24 }}>
+            <View style={[styles.title, { paddingTop: 100, paddingBottom: 40 }]}>
+                <View>
+                    <GradiantText text={"Success!"} fontSize={40} lineHeight={56} width={300} row={1} />
+                </View>
+            </View>
+            <Text style={styles.succesText}>You've successfully protected your wallet. Remember to keep your seed phrase safe, it's your responsibility!</Text>
+            <Text style={styles.succesText}>DefiSquid cannot recover your wallet should you lose it. You can find your seedphrase in Settings Security & Privacy</Text>
+        </View>
+    )
+}
+
+
 const ConfirmSeed = () => {
-    let seedWords = [
-        {
-            id: 3,
-            word: "abuse"
-        },
-        {
-            id: 7,
-            word: "exit",
-        },
-        {
-            id: 12,
-            word: "organ"
-        }
+    const seedWords = [
+        { id: 1, word: "future" },
+        { id: 2, word: "use" },
+        { id: 3, word: "abuse" },
+        { id: 4, word: "bubble" },
+        { id: 5, word: "disagree" },
+        { id: 6, word: "yard" },
+        { id: 7, word: "exit" },
+        { id: 8, word: "enact" },
+        { id: 9, word: "drum" },
+        { id: 10, word: "frequent" },
+        { id: 11, word: "target" },
+        { id: 12, word: "organ" }
     ];
 
     const [blurred, setBlurred] = useState(true);
@@ -28,23 +39,27 @@ const ConfirmSeed = () => {
     const [selectedWord, setSelectedWord] = useState("");
     const [selectedId, setSelectedId] = useState(seedWords[0].id);
     const [seed, setSeed] = useState("");
-    React.useEffect(() => {
-        if (blurred) {
-            setIntensity(10);
-        } else {
-            setIntensity(0);
-        }
+    const [choices, setChoices] = useState<{ id: number; word: string }[]>([]);
+
+    useEffect(() => {
+        setIntensity(blurred ? 10 : 0);
     }, [blurred]);
+
+    useEffect(() => {
+        if (confirmSeedStep < 3) {
+            generateChoices();
+        }
+    }, [confirmSeedStep]);
 
     const toggleBlur = () => {
         setBlurred(!blurred);
     };
 
     const renderTab = (step: number) => {
-        const isActive = confirmSeedStep === step;
+        const isActive = step <= confirmSeedStep;
         return (
-            <TouchableOpacity style={{ margin: 0, padding: 0, flex: 1, height: 8 }} onPress={() => setConfirmSeedStep(step)}>
-                <View style={[isActive ? styles.activeTabBar : styles.inactiveTabBar,]} />
+            <TouchableOpacity key={step} style={{ margin: 0, padding: 0, flex: 1, height: 8 }} onPress={() => setConfirmSeedStep(step)}>
+                <View style={[isActive ? styles.activeTabBar : styles.inactiveTabBar]} />
             </TouchableOpacity>
         );
     };
@@ -52,55 +67,73 @@ const ConfirmSeed = () => {
     const selectWord = (word: string, id: number) => {
         if (id === selectedId) {
             setSelectedWord(word);
-            setConfirmSeedStep(confirmSeedStep + 1);
-            setSelectedId(seedWords[confirmSeedStep].id);
-            setSelectedWord(selectedWord);
-            setSeed(word)
+            setSeed(word);
+
+            setTimeout(() => {
+                setSeed("");
+                setConfirmSeedStep(prevStep => prevStep + 1);
+
+                if (confirmSeedStep < 2) {
+                    setSelectedId(seedWords[confirmSeedStep + 1].id);
+                } else {
+                    console.log("Doğru sıralama tamamlandı!");
+                }
+            }, 1000);
         } else {
             console.log("Yanlış kelime!");
         }
-        setTimeout(() => {
-            setSeed("")
-            setSelectedId(seedWords[confirmSeedStep + 1].id)
-        }, 1000);
+    };
+
+    const generateChoices = () => {
+        const correctWord = seedWords[confirmSeedStep];
+        const otherWords = seedWords.filter(word => word.id !== correctWord.id);
+        const randomChoices = [correctWord, ...otherWords.sort(() => 0.5 - Math.random()).slice(0, 5)];
+        setChoices(randomChoices.sort(() => 0.5 - Math.random()));
     };
 
     return (
         <View style={styles.container}>
-            <View style={styles.title}>
-                <View style={{}}>
-                    <GradiantText text={"Confirm Seed Phrase"} fontSize={18} lineHeight={28} width={300} row={1} />
-                </View>
-            </View>
-            <View style={{ justifyContent: "center", alignItems: "center" }}>
-                <Text style={styles.paragraphText}>Select each word in the order it was presented to you</Text>
-            </View>
-
-            <View style={{ justifyContent: "center", alignItems: "center" }}>
-                <View style={{ paddingBottom: 0 }}>
-                    <GradiantText text={`${selectedId} ${seed}`} fontSize={40} lineHeight={56} width={200} row={1} />
-                </View>
-                <View style={styles.progressContainer}>
-                    {renderTab(1)}
-                    {renderTab(2)}
-                    {renderTab(3)}
-                </View>
-
-            </View>
-            <View style={styles.seedPhrase}>
-                <View style={styles.boxContainer}>
-                    {seedWords.map((item, index) => (
-                        <TouchableOpacity key={index} onPress={() => selectWord(item.word, item.id)}>
-                            <View style={styles.box}>
-                                <Text style={styles.boxText}>{item.word}</Text>
+            {
+                confirmSeedStep < 3 ?
+                    <>
+                        <View style={styles.title}>
+                            <View>
+                                <GradiantText text={"Confirm Seed Phrase"} fontSize={18} lineHeight={28} width={300} row={1} />
                             </View>
-                        </TouchableOpacity>
-                    ))}
-                </View>
-            </View>
+                        </View>
+                        <View style={{ justifyContent: "center", alignItems: "center" }}>
+                            <Text style={styles.paragraphText}>Select each word in the order it was presented to you</Text>
+                        </View>
+                        <View style={{ justifyContent: "center", alignItems: "center" }}>
+                            <View style={{ paddingBottom: 0 }}>
+                                <GradiantText text={`${selectedId} ${seed}`} fontSize={40} lineHeight={56} width={200} row={1} />
+                            </View>
+                            <View style={styles.progressContainer}>
+                                {[0, 1, 2].map(step => renderTab(step))}
+                            </View>
+                        </View>
+                        {confirmSeedStep < 3 ? (
+                            <View style={styles.seedPhrase}>
+                                <View style={styles.boxContainer}>
+                                    {choices.map((item, index) => (
+                                        <TouchableOpacity key={index} onPress={() => selectWord(item.word, item.id)}>
+                                            <View style={styles.box}>
+                                                <Text style={styles.boxText}>{item.word}</Text>
+                                            </View>
+                                        </TouchableOpacity>
+                                    ))}
+                                </View>
+                            </View>
+                        ) : (
+                            null
+                        )}
+                    </> :
+                    <SuccessContent />
+            }
         </View>
     );
 };
+
 const styles = StyleSheet.create({
     box: {
         borderRadius: 8,
@@ -112,7 +145,8 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
         flexDirection: "row",
-        gap: 16
+        gap: 16,
+        flexWrap: "wrap"
     },
     seedPhrase: {
         flexDirection: "column",
@@ -147,6 +181,12 @@ const styles = StyleSheet.create({
         paddingBottom: 80,
         textAlign: "center"
     },
+    succesText: {
+        color: "white",
+        fontSize: 16,
+        lineHeight: 24,
+        textAlign: "center"
+    },
     boxText: {
         fontSize: 14,
         lineHeight: 24,
@@ -162,5 +202,12 @@ const styles = StyleSheet.create({
         borderRadius: 2,
         backgroundColor: '#2A2D3C',
     },
+    successText: {
+        fontSize: 20,
+        color: "green",
+        textAlign: "center",
+        marginTop: 20,
+    },
 });
+
 export default ConfirmSeed;

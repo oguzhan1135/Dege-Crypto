@@ -15,6 +15,7 @@ const SecureWallet: FC<SecureProp> = ({ onChangeStep }) => {
     const [modalVisible, setModalVisible] = useState(false);
     const [skipCheck, setSkipCheck] = useState(false);
     const [step, setStep] = useState(1);
+    const [modalStep, setModalStep] = useState(1)
 
     return (
         <View style={styles.container}>
@@ -40,43 +41,104 @@ const SecureWallet: FC<SecureProp> = ({ onChangeStep }) => {
                 <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
                     <View style={styles.modalOverlay} />
                 </TouchableOpacity>
-                <Modal
-                    style={styles.blur}
-                    visible={modalVisible}
-                    animationType="slide"
-                    transparent={true}
-                >
-                    <BlurView intensity={80} style={{ flex: 1 }}>
-                        <View style={styles.centeredView}>
-                            <View style={styles.modalView}>
-                                <Text style={styles.modalText}>Skip Account Security?</Text>
+                {
+                    modalStep === 1 ?
+                        <>
+                            <Modal
+                                style={styles.blur}
+                                visible={modalVisible}
+                                animationType="slide"
+                                transparent={true}
+                            >
+                                <BlurView intensity={80} style={{ flex: 1 }}>
+                                    <View style={styles.centeredView}>
+                                        <View style={styles.modalView}>
+                                            <Text style={styles.modalText}>Skip Account Security?</Text>
 
-                                <View style={styles.checkContainer}>
-                                    <Checkbox
-                                        value={skipCheck}
-                                        onValueChange={() => setSkipCheck(!skipCheck)}
-                                        color="#FEBF32"
-                                    />
-                                    <Text style={{ fontSize: 14, lineHeight: 24, color: "white" }}>I understand that if I lose my seed phrase I will not be able to access my wallet
-                                    </Text>
-                                </View>
-                                <View style={styles.buttonContainer}>
-                                    <Pressable onPress={() => {
-                                        setModalVisible(false);
-                                        setStep(step + 1)
-                                        onChangeStep(step + 1)
-                                    }}>
-                                        <Text style={{ fontSize: 16, lineHeight: 24, fontWeight: "bold", color: "#FEBF32", paddingHorizontal: 30 }}>Secure Now</Text>
-                                    </Pressable>
-                                    <View style={{ width: "48%" }}>
-                                        <PrimaryButton text="Skip" />
+                                            <View style={styles.checkContainer}>
+                                                <Checkbox
+                                                    value={skipCheck}
+                                                    onValueChange={() => setSkipCheck(!skipCheck)}
+                                                    color="#FEBF32"
+                                                />
+                                                <Text style={{ fontSize: 14, lineHeight: 24, color: "white" }}>I understand that if I lose my seed phrase I will not be able to access my wallet
+                                                </Text>
+                                            </View>
+                                            <View style={styles.buttonContainer}>
+                                                <Pressable onPress={() => {
+                                                    setModalVisible(false);
+                                                    setStep(step + 1)
+                                                    onChangeStep(step + 1)
+                                                }}>
+                                                    <Text style={{ fontSize: 16, lineHeight: 24, fontWeight: "bold", color: "#FEBF32", paddingHorizontal: 30 }}>Secure Now</Text>
+                                                </Pressable>
+                                                <View style={{ width: "48%" }}>
+                                                    <PrimaryButton text="Skip" onPress={() => setModalStep(modalStep + 1)} />
 
+                                                </View>
+                                            </View>
+                                        </View>
                                     </View>
-                                </View>
-                            </View>
-                        </View>
-                    </BlurView>
-                </Modal>
+                                </BlurView>
+                            </Modal>
+                        </> : modalStep === 2 ?
+                            <>
+                                <Modal
+                                    style={styles.blur}
+                                    visible={modalVisible}
+                                    animationType="slide"
+                                    transparent={true}
+                                >
+                                    <BlurView intensity={80} style={{ flex: 1 }}>
+                                        <View style={styles.centeredView}>
+                                            <View style={styles.modalView}>
+                                                <Text style={styles.modalText}>What is a 'Seed phrase'</Text>
+                                                <View style={{ gap: 24, alignItems: "center" }}>
+                                                    <Text style={{ fontSize: 14, lineHeight: 24, color: "white" }}>
+                                                        A seed phrase is a set of twelve words that contains all the information about your wallet, including your funds. It's like a secret code used to access your entire wallet.
+                                                    </Text>
+                                                    <Text style={{ fontSize: 14, lineHeight: 24, color: "white" }}>You must keep your seed phrase secret and safe. If someone gets your seed phrase, they'll gain control over your accounts.</Text>
+                                                    <Text style={{ fontSize: 14, lineHeight: 24, color: "white" }}>
+                                                        Save it in a place where only you can access it. If you lose it, not even MetaMask can help you recover it.                                                    </Text>
+                                                </View>
+                                                <PrimaryButton text="I Got It" onPress={() => setModalStep(modalStep + 1)} />
+
+
+                                            </View>
+
+                                        </View>
+                                    </BlurView>
+                                </Modal>
+                            </> : modalStep === 3 ?
+                                <>
+                                    <Modal
+                                        style={styles.blur}
+                                        visible={modalVisible}
+                                        animationType="slide"
+                                        transparent={true}
+                                    >
+                                        <BlurView intensity={80} style={{ flex: 1 }}>
+                                            <View style={styles.centeredView}>
+                                                <View style={styles.modalView}>
+                                                    <Text style={styles.modalText}>Protect Your Wallet</Text>
+                                                    <View style={{ gap: 24, alignItems: "center" }}>
+                                                        <Text style={{ fontSize: 14, lineHeight: 24, color: "white" }}>
+                                                            Dont’t risk losing your funds. Protect
+                                                            your wallet by saving your seed phrase in a place you trust.</Text>
+                                                        <Text style={{ fontSize: 14, lineHeight: 24, color: "white" }}>It’s the only way to recover your wallet if you get locked out of the app or get a new device.</Text>
+
+                                                    </View>
+                                                    <PrimaryButton text="I Got It" page="Homescreen" />
+
+
+                                                </View>
+
+                                            </View>
+                                        </BlurView>
+                                    </Modal>
+                                </> : null
+                }
+
             </Modal>
         </View>
     )
@@ -121,7 +183,8 @@ const styles = StyleSheet.create({
         width: "100%",
         backgroundColor: "#17171A",
         gap: 45,
-        paddingBottom: 40
+        paddingBottom: 40,
+        paddingHorizontal: 24
     },
     button: {
         width: "48%",

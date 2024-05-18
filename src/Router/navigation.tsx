@@ -5,6 +5,7 @@ import Walthought from "../Screens/Walthought";
 import WalletSetUp from "../Screens/WalletSetUp";
 import ImportSeed from "../Screens/ImportSeed";
 import CreateNewWallet from "../Screens/CreateNewWallet";
+import Homescreen from "../Screens/Homescreen";
 export type RootStackParamList = {
     Onboarding: NavigatorScreenParams<OnboardingStackParamList>;
 }
@@ -14,6 +15,7 @@ export type OnboardingStackParamList = {
     WalletSetUp: undefined;
     ImportSeed: undefined;
     CreateNewWallet: undefined;
+    Homescreen: undefined;
 
 }
 
@@ -30,6 +32,7 @@ const OnboardingNavigator = () => {
             <OnboardingStack.Screen name="WalletSetUp" component={WalletSetUp} />
             <OnboardingStack.Screen name="ImportSeed" component={ImportSeed} />
             <OnboardingStack.Screen name="CreateNewWallet" component={CreateNewWallet} />
+            <OnboardingStack.Screen name="Homescreen" component={Homescreen} />
 
         </OnboardingStack.Navigator>
     )
