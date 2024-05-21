@@ -16,18 +16,19 @@ const SecureWallet: FC<SecureProp> = ({ onChangeStep }) => {
     const [skipCheck, setSkipCheck] = useState(false);
     const [step, setStep] = useState(1);
     const [modalStep, setModalStep] = useState(1)
+    const font = "Poppins_500Medium"
 
     return (
         <View style={styles.container}>
             <SafeandConvenient />
-            <Text style={{ fontSize: 16, lineHeight: 24, fontWeight: "bold", color: "white" }}>Secure Your Wallet</Text>
+            <Text style={{ fontSize: 16, fontFamily: font, lineHeight: 24, fontWeight: "bold", color: "white" }}>Secure Your Wallet</Text>
             <View style={{ gap: 8 }}>
-                <Text style={{ fontSize: 14, lineHeight: 24, color: "#ABAFC4" }}>Don't risk losing your funds. protect your wallet by saving your
-                    <Text style={{ fontSize: 14, lineHeight: 20, color: "#5F97FF" }} > Seed phrase</Text> in a place you trust.</Text>
-                <Text style={{ fontSize: 14, lineHeight: 24, fontWeight: "bold", color: "#ABAFC4" }}>It's the only way to recover your wallet if you get locked out of the app or get a new device.</Text>
+                <Text style={{ fontSize: 14, fontFamily: font, lineHeight: 24, color: "#ABAFC4" }}>Don't risk losing your funds. protect your wallet by saving your
+                    <Text style={{ fontSize: 14, fontFamily: font, lineHeight: 20, color: "#5F97FF" }} > Seed phrase</Text> in a place you trust.</Text>
+                <Text style={{ fontSize: 14, fontFamily: font, lineHeight: 24, fontWeight: "bold", color: "#ABAFC4" }}>It's the only way to recover your wallet if you get locked out of the app or get a new device.</Text>
             </View>
             <Pressable onPress={() => setModalVisible(true)}>
-                <Text style={{ fontSize: 16, lineHeight: 24, fontWeight: "bold", color: "#FEBF32" }}>Remind Me Later</Text>
+                <Text style={{ fontSize: 16, fontFamily: font, lineHeight: 24, fontWeight: "bold", color: "#FEBF32" }}>Remind Me Later</Text>
             </Pressable>
 
             <Modal
@@ -61,7 +62,7 @@ const SecureWallet: FC<SecureProp> = ({ onChangeStep }) => {
                                                     onValueChange={() => setSkipCheck(!skipCheck)}
                                                     color="#FEBF32"
                                                 />
-                                                <Text style={{ fontSize: 14, lineHeight: 24, color: "white" }}>I understand that if I lose my seed phrase I will not be able to access my wallet
+                                                <Text style={{ fontSize: 14, fontFamily: font, lineHeight: 24, color: "white" }}>I understand that if I lose my seed phrase I will not be able to access my wallet
                                                 </Text>
                                             </View>
                                             <View style={styles.buttonContainer}>
@@ -70,7 +71,7 @@ const SecureWallet: FC<SecureProp> = ({ onChangeStep }) => {
                                                     setStep(step + 1)
                                                     onChangeStep(step + 1)
                                                 }}>
-                                                    <Text style={{ fontSize: 16, lineHeight: 24, fontWeight: "bold", color: "#FEBF32", paddingHorizontal: 30 }}>Secure Now</Text>
+                                                    <Text style={{ fontSize: 16, fontFamily: font, lineHeight: 24, fontWeight: "bold", color: "#FEBF32", paddingHorizontal: 30 }}>Secure Now</Text>
                                                 </Pressable>
                                                 <View style={{ width: "48%" }}>
                                                     <PrimaryButton text="Skip" onPress={() => setModalStep(modalStep + 1)} />
@@ -94,11 +95,11 @@ const SecureWallet: FC<SecureProp> = ({ onChangeStep }) => {
                                             <View style={styles.modalView}>
                                                 <Text style={styles.modalText}>What is a 'Seed phrase'</Text>
                                                 <View style={{ gap: 24, alignItems: "center" }}>
-                                                    <Text style={{ fontSize: 14, lineHeight: 24, color: "white" }}>
+                                                    <Text style={{ fontSize: 14, fontFamily: font, lineHeight: 24, color: "white" }}>
                                                         A seed phrase is a set of twelve words that contains all the information about your wallet, including your funds. It's like a secret code used to access your entire wallet.
                                                     </Text>
-                                                    <Text style={{ fontSize: 14, lineHeight: 24, color: "white" }}>You must keep your seed phrase secret and safe. If someone gets your seed phrase, they'll gain control over your accounts.</Text>
-                                                    <Text style={{ fontSize: 14, lineHeight: 24, color: "white" }}>
+                                                    <Text style={{ fontSize: 14, fontFamily: font, lineHeight: 24, color: "white" }}>You must keep your seed phrase secret and safe. If someone gets your seed phrase, they'll gain control over your accounts.</Text>
+                                                    <Text style={{ fontSize: 14, fontFamily: font, lineHeight: 24, color: "white" }}>
                                                         Save it in a place where only you can access it. If you lose it, not even MetaMask can help you recover it.                                                    </Text>
                                                 </View>
                                                 <PrimaryButton text="I Got It" onPress={() => setModalStep(modalStep + 1)} />
@@ -122,10 +123,10 @@ const SecureWallet: FC<SecureProp> = ({ onChangeStep }) => {
                                                 <View style={styles.modalView}>
                                                     <Text style={styles.modalText}>Protect Your Wallet</Text>
                                                     <View style={{ gap: 24, alignItems: "center" }}>
-                                                        <Text style={{ fontSize: 14, lineHeight: 24, color: "white" }}>
+                                                        <Text style={{ fontSize: 14, fontFamily: font, lineHeight: 24, color: "white" }}>
                                                             Dont’t risk losing your funds. Protect
                                                             your wallet by saving your seed phrase in a place you trust.</Text>
-                                                        <Text style={{ fontSize: 14, lineHeight: 24, color: "white" }}>It’s the only way to recover your wallet if you get locked out of the app or get a new device.</Text>
+                                                        <Text style={{ fontSize: 14, fontFamily: font, lineHeight: 24, color: "white" }}>It’s the only way to recover your wallet if you get locked out of the app or get a new device.</Text>
 
                                                     </View>
                                                     <PrimaryButton text="I Got It" page="Homescreen" />

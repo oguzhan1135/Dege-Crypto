@@ -179,13 +179,15 @@ const styles = StyleSheet.create({
         fontSize: 16,
         lineHeight: 24,
         paddingBottom: 80,
-        textAlign: "center"
+        textAlign: "center",
+        fontFamily:"Poppins_500Medium"
     },
     succesText: {
         color: "white",
         fontSize: 16,
         lineHeight: 24,
-        textAlign: "center"
+        textAlign: "center",
+        fontFamily:"Poppins_500Medium"
     },
     boxText: {
         fontSize: 14,

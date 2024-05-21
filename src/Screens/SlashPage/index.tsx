@@ -25,7 +25,9 @@ const styles = StyleSheet.create({
         fontSize: 42,
         lineHeight: 56,
         maxWidth: 300,
-        color: 'white'
+        color: 'white',
+        fontFamily: "Poppins_500Medium"
+
     }
 
 

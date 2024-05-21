@@ -16,7 +16,8 @@ const styles = StyleSheet.create({
         color: "#FEBF32",
         fontSize: 16,
         lineHeight: 24,
-        fontWeight: "bold"
+        fontFamily: "Poppins_700Bold",
+
     }
 })
 
@@ -28,7 +29,7 @@ interface ButtonProp {
     icon?: any;
 }
 
-const SecondaryButton: React.FC<ButtonProp> = ({ page, text, onPress,  icon }) => {
+const SecondaryButton: React.FC<ButtonProp> = ({ page, text, onPress, icon }) => {
     const navigation = useAppNavigation();
     const handlePress = () => {
         if (onPress && page) {

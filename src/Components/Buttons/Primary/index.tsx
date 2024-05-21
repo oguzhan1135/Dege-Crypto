@@ -16,7 +16,9 @@ const styles = StyleSheet.create({
         color: "black",
         fontSize: 16,
         lineHeight: 24,
-        fontWeight: "bold"
+        fontFamily: "Poppins_700Bold",
+        
+
     }
 })
 

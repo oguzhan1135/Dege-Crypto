@@ -4,6 +4,7 @@ import GradiantText from '../../../../../../Components/GradiantText';
 import Feather from '@expo/vector-icons/Feather';
 
 function SecureYourWallet() {
+    const font = "Poppins_500Medium"
     return (
         <View style={styles.container}>
             <View style={styles.title}>
@@ -14,9 +15,9 @@ function SecureYourWallet() {
                 <Feather style={{ position: "absolute", right: 0 }} name="info" size={24} color="white" />
 
             </View>
-            <Text style={{ fontSize: 14, lineHeight: 20, color: "white", paddingBottom: 24 }}>Secure your wallet's
-                <Text style={{ fontSize: 14, lineHeight: 20, color: "#5F97FF" }} > "Seed Phrase"</Text></Text>
-            <Text style={{ fontSize: 14, lineHeight: 24, fontWeight: "bold", color: "white" }}>Manual</Text>
+            <Text style={{ fontSize: 14, fontFamily: font, lineHeight: 20, color: "white", paddingBottom: 24 }}>Secure your wallet's
+                <Text style={{ fontSize: 14, fontFamily: font, lineHeight: 20, color: "#5F97FF" }} > "Seed Phrase"</Text></Text>
+            <Text style={{ fontSize: 14, fontFamily: font, lineHeight: 24, fontWeight: "bold", color: "white" }}>Manual</Text>
             <Text style={styles.paragraphText}>Write down your seed phrase on a piece of paper and store in a safe place.</Text>
             <Text style={styles.paragraphText}>Security level: Very strong</Text>
             <View style={styles.passwordProgressContainer}>
@@ -67,7 +68,9 @@ const styles = StyleSheet.create({
     paragraphText: {
         color: "white",
         fontSize: 14,
-        lineHeight: 24
+        lineHeight: 24,
+        fontFamily: "Poppins_500Medium"
+
 
     }
 });

@@ -64,11 +64,13 @@ const CreatePassword: FC<CreatePasswordProps> = ({ onPasswordChange }) => {
         <View style={styles.formContainer}>
 
             <View style={styles.titleContainer}>
-                <View style={{alignItems:"center"}}>
+                <View style={{ alignItems: "center" }}>
                     <GradiantText text={"Create Passwords"} fontSize={16} lineHeight={24} width={300} row={1} />
                 </View>
 
-                <Text style={{ fontSize: 16, lineHeight: 24, color: "#ABAFC4", textAlign: "center" }}>This password will unlock your Metamask wallet only on this service</Text>
+                <Text style={{
+                    fontSize: 14, lineHeight: 24, color: "#ABAFC4", textAlign: "center", fontFamily: "Poppins_500Medium"
+                }}>This password will unlock your Metamask wallet only on this service</Text>
             </View>
 
             <View style={styles.formPasswordInputContainer}>
@@ -106,7 +108,9 @@ const CreatePassword: FC<CreatePasswordProps> = ({ onPasswordChange }) => {
             </View>
 
             <View style={styles.faceIdContainer}>
-                <Text style={{ fontSize: 16, lineHeight: 24, fontWeight: "bold", color: "white" }}>Sign in with Face ID?</Text>
+                <Text style={{
+                    fontSize: 16, lineHeight: 24, fontWeight: "bold", color: "white", fontFamily: "Poppins_500Medium"
+                }}>Sign in with Face ID?</Text>
                 <Switch
                     trackColor={{ false: '#D3D3D3', true: '#FFD700' }}
                     thumbColor={data.faceId ? '#f4f3f4' : '#f4f3f4'}
@@ -125,7 +129,8 @@ const CreatePassword: FC<CreatePasswordProps> = ({ onPasswordChange }) => {
                     onValueChange={handlePasswordRuleChange}
                     color="#FEBF32"
                 />
-                <Text style={{ fontSize: 14, lineHeight: 20, color: "white" }}>I understand that DeGe cannot recover this password for me.
+                <Text style={{ fontSize: 14, lineHeight: 20, color: "white",            fontFamily: "Poppins_500Medium"
+ }}>I understand that DeGe cannot recover this password for me.
                     <Text style={{ fontSize: 14, lineHeight: 20, color: "#5F97FF" }} > Learn more</Text></Text>
             </View>
         </View>
@@ -162,13 +167,17 @@ const styles = StyleSheet.create({
         lineHeight: 24,
         fontWeight: "bold",
         width: "80%",
-        height: 64
+        height: 64,
+        fontFamily: "Poppins_500Medium"
+
     },
     inputInfo: {
         color: "#888DAA",
         fontSize: 12,
         lineHeight: 16,
-        paddingLeft: 16
+        paddingLeft: 16,
+        fontFamily: "Poppins_500Medium"
+
     },
     faceIdContainer: {
         justifyContent: "space-between",

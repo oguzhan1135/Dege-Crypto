@@ -21,11 +21,13 @@ function WriteYourSeed() {
         setBlurred(!blurred);
     };
 
+    const font= "Poppins_500Medium"
+
     return (
         <View style={styles.container}>
             <View style={styles.title}>
                 <View style={{}}>
-                    <GradiantText text={"Write Down Your Seed Phrase"} fontSize={18} lineHeight={28} width={300} row={1} />
+                    <GradiantText text={"Write Down Your Seed Phrase"} fontSize={18} lineHeight={28} width={350} row={1} />
                 </View>
             </View>
             <Text style={styles.paragraphText}>This is your seed phrase. Write it down on a paper and keep it in a safe place. You'll be asked to re-enter this phrase (in order) on the next step.</Text>
@@ -80,10 +82,10 @@ function WriteYourSeed() {
                         </View>
                     </View>
                 </BlurView>
-                <View style={blurred ? { position: "absolute", top: "50%", left: "50%", transform: [{ translateX: -120 }, { translateY: -60 }] } : { display: "none" }}>
+                <View style={blurred ? { position: "absolute", top: "50%", left: "50%", transform: [{ translateX: -130 }, { translateY: -60 }] } : { display: "none" }}>
                     <View style={{ justifyContent: "center", alignItems: "center", gap: 12 }}>
-                        <Text style={{ fontSize: 14, lineHeight: 24, fontWeight: "bold", color: "white" }}>Tap to reveal your seed phrase</Text>
-                        <Text style={{ fontSize: 12, lineHeight: 18, color: "#ABAFC4", paddingBottom: 28 }}>Make sure no one is watching your screen.</Text>
+                        <Text style={{ fontSize: 14, lineHeight: 24, color: "white",fontFamily:"Poppins_500Medium" }}>Tap to reveal your seed phrase</Text>
+                        <Text style={{ fontSize: 12, lineHeight: 18, color: "#ABAFC4", paddingBottom: 28 ,fontFamily:"Poppins_500Medium"}}>Make sure no one is watching your screen.</Text>
                         <SecondaryButton text='View' icon={<FontAwesome5 name="eye" size={24} color="#FEBF32" />} onPress={() => toggleBlur()} disabled={false} />
                     </View>
                 </View>
@@ -112,7 +114,8 @@ const styles = StyleSheet.create({
         color: "#ABAFC4",
         fontSize: 14,
         lineHeight: 24,
-        paddingBottom: 44
+        paddingBottom: 44,
+        fontFamily:"Poppins_500Medium"
     },
     seedPhrase: {
         borderRadius: 8,
@@ -136,7 +139,8 @@ const styles = StyleSheet.create({
     boxText: {
         fontSize: 14,
         lineHeight: 24,
-        color: "white"
+        color: "white",
+        fontFamily:"Poppins_500Medium"
     },
     boxContainer: {
         flexDirection: "column",

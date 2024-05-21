@@ -29,6 +29,7 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         fontSize: 16,
         lineHeight: 24,
+        fontFamily:"Poppins_500Medium"
     },
     navigationContainer: {
         width: "100%",
@@ -101,7 +102,8 @@ const styles = StyleSheet.create({
         color: "#888DAA",
         fontSize: 12,
         lineHeight: 16,
-        paddingLeft: 16
+        paddingLeft: 16,
+        fontFamily:"Poppins_500Medium"
     },
     faceIdContainer: {
         justifyContent: "space-between",
@@ -198,7 +200,7 @@ const ImportSeed = () => {
 
                     />
                 </View>
-                <Text style={{ color: "#ABABB0", fontSize: 17, lineHeight: 24 }}>Byproceeding, you agree to these Term and Conditions.</Text>
+                <Text style={{ color: "#ABABB0", fontSize: 17, lineHeight: 24,fontFamily:"Poppins_500Medium" }}>Byproceeding, you agree to these Term and Conditions.</Text>
             </View>
             <View style={styles.buttonContainer}>
                 <PrimaryButton page='Walthought' text='Import' />
