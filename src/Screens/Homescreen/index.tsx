@@ -1,20 +1,33 @@
-import React from "react";
-import { View, StyleSheet, Text } from "react-native";
+import React, { useState } from "react";
+import { View, StyleSheet, Text, Pressable, ScrollView } from "react-native";
 import User1 from '../../../assets/images/User-1.svg';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import GradiantText from "../../Components/GradiantText";
 import AntDesign from '@expo/vector-icons/AntDesign';
-import HBomeShape from "../../../assets/images/HomeShape.svg"
-
+import HBomeShape from "../../../assets/images/HomeShape.svg";
+import { Entypo } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import SwapShape from "../../../assets/images/SwapShape.svg"
 const Homescreen = () => {
+    const [activeTab, setActiveTab] = useState("wallet");
+
+    const handleTabPress = (tab: string) => {
+        setActiveTab(tab);
+    };
+
     return (
         <View style={styles.container}>
-            <HBomeShape style={{ position: "absolute", right: 0, top: "1%", transform: [{ scale: 1.5 }] }} />
+            <HBomeShape style={{ position: "absolute", right: 0, top: "18%", transform: [{ scale: 1.5 }] }} />
             <View style={styles.navbar}>
                 <View style={styles.leftSection}>
-                    <View style={styles.iconContainer}>
-                        <User1 style={styles.icon} />
+                    <View style={{paddingVertical:4,paddingRight:8,position:"relative"}}>
+                        <View style={styles.iconContainer}>
+                            <User1 style={styles.icon} />
+                        </View>
+                        <SwapShape style={{position:"absolute",bottom:4,right:0}}/>
                     </View>
+
                 </View>
                 <View style={styles.centerSection}>
                     <View style={styles.networkButton}>
@@ -45,30 +58,162 @@ const Homescreen = () => {
                     <Text style={{ color: "#FEBF32", fontFamily: "Poppins_500Medium", fontSize: 14, lineHeight: 24 }}>Buy</Text>
                 </View>
             </View>
-            <View style={{ flexDirection: "row", alignItems: "center",gap:24 }}>
-                <View style={styles.tabButtonActive}>
-                    <Text style={{color:"white",fontFamily:"Poppins_500Medium"}}>Token</Text>
+            <View style={styles.tabContainer}>
+                <View style={{ flexDirection: "row", alignItems: "center", gap: 24 }}>
+                    <View style={styles.tabButtonActive}>
+                        <Text style={{ color: "white", fontFamily: "Poppins_500Medium" }}>Token</Text>
+                    </View>
+                    <View style={styles.tabButtonDeactive}>
+                        <Text style={{ color: "#888DAA", fontFamily: "Poppins_500Medium" }}>Collectibles</Text>
+                    </View>
                 </View>
-                <View style={styles.tabButtonDeactive}>
-                <Text style={{color:"#888DAA",fontFamily:"Poppins_500Medium"}}>Collectibles</Text>
-                </View>
+                <ScrollView style={{ gap: 8, maxHeight: 250, overflow: "scroll" }}>
+                    <View style={styles.coin}>
+                        <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", gap: 10 }}>
+                            <View style={styles.iconContainer}>
+
+                            </View>
+                            <View style={{ flexDirection: "column", gap: 2, justifyContent: "flex-start" }}>
+                                <Text style={styles.coinTitle}>Binance Coin</Text>
+                                <View style={{ flexDirection: "row", gap: 8, alignItems: "center" }}>
+                                    <Text style={{ fontFamily: "Poppins_500Medium", color: "#ABAFC4" }}>$226.69</Text>
+                                    <Text style={{ fontFamily: "Poppins_500Medium", color: "#76E268" }}>+2%</Text>
+                                </View>
+                            </View>
+                        </View>
+                        <View style={{ justifyContent: "flex-start", alignItems: "flex-start" }}>
+                            <Text style={styles.coinTitle}>19.2371 BNB</Text>
+                        </View>
+                    </View>
+                    <View style={styles.coin}>
+                        <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", gap: 10 }}>
+                            <View style={styles.iconContainer}>
+
+                            </View>
+                            <View style={{ flexDirection: "column", gap: 2, justifyContent: "flex-start" }}>
+                                <Text style={styles.coinTitle}>USD Coin</Text>
+                                <View style={{ flexDirection: "row", gap: 8, alignItems: "center" }}>
+                                    <Text style={{ fontFamily: "Poppins_500Medium", color: "#ABAFC4" }}>$1.00</Text>
+                                    <Text style={{ fontFamily: "Poppins_500Medium", color: "#76E268" }}>+4.3%</Text>
+                                </View>
+                            </View>
+                        </View>
+                        <View style={{ justifyContent: "flex-start", alignItems: "flex-start" }}>
+                            <Text style={styles.coinTitle}>92,3 USDC</Text>
+                        </View>
+                    </View>
+                    <View style={styles.coin}>
+                        <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", gap: 10 }}>
+                            <View style={styles.iconContainer}>
+
+                            </View>
+                            <View style={{ flexDirection: "column", gap: 2, justifyContent: "flex-start" }}>
+                                <Text style={styles.coinTitle}>Synthetix</Text>
+                                <View style={{ flexDirection: "row", gap: 8, alignItems: "center" }}>
+                                    <Text style={{ fontFamily: "Poppins_500Medium", color: "#ABAFC4" }}>42.74 SNX</Text>
+                                    <Text style={{ fontFamily: "Poppins_500Medium", color: "#EA3943" }}>-1.3%</Text>
+                                </View>
+                            </View>
+                        </View>
+                        <View style={{ justifyContent: "flex-start", alignItems: "flex-start" }}>
+                            <Text style={styles.coinTitle}>42.74 SNX</Text>
+                        </View>
+                    </View>
+                </ScrollView>
+                <Pressable style={{ padding: 16 }} onPress={() => console.log("Add Coin")}>
+                    <View style={{ flexDirection: "row", alignItems: "center", gap: 10, justifyContent: "center" }}>
+                        <Entypo name="plus" size={24} color="#FEBF32" />
+                        <Text style={{ color: "#FEBF32", fontFamily: "Poppins_500Medium", fontSize: 16, lineHeight: 24 }}>Add Tokens</Text>
+                    </View>
+                </Pressable>
+            </View>
+            <View style={styles.tabBar}>
+                <Pressable onPress={() => handleTabPress("wallet")} style={{ flex: 1 }}>
+                    <View style={styles.tabBarContentBox}>
+                        <View style={{ alignItems: "center", justifyContent: "center", gap: 1 }}>
+                            <Entypo name="wallet" style={activeTab === "wallet" ? styles.activeTabBarIcon : styles.deActiveTabBarIcon} />
+                            <Text style={activeTab === "wallet" ? styles.activeTabBarText : styles.deActiveTabBarText}>Wallet</Text>
+                        </View>
+                    </View>
+                </Pressable>
+                <Pressable onPress={() => handleTabPress("swap")} style={{ flex: 1 }}>
+                    <View style={styles.tabBarContentBox}>
+                        <View style={{ alignItems: "center", justifyContent: "center", gap: 1 }}>
+                            <MaterialCommunityIcons name="swap-horizontal-circle-outline" style={activeTab === "swap" ? styles.activeTabBarIcon : styles.deActiveTabBarIcon} />
+                            <Text style={activeTab === "swap" ? styles.activeTabBarText : styles.deActiveTabBarText}>Swap</Text>
+                        </View>
+                    </View>
+                </Pressable>
+                <Pressable onPress={() => handleTabPress("setting")} style={{ flex: 1 }}>
+                    <View style={styles.tabBarContentBox}>
+                        <View style={{ alignItems: "center", justifyContent: "center", gap: 1 }}>
+                            <Ionicons name="settings-outline" style={activeTab === "setting" ? styles.activeTabBarIcon : styles.deActiveTabBarIcon} />
+                            <Text style={activeTab === "setting" ? styles.activeTabBarText : styles.deActiveTabBarText}>Settings</Text>
+                        </View>
+                    </View>
+                </Pressable>
             </View>
         </View>
     );
 }
 
 const styles = StyleSheet.create({
+    activeTabBarIcon: {
+        color: "#FEBF32",
+        fontSize: 24
+    },
+    deActiveTabBarIcon: {
+        color: "#ABAFC4",
+        fontSize: 24
+    },
+    activeTabBarText: {
+        fontFamily: "Poppins_700Bold",
+        color: "#FEBF32",
+        fontSize: 12,
+        lineHeight: 18
+    },
+    deActiveTabBarText: {
+        color: "#ABAFC4",
+        fontFamily: "Poppins_700Bold",
+        fontSize: 12,
+        lineHeight: 18
+    },
+    tabBar: {
+        flexDirection: "row",
+        marginTop: 50
+    },
+    tabBarContentBox: {
+        paddingHorizontal: 25,
+        paddingBottom: 25,
+        paddingTop: 10,
+    },
+    coinTitle: {
+        fontSize: 16,
+        lineHeight: 24,
+        fontFamily: "Poppins_700Bold",
+        color: "white"
+    },
+    coin: {
+        padding: 16,
+        backgroundColor: "transparent",
+        flexDirection: "row",
+        justifyContent: "space-between"
+    },
+    tabContainer: {
+        flexDirection: "column",
+        gap: 24,
+        paddingHorizontal: 24,
+
+    },
     tabButtonActive: {
         paddingHorizontal: 16,
         paddingVertical: 8,
         borderBottomColor: "white",
         borderBottomWidth: 1
     },
-    
     tabButtonDeactive: {
         paddingHorizontal: 16,
         paddingVertical: 8,
-       
     },
     button: {
         borderRadius: 8,
@@ -83,17 +228,19 @@ const styles = StyleSheet.create({
     buttonGroup: {
         flexDirection: "row",
         gap: 8,
-        alignItems: "center"
+        alignItems: "center",
+        paddingHorizontal: 24,
     },
     aset: {
         gap: 8,
-        justifyContent: "flex-start"
+        justifyContent: "flex-start",
+        paddingHorizontal: 24,
     },
     navbar: {
         flexDirection: "row",
         alignItems: "center",
-        paddingBottom: 16
-
+        paddingBottom: 16,
+        paddingHorizontal: 24,
     },
     leftSection: {
         flex: 1,
@@ -101,7 +248,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
     },
     centerSection: {
-
         justifyContent: "flex-end",
         alignItems: 'center',
     },
@@ -114,10 +260,7 @@ const styles = StyleSheet.create({
         paddingTop: 60,
         paddingBottom: 40,
         gap: 24,
-        paddingHorizontal: 24,
         position: "relative"
-
-
     },
     iconContainer: {
         backgroundColor: "#222531",
