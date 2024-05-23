@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, StyleSheet, Text, Pressable, ScrollView } from "react-native";
+import { View, StyleSheet, Text, Pressable, ScrollView, Modal } from "react-native";
 import User1 from '../../../assets/images/User-1.svg';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import GradiantText from "../../Components/GradiantText";
@@ -8,7 +8,10 @@ import HBomeShape from "../../../assets/images/HomeShape.svg";
 import { Entypo } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import SwapShape from "../../../assets/images/SwapShape.svg"
+import SwapShape from "../../../assets/images/SwapShape.svg";
+import { BlurView } from "expo-blur";
+import Network from "./Network";
+import Account from "./Account";
 const Homescreen = () => {
     const [activeTab, setActiveTab] = useState("wallet");
 
@@ -16,24 +19,16 @@ const Homescreen = () => {
         setActiveTab(tab);
     };
 
+
     return (
         <View style={styles.container}>
             <HBomeShape style={{ position: "absolute", right: 0, top: "18%", transform: [{ scale: 1.5 }] }} />
             <View style={styles.navbar}>
                 <View style={styles.leftSection}>
-                    <View style={{paddingVertical:4,paddingRight:8,position:"relative"}}>
-                        <View style={styles.iconContainer}>
-                            <User1 style={styles.icon} />
-                        </View>
-                        <SwapShape style={{position:"absolute",bottom:4,right:0}}/>
-                    </View>
-
+                    <Account />
                 </View>
                 <View style={styles.centerSection}>
-                    <View style={styles.networkButton}>
-                        <Text style={styles.networkButtonText}>Etherium Main</Text>
-                        <MaterialIcons name="keyboard-arrow-down" size={16} color="white" />
-                    </View>
+                    <Network />
                 </View>
                 <View style={styles.rightSection}></View>
             </View>
@@ -277,20 +272,7 @@ const styles = StyleSheet.create({
         height: 32,
         transform: [{ scale: 1.5 }],
     },
-    networkButton: {
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "center",
-        paddingVertical: 8,
-        paddingHorizontal: 16,
-        gap: 12,
-    },
-    networkButtonText: {
-        color: "white",
-        fontSize: 12,
-        lineHeight: 16,
-        fontFamily: "Poppins_500Medium"
-    },
+
 });
 
 export default Homescreen;
