@@ -1,5 +1,5 @@
 import React from 'react';
-import { Pressable, View, StyleSheet, Text } from 'react-native';
+import { Pressable, StyleSheet, Text } from 'react-native';
 import { useAppNavigation } from '../../../Router/useAppNavigation';
 import { OnboardingStackParamList } from '../../../Router/navigation';
 
@@ -17,46 +17,43 @@ const styles = StyleSheet.create({
         fontSize: 16,
         lineHeight: 24,
         fontFamily: "Poppins_700Bold",
-        
-
     }
-})
+});
 
-interface ButtonProp {
-    page?: keyof OnboardingStackParamList;
+type ButtonProp<K extends keyof OnboardingStackParamList> = {
+    page?: K;
     text: string;
     onPress?: () => void;
+    param?: OnboardingStackParamList[K] extends { params: infer P } ? P : undefined;
     disabled?: boolean;
-}
+};
 
-const PrimaryButton: React.FC<ButtonProp> = ({ page, text, onPress,disabled=false }) => {
+const PrimaryButton = <K extends keyof OnboardingStackParamList>({ page, param, text, onPress, disabled = false }: ButtonProp<K>) => {
     const navigation = useAppNavigation();
 
     const handlePress = () => {
-        if (onPress && page) {
+        if (onPress) {
             onPress();
-            navigation.navigate("Onboarding", { screen: page });
-        } else if (onPress) {
-            onPress();
-        } else if (page) {
-            navigation.navigate("Onboarding", { screen: page });
+        }
+        if (page) {
+            navigation.navigate("Onboarding", { screen: page, params: {param} });
         }
     };
 
     return (
-            <Pressable
-                onPress={handlePress}
-                style={({ pressed }) => [
-                    styles.defaultButtonStyle,
-                    {
-                        backgroundColor: pressed ? '#FEE083' : '#FEBF32',
-                    }
-                ]}
-                disabled={disabled}
-            >
-                <Text style={styles.buttonText}>{text}</Text>
-            </Pressable>
+        <Pressable
+            onPress={handlePress}
+            style={({ pressed }) => [
+                styles.defaultButtonStyle,
+                {
+                    backgroundColor: pressed ? '#FEE083' : '#FEBF32',
+                }
+            ]}
+            disabled={disabled}
+        >
+            <Text style={styles.buttonText}>{text}</Text>
+        </Pressable>
     );
-}
+};
 
 export default PrimaryButton;

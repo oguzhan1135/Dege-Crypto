@@ -12,13 +12,43 @@ import SwapShape from "../../../assets/images/SwapShape.svg";
 import { BlurView } from "expo-blur";
 import Network from "./Network";
 import Account from "./Account";
+import { useAppNavigation } from "../../Router/useAppNavigation";
 const Homescreen = () => {
     const [activeTab, setActiveTab] = useState("wallet");
-
+    const navigation = useAppNavigation()
     const handleTabPress = (tab: string) => {
         setActiveTab(tab);
     };
 
+    const [coins, setCoins] = useState([
+        {
+            id: 1,
+            coinName: "Binance Coin",
+            currency: "BNB",
+            balance: 19.2371,
+            rate: 226.69,
+            onTheRise: true,
+            percent: 2
+        },
+        {
+            id: 2,
+            coinName: "USD Coin",
+            currency: "USDC",
+            balance: 92.3,
+            rate: 1.00,
+            onTheRise: true,
+            percent: 4.3
+        },
+        {
+            id: 1,
+            coinName: "Synthetix",
+            currency: "SNX",
+            balance: 42.74,
+            rate: 42.74,
+            onTheRise: false,
+            percent: 1.3
+        }
+    ])
 
     return (
         <View style={styles.container}>
@@ -62,58 +92,40 @@ const Homescreen = () => {
                         <Text style={{ color: "#888DAA", fontFamily: "Poppins_500Medium" }}>Collectibles</Text>
                     </View>
                 </View>
-                <ScrollView style={{ gap: 8, maxHeight: 250, overflow: "scroll" }}>
-                    <View style={styles.coin}>
-                        <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", gap: 10 }}>
-                            <View style={styles.iconContainer}>
+                <ScrollView style={{ maxHeight: 350, overflow: "scroll" }}>
+                    <View style={{ gap: 8 }}>
 
-                            </View>
-                            <View style={{ flexDirection: "column", gap: 2, justifyContent: "flex-start" }}>
-                                <Text style={styles.coinTitle}>Binance Coin</Text>
-                                <View style={{ flexDirection: "row", gap: 8, alignItems: "center" }}>
-                                    <Text style={{ fontFamily: "Poppins_500Medium", color: "#ABAFC4" }}>$226.69</Text>
-                                    <Text style={{ fontFamily: "Poppins_500Medium", color: "#76E268" }}>+2%</Text>
-                                </View>
-                            </View>
-                        </View>
-                        <View style={{ justifyContent: "flex-start", alignItems: "flex-start" }}>
-                            <Text style={styles.coinTitle}>19.2371 BNB</Text>
-                        </View>
-                    </View>
-                    <View style={styles.coin}>
-                        <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", gap: 10 }}>
-                            <View style={styles.iconContainer}>
+                        {
+                            coins.map((coin) =>
+                                <Pressable onPress={() => {
+                                    navigation.navigate("Onboarding", { screen: "TokenDetail", params: { currency: coin.currency, balance: coin.balance } });
+                                }} style={styles.coin}>
+                                    <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", gap: 10 }}>
+                                        <View style={styles.iconContainer}>
 
-                            </View>
-                            <View style={{ flexDirection: "column", gap: 2, justifyContent: "flex-start" }}>
-                                <Text style={styles.coinTitle}>USD Coin</Text>
-                                <View style={{ flexDirection: "row", gap: 8, alignItems: "center" }}>
-                                    <Text style={{ fontFamily: "Poppins_500Medium", color: "#ABAFC4" }}>$1.00</Text>
-                                    <Text style={{ fontFamily: "Poppins_500Medium", color: "#76E268" }}>+4.3%</Text>
-                                </View>
-                            </View>
-                        </View>
-                        <View style={{ justifyContent: "flex-start", alignItems: "flex-start" }}>
-                            <Text style={styles.coinTitle}>92,3 USDC</Text>
-                        </View>
-                    </View>
-                    <View style={styles.coin}>
-                        <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", gap: 10 }}>
-                            <View style={styles.iconContainer}>
+                                        </View>
+                                        <View style={{ flexDirection: "column", gap: 2, justifyContent: "flex-start" }}>
+                                            <Text style={styles.coinTitle}>{coin.coinName}</Text>
+                                            <View style={{ flexDirection: "row", gap: 8, alignItems: "center" }}>
+                                                <Text style={{ fontFamily: "Poppins_500Medium", color: "#ABAFC4" }}>${coin.currency}</Text>
+                                                {
+                                                    coin.onTheRise ?
+                                                        <Text style={{ fontFamily: "Poppins_500Medium", color: '#76E268' }}>+ {coin.percent}%</Text> :
+                                                        <Text style={{ fontFamily: "Poppins_500Medium", color: '#EA3943' }}>- {coin.percent}%</Text>
+                                                }
+                                            </View>
+                                        </View>
+                                    </View>
+                                    <View style={{ justifyContent: "flex-start", alignItems: "flex-start" }}>
+                                        <Text style={styles.coinTitle}>{coin.balance} {coin.currency}</Text>
+                                    </View>
+                                </Pressable>
+                            )
+                        }
 
-                            </View>
-                            <View style={{ flexDirection: "column", gap: 2, justifyContent: "flex-start" }}>
-                                <Text style={styles.coinTitle}>Synthetix</Text>
-                                <View style={{ flexDirection: "row", gap: 8, alignItems: "center" }}>
-                                    <Text style={{ fontFamily: "Poppins_500Medium", color: "#ABAFC4" }}>42.74 SNX</Text>
-                                    <Text style={{ fontFamily: "Poppins_500Medium", color: "#EA3943" }}>-1.3%</Text>
-                                </View>
-                            </View>
-                        </View>
-                        <View style={{ justifyContent: "flex-start", alignItems: "flex-start" }}>
-                            <Text style={styles.coinTitle}>42.74 SNX</Text>
-                        </View>
+
                     </View>
+
                 </ScrollView>
                 <Pressable style={{ padding: 16 }} onPress={() => console.log("Add Coin")}>
                     <View style={{ flexDirection: "row", alignItems: "center", gap: 10, justifyContent: "center" }}>
@@ -121,7 +133,7 @@ const Homescreen = () => {
                         <Text style={{ color: "#FEBF32", fontFamily: "Poppins_500Medium", fontSize: 16, lineHeight: 24 }}>Add Tokens</Text>
                     </View>
                 </Pressable>
-            </View>
+            </View >
             <View style={styles.tabBar}>
                 <Pressable onPress={() => handleTabPress("wallet")} style={{ flex: 1 }}>
                     <View style={styles.tabBarContentBox}>
@@ -148,7 +160,7 @@ const Homescreen = () => {
                     </View>
                 </Pressable>
             </View>
-        </View>
+        </View >
     );
 }
 
@@ -190,7 +202,6 @@ const styles = StyleSheet.create({
     },
     coin: {
         padding: 16,
-        backgroundColor: "transparent",
         flexDirection: "row",
         justifyContent: "space-between"
     },

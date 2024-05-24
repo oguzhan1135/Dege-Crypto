@@ -75,18 +75,14 @@ const Network = () => {
                                 <Text style={{ color: "#ABAFC4", fontFamily: "Poppins_700Bold", fontSize: 16 }}>Other Network</Text>
 
                                 {otherNetworks.map((otherNetworks) =>
-                                    <>
-                                        <Pressable onPress={()=> handleChangeNetwork(otherNetworks.id,otherNetworks.networkName,otherNetworks.color)} style={styles.network}>
+                                    
+                                        <Pressable key={otherNetworks.id} onPress={()=> handleChangeNetwork(otherNetworks.id,otherNetworks.networkName,otherNetworks.color)} style={styles.network}>
                                             <View key={otherNetworks.id} style={{ gap: 18, alignItems: "center", flexDirection: "row" }}>
                                                 <View style={{ height: 12, width: 12, borderRadius: 100, backgroundColor: `${otherNetworks.color}` }} />
                                                 <Text style={{ color: "white", fontFamily: "Poppins_500Medium" }}>{otherNetworks.networkName}</Text>
                                             </View>
                                         </Pressable>
-                                    </>
-
                                 )}
-
-
 
                             </View>
                             <View style={{ alignItems: "center", justifyContent: "center" }}>

@@ -1,6 +1,5 @@
-import { NavigationProp, useNavigation } from "@react-navigation/native";
-import { RootStackParamList } from "./navigation";
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from './navigation';
 
-export const useAppNavigation = () => {
-    return useNavigation<NavigationProp<RootStackParamList>>();
-}
+export const useAppNavigation = () => useNavigation<NativeStackNavigationProp<RootStackParamList>>();
