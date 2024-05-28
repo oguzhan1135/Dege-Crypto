@@ -98,7 +98,7 @@ const Homescreen = () => {
                         {
                             coins.map((coin) =>
                                 <Pressable onPress={() => {
-                                    navigation.navigate("Onboarding", { screen: "TokenDetail", params: { currency: coin.currency, balance: coin.balance } });
+                                    navigation.navigate("TokenDetail", { currency: coin.currency, balance: coin.balance, rate: coin.rate });
                                 }} style={styles.coin}>
                                     <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", gap: 10 }}>
                                         <View style={styles.iconContainer}>
@@ -186,8 +186,9 @@ const styles = StyleSheet.create({
         lineHeight: 18
     },
     tabBar: {
+        position: "absolute",
         flexDirection: "row",
-        marginTop: 50
+        bottom: 0
     },
     tabBarContentBox: {
         paddingHorizontal: 25,

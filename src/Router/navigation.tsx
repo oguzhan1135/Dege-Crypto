@@ -1,5 +1,5 @@
-import { NavigatorScreenParams } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import React from 'react';
 import SlashPage from "../Screens/SlashPage";
 import Walthought from "../Screens/Walthought";
 import WalletSetUp from "../Screens/WalletSetUp";
@@ -7,23 +7,7 @@ import ImportSeed from "../Screens/ImportSeed";
 import CreateNewWallet from "../Screens/CreateNewWallet";
 import Homescreen from "../Screens/Homescreen";
 import TokenDetail from "../Components/TokenDetail";
-export type RootStackParamList = {
-    Onboarding: NavigatorScreenParams<OnboardingStackParamList>;
-}
-export default interface TokenDetailProps {
-    balance: number;
-    currency: string;
-}
-
-export type OnboardingStackParamList = {
-    SlashPage: undefined;
-    Walthought: undefined;
-    WalletSetUp: undefined;
-    ImportSeed: undefined;
-    CreateNewWallet: undefined;
-    Homescreen: undefined;
-    TokenDetail: TokenDetailProps;
-}
+import { RootStackParamList, OnboardingStackParamList } from './types';
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 const OnboardingStack = createNativeStackNavigator<OnboardingStackParamList>();
@@ -40,10 +24,10 @@ const OnboardingNavigator = () => {
             <OnboardingStack.Screen name="CreateNewWallet" component={CreateNewWallet} />
             <OnboardingStack.Screen name="Homescreen" component={Homescreen} />
             <OnboardingStack.Screen name="TokenDetail" component={TokenDetail} />
-
         </OnboardingStack.Navigator>
     )
 }
+
 export const RootNavigator = () => {
     return (
         <RootStack.Navigator screenOptions={{
@@ -53,3 +37,5 @@ export const RootNavigator = () => {
         </RootStack.Navigator>
     )
 }
+export { OnboardingStackParamList };
+

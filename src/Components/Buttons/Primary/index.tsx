@@ -1,7 +1,8 @@
 import React from 'react';
-import { Pressable, StyleSheet, Text } from 'react-native';
+import { Pressable, View, StyleSheet, Text } from 'react-native';
 import { useAppNavigation } from '../../../Router/useAppNavigation';
 import { OnboardingStackParamList } from '../../../Router/navigation';
+import { CommonParams } from '../../../Router/types';
 
 const styles = StyleSheet.create({
     defaultButtonStyle: {
@@ -18,25 +19,37 @@ const styles = StyleSheet.create({
         lineHeight: 24,
         fontFamily: "Poppins_700Bold",
     }
-});
+})
 
-type ButtonProp<K extends keyof OnboardingStackParamList> = {
-    page?: K;
+
+interface ButtonProp {
+    page?: keyof OnboardingStackParamList;
     text: string;
     onPress?: () => void;
-    param?: OnboardingStackParamList[K] extends { params: infer P } ? P : undefined;
     disabled?: boolean;
-};
+    params?: CommonParams;
+}
 
-const PrimaryButton = <K extends keyof OnboardingStackParamList>({ page, param, text, onPress, disabled = false }: ButtonProp<K>) => {
+
+const PrimaryButton: React.FC<ButtonProp> = ({ page, text, onPress, disabled = false, params }) => {
     const navigation = useAppNavigation();
 
     const handlePress = () => {
-        if (onPress) {
+        if (onPress && page) {
             onPress();
-        }
-        if (page) {
-            navigation.navigate("Onboarding", { screen: page, params: {param} });
+            if (params) {
+                navigation.navigate("Onboarding", { screen: page, params });
+            } else {
+                navigation.navigate("Onboarding", { screen: page });
+            }
+        } else if (onPress) {
+            onPress();
+        } else if (page) {
+            if (params) {
+                navigation.navigate("Onboarding", { screen: page, params });
+            } else {
+                navigation.navigate("Onboarding", { screen: page });
+            }
         }
     };
 
@@ -54,6 +67,6 @@ const PrimaryButton = <K extends keyof OnboardingStackParamList>({ page, param, 
             <Text style={styles.buttonText}>{text}</Text>
         </Pressable>
     );
-};
+}
 
 export default PrimaryButton;
