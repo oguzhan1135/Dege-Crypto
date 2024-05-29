@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { View, StyleSheet, Text, Pressable, ScrollView, Modal } from "react-native";
 import User1 from '../../../assets/images/User-1.svg';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
@@ -13,6 +13,7 @@ import { BlurView } from "expo-blur";
 import Network from "./Network";
 import Account from "./Account";
 import { useAppNavigation } from "../../Router/useAppNavigation";
+import { MainContext } from "../../Context";
 const Homescreen = () => {
     const [activeTab, setActiveTab] = useState("wallet");
     const navigation = useAppNavigation()
@@ -20,35 +21,7 @@ const Homescreen = () => {
         setActiveTab(tab);
     };
 
-    const [coins, setCoins] = useState([
-        {
-            id: 1,
-            coinName: "Binance Coin",
-            currency: "BNB",
-            balance: 19.2371,
-            rate: 226.69,
-            onTheRise: true,
-            percent: 2
-        },
-        {
-            id: 2,
-            coinName: "USD Coin",
-            currency: "USDC",
-            balance: 92.3,
-            rate: 1.00,
-            onTheRise: true,
-            percent: 4.3
-        },
-        {
-            id: 1,
-            coinName: "Synthetix",
-            currency: "SNX",
-            balance: 42.74,
-            rate: 42.74,
-            onTheRise: false,
-            percent: 1.3
-        }
-    ])
+    const { coinList } = useContext(MainContext)
 
     return (
         <View style={styles.container}>
@@ -96,7 +69,7 @@ const Homescreen = () => {
                     <View style={{ gap: 8 }}>
 
                         {
-                            coins.map((coin) =>
+                            coinList.map((coin) =>
                                 <Pressable onPress={() => {
                                     navigation.navigate("TokenDetail", { currency: coin.currency, balance: coin.balance, rate: coin.rate });
                                 }} style={styles.coin}>

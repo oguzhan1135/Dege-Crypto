@@ -4,6 +4,7 @@ import AppLoading from 'expo-app-loading';
 import * as Font from 'expo-font';
 import { Poppins_500Medium, Poppins_700Bold } from '@expo-google-fonts/poppins';
 import { RootNavigator } from './src/Router/navigation';
+import { MainProvider } from './src/Context';
 
 export default function App() {
   const [fontsLoaded, setFontsLoaded] = useState(false);
@@ -16,7 +17,6 @@ export default function App() {
       });
       setFontsLoaded(true);
     }
-
     loadFonts();
   }, []);
 
@@ -25,8 +25,11 @@ export default function App() {
   }
 
   return (
-    <NavigationContainer>
-      <RootNavigator />
-    </NavigationContainer>
+    <MainProvider>
+      <NavigationContainer>
+        <RootNavigator />
+      </NavigationContainer>
+    </MainProvider>
+
   );
 }
