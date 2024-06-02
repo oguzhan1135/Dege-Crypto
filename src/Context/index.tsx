@@ -1,7 +1,8 @@
 import React, { useState, createContext, ReactNode } from 'react';
-import { AppContextInterface, ContextProps, CoinListItem } from '../Router/types';
-
-
+import { AppContextInterface, ContextProps, CoinListItem, Accounts } from '../Router/types';
+import User1 from "../../assets/images/User-1.svg";
+import User2 from "../../assets/images/User-2.svg";
+import User3 from "../../assets/images/User-3.svg";
 
 
 export const MainContext = createContext<AppContextInterface>({} as AppContextInterface);
@@ -18,7 +19,7 @@ export const MainProvider = ({ children }: ContextProps) => {
             percent: 2,
             transaction: [
                 {
-                    type: "Recived",
+                    type: "Received",
                     amount: 0.04,
                     date: "Mar 3 at 10:04am"
                 },
@@ -28,12 +29,12 @@ export const MainProvider = ({ children }: ContextProps) => {
                     date: "Mar 4 at 11:04am"
                 },
                 {
-                    type: "Recived",
+                    type: "Received",
                     amount: 1.876,
                     date: "Mar 3 at 10:04am"
                 },
                 {
-                    type: "Recived",
+                    type: "Received",
                     amount: 0.04,
                     date: "Mar 3 at 10:04am"
                 },
@@ -49,7 +50,7 @@ export const MainProvider = ({ children }: ContextProps) => {
             percent: 4.3,
             transaction: [
                 {
-                    type: "Recived",
+                    type: "Received",
                     amount: 0.04,
                     date: "Mar 3 at 10:04am"
                 },
@@ -59,12 +60,12 @@ export const MainProvider = ({ children }: ContextProps) => {
                     date: "Mar 4 at 11:04am"
                 },
                 {
-                    type: "Recived",
+                    type: "Received",
                     amount: 1.876,
                     date: "Mar 3 at 10:04am"
                 },
                 {
-                    type: "Recived",
+                    type: "Received",
                     amount: 0.04,
                     date: "Mar 3 at 10:04am"
                 },
@@ -80,7 +81,7 @@ export const MainProvider = ({ children }: ContextProps) => {
             percent: 1.3,
             transaction: [
                 {
-                    type: "Recived",
+                    type: "Received",
                     amount: 0.04,
                     date: "Mar 3 at 10:04am"
                 },
@@ -90,12 +91,12 @@ export const MainProvider = ({ children }: ContextProps) => {
                     date: "Mar 4 at 11:04am"
                 },
                 {
-                    type: "Recived",
+                    type: "Received",
                     amount: 1.876,
                     date: "Mar 3 at 10:04am"
                 },
                 {
-                    type: "Recived",
+                    type: "Received",
                     amount: 0.04,
                     date: "Mar 3 at 10:04am"
                 },
@@ -103,9 +104,42 @@ export const MainProvider = ({ children }: ContextProps) => {
         }
     ]);
 
+    const [accounts, setAccounts] = useState<Accounts[]>([
+        {
+            id: 1,
+            name: "Account 1",
+            avatar: <User1 style={{
+                width: 32,
+                height: 32,
+                transform: [{ scale: 1.5 }]
+            }} />,
+            balance: 9.2362
+        },
+        {
+            id: 2,
+            name: "Account 2",
+            avatar: <User2 style={{
+                width: 32,
+                height: 32,
+                transform: [{ scale: 1.5 }]
+            }} />,
+            balance: 2.43
+        },
+        {
+            id: 3,
+            name: "Account 3",
+            avatar: <User3 style={{
+                width: 32,
+                height: 32,
+                transform: [{ scale: 1.5 }]
+            }} />,
+            balance: 1.27
+        }
+    ]);
+
 
     const data: AppContextInterface = {
-        coinList, setCoinList
+        coinList, setCoinList, accounts, setAccounts
     }
 
     return (

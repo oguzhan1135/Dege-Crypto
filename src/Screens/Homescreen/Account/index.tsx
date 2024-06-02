@@ -1,38 +1,18 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { View, Text, StyleSheet, Pressable, Modal, TextInput } from "react-native";
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { BlurView } from "expo-blur";
-import User1 from "../../../../assets/images/User-1.svg";
-import User2 from "../../../../assets/images/User-2.svg";
-import User3 from "../../../../assets/images/User-3.svg";
+import User1 from '../../../../assets/images/User-1.svg'
 import { AntDesign } from '@expo/vector-icons';
 import SwapShape from "../../../../assets/images/SwapShape.svg";
 import NewAccountuser from "../../../../assets/images/NewAccountAvatar.svg";
 import PrimaryButton from "../../../Components/Buttons/Primary";
+import { MainContext } from "../../../Context";
 
 const Account = () => {
     const font = "Poppins_500Medium";
+    const { accounts, setAccounts } = useContext(MainContext);
 
-    let [accounts, setAccounts] = useState([
-        {
-            id: 1,
-            name: "Account 1",
-            avatar: <User1 style={styles.icon} />,
-            balance: 9.2362
-        },
-        {
-            id: 2,
-            name: "Account 2",
-            avatar: <User2 style={styles.icon} />,
-            balance: 2.43
-        },
-        {
-            id: 3,
-            name: "Account 3",
-            avatar: <User3 style={styles.icon} />,
-            balance: 1.27
-        }
-    ]);
 
     const [modalVisible, setModalVisible] = useState(false);
     let [user, setUser] = useState({
@@ -198,7 +178,7 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
-        paddingTop:60
+        paddingTop: 60
     },
     account: {
         padding: 16,

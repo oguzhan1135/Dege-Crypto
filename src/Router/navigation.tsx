@@ -37,5 +37,5 @@ export const RootNavigator = () => {
         </RootStack.Navigator>
     )
 }
-export { OnboardingStackParamList };
+export { OnboardingStackParamList, RootStackParamList };
 

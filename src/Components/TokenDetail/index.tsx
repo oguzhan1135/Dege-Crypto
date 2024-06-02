@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, Text, Pressable, StyleSheet, Modal } from 'react-native';
+import { View, Text, Pressable, StyleSheet, Modal, TextInput } from 'react-native';
 import { RouteProp } from '@react-navigation/native';
 import { CoinListItem, OnboardingStackParamList, Transaction } from '../../Router/types';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -11,6 +11,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons'; import HomeShape from '../../../assets/images/HomeShape.svg'
 import { BlurView } from 'expo-blur';
 import { MainContext } from '../../Context';
+import User1 from '../../../assets/images/User-1.svg'
 
 type TokenDetailProps = NativeStackScreenProps<OnboardingStackParamList, 'TokenDetail'>;
 
@@ -21,10 +22,13 @@ const TokenDetail: React.FC<TokenDetailProps> = ({ route }) => {
     const [modalVisible, setModalVisible] = useState(false)
     const navigation = useAppNavigation()
     const [selectedTransaction, setSelectedTransaction] = useState<Transaction>()
+    const [sentModalVisible, setSentModalVisible] = useState(false);
+    const [receivedModalVisible, setReceivedModalVisible] = useState(false);
+
     const handleTabPress = (tab: string) => {
         setActiveTab(tab);
     };
-    const { coinList } = useContext(MainContext);
+    const { coinList, accounts } = useContext(MainContext);
     useEffect(() => {
         setCoin(coinList.find((coin) => coin.currency === currency))
 
@@ -37,9 +41,7 @@ const TokenDetail: React.FC<TokenDetailProps> = ({ route }) => {
             <View style={styles.navbar}>
                 <Pressable
                     onPress={() => {
-                        navigation.navigate("Onboarding", {
-                            screen: 'Homescreen',
-                        })
+                        navigation.navigate("Onboarding", { screen: "Homescreen", })
                     }}
                     style={({ pressed }) => [
                         styles.navigationArrow,
@@ -65,16 +67,70 @@ const TokenDetail: React.FC<TokenDetailProps> = ({ route }) => {
                 </View>
             </View>
             <View style={styles.buttonGroup}>
-                <View style={styles.button}>
+                <Pressable onPress={() => setSentModalVisible(true)} style={styles.button}>
                     <AntDesign name="arrowup" size={24} color="#FEBF32" />
                     <Text style={{ color: "#FEBF32", fontFamily: "Poppins_500Medium", fontSize: 14, lineHeight: 24 }}>Sent</Text>
-                </View>
+                </Pressable>
                 <View style={styles.button}>
                     <AntDesign name="arrowdown" size={24} color="#FEBF32" />
                     <Text style={{ color: "#FEBF32", fontFamily: "Poppins_500Medium", fontSize: 14, lineHeight: 24 }}>Receive</Text>
                 </View>
 
             </View>
+            <Modal
+                style={styles.blur}
+                visible={sentModalVisible}
+                animationType="slide"
+                transparent={true}
+            >
+                <BlurView intensity={80} style={{ flex: 1 }}>
+                    <View style={styles.centeredView}>
+                        <View style={{ backgroundColor: "#ABAFC4", height: 4, width: 40, borderRadius: 100, marginBottom: 5 }} />
+                        <View style={[styles.modalView, { position: "relative" }]}>
+                            <View style={{ paddingBottom: 32 }}>
+                                <Text style={styles.modalText}>Sent To</Text>
+                                <Pressable onPress={() => setSentModalVisible(false)} style={{ position: "absolute", top: "25%", right: 0 }}>
+                                    <AntDesign name="close" size={18} color="white" />
+                                </Pressable>
+                            </View>
+                            <View style={{ gap: 8 }}>
+                                <View style={{}}>
+                                    <Text style={{ fontSize: 16, lineHeight: 24, color: "white", fontFamily: "Poppins_500Medium" }}>From</Text>
+                                    <View style={{ padding: 16, flexDirection: "row", justifyContent: "space-between",alignItems:"center" }}>
+                                        <View style={{ gap: 8, flexDirection: "row", alignItems: "center" }}>
+                                            <View style={{ paddingVertical: 4, paddingRight: 8, position: "relative" }}>
+                                                <View style={styles.iconContainer}>
+                                                    <User1 style={{ width: 32, height: 32 }} />
+                                                </View>
+                                            </View>
+                                            <View style={{ justifyContent: "space-between", flexDirection: "row", alignItems: "center" }}>
+                                                <View style={{ gap: 1 }}>
+                                                    <Text style={{ fontSize: 16, lineHeight: 24, fontFamily: "Poppins_500Medium", color: "white" }}>
+                                                        Account 1
+                                                    </Text>
+                                                    <Text style={{ fontSize: 12, lineHeight: 18, fontFamily: "Poppins_500Medium", color: "#ABAFC4" }}>
+                                                        121321 ETH
+                                                    </Text>
+                                                </View>
+                                                
+                                            </View>
+
+                                        </View>
+                                        <AntDesign name="right" size={18} color="white" />
+                                    </View>
+                                </View>
+                                <View style={{gap:8}}>
+                                    <Text style={{ fontSize: 16, lineHeight: 24, color: "white", fontFamily: "Poppins_500Medium" }}>To</Text>
+                                    <TextInput style={{borderWidth:2,borderColor:"#242424", borderRadius:6,padding:5}} placeholder='Search, public address (0x), or ENS'/>
+                                </View>
+                            </View>
+
+
+
+                        </View>
+                    </View>
+                </BlurView>
+            </Modal>
             <View style={{ paddingHorizontal: 24, gap: 8 }}>
 
                 {
@@ -92,7 +148,7 @@ const TokenDetail: React.FC<TokenDetailProps> = ({ route }) => {
                                         <Text style={{ fontFamily: "Poppins_700Bold", fontSize: 16, lineHeight: 24, color: "white" }}>{transaction.type} {currency}</Text>
 
                                         {
-                                            transaction.type === "Recived" ?
+                                            transaction.type === "Received" ?
                                                 <Text style={{ fontFamily: "Poppins_700Bold", fontSize: 14, lineHeight: 24, color: "#76E268" }}>Confirmed</Text> :
                                                 <Text style={{ fontFamily: "Poppins_700Bold", fontSize: 14, lineHeight: 24, color: "#EA3943" }}>Cancelled</Text>
                                         }
@@ -146,13 +202,39 @@ const TokenDetail: React.FC<TokenDetailProps> = ({ route }) => {
                                         <Text style={{ fontFamily: "Poppins_500Medium", fontSize: 14, lineHeight: 24, color: "white" }}>#0</Text>
                                     </View>
                                 </View>
-                                <View style={{ padding: 16, gap: 8, borderRadius: 8, borderWidth: 1, borderColor: "#ABAFC4" }}>
-                                    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                                <View style={{ paddingVertical: 16, gap: 8, borderRadius: 8, borderWidth: 1, borderColor: "#242424" }}>
+                                    {
+                                        selectedTransaction?.type === "Sent" &&
+                                        <View style={{ gap: 16 }}>
+                                            <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 16 }}>
+                                                <Text style={{ fontSize: 16, lineHeight: 24, fontFamily: "Poppins_500Medium", color: "white" }}>Total Amount</Text>
+                                                <Text style={{ fontSize: 16, lineHeight: 24, fontFamily: "Poppins_500Medium", color: "white" }}>{selectedTransaction.amount} {currency}</Text>
+                                            </View>
+                                            <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", borderBottomWidth: 2, paddingHorizontal: 16, paddingBottom: 16, borderBottomColor: "#242424" }}>
+                                                <Text style={{ fontSize: 16, lineHeight: 24, fontFamily: "Poppins_500Medium", color: "white" }}>Network fee</Text>
+                                                <Text style={{ fontSize: 16, lineHeight: 24, fontFamily: "Poppins_500Medium", color: "white" }}>0.21 {currency}</Text>
+                                            </View>
+                                        </View>
+                                    }
+                                    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 16, paddingTop: 8 }}>
                                         <Text style={{ fontSize: 16, lineHeight: 24, fontFamily: "Poppins_500Medium", color: "white" }}>Total Amount</Text>
-                                        <Text style={{ fontSize: 16, lineHeight: 24, fontFamily: "Poppins_500Medium", color: "white" }}>{selectedTransaction?.amount} {currency}</Text>
+                                        {selectedTransaction &&
+                                            <Text style={{ fontSize: 16, lineHeight: 24, fontFamily: "Poppins_500Medium", color: "white" }}>
+                                                {selectedTransaction.type === "Sent"
+                                                    ? `${(selectedTransaction.amount + 0.21).toFixed(5)} ${currency}`
+                                                    : `${selectedTransaction.amount.toFixed(5)} ${currency}`}
+                                            </Text>
+                                        }
                                     </View>
-                                    <Text style={{ marginLeft: "auto", color: "#ABAFC4", fontSize: 12, lineHeight: 18, fontFamily: "Poppins_500Medium" }}>${((selectedTransaction?.amount) * rate).toFixed(5)}</Text>
+                                    {selectedTransaction &&
+                                        <Text style={{ marginLeft: "auto", color: "#ABAFC4", fontSize: 12, lineHeight: 18, fontFamily: "Poppins_500Medium", paddingHorizontal: 16 }}>
+                                            ${selectedTransaction.type === "Sent"
+                                                ? ((selectedTransaction.amount + 0.21) * rate).toFixed(5)
+                                                : (selectedTransaction.amount * rate).toFixed(5)}
+                                        </Text>
+                                    }
                                 </View>
+
                                 <Pressable onPress={() => setModalVisible(false)} style={{ alignItems: "center" }}>
                                     <Text style={{ paddingTop: 30, fontFamily: "Poppins_500Medium", color: "#FEBF32", fontSize: 16, lineHeight: 24 }}>View on Mainnet</Text>
                                 </Pressable>
@@ -194,11 +276,23 @@ const TokenDetail: React.FC<TokenDetailProps> = ({ route }) => {
     );
 }
 const styles = StyleSheet.create({
+    iconContainer: {
+        backgroundColor: "#222531",
+        overflow: "hidden",
+        width: 40,
+        height: 40,
+        borderRadius: 50,
+        justifyContent: "center",
+        alignItems: "center",
+
+    },
     modalView: {
         width: "100%",
         backgroundColor: "#17171A",
         paddingBottom: 40,
-        paddingHorizontal: 24
+        paddingHorizontal: 24,
+
+
     },
     modalText: {
         fontSize: 16,

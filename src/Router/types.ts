@@ -1,8 +1,10 @@
 import { ReactNode } from "react";
+import { SvgProps } from "react-native-svg";
 
 export type RootStackParamList = {
-    Onboarding: undefined;
-}
+    Onboarding: { screen: keyof OnboardingStackParamList } | undefined;
+};
+
 export type OnboardingStackParamList = {
     SlashPage: undefined;
     Walthought: undefined;
@@ -11,25 +13,30 @@ export type OnboardingStackParamList = {
     CreateNewWallet: undefined;
     Homescreen: undefined;
     TokenDetail: TokenDetailParams;
-}
+};
+
 export interface CommonParams {
 }
+
 export interface TokenDetailParams extends CommonParams {
     balance: number;
     currency: string;
     rate: number;
 }
+
 export type ContextProps = {
     children: ReactNode;
 }
 
 export type AppContextInterface = {
-    coinList: CoinListItem[]; setCoinList: (tokenList: CoinListItem[]) => void;
-
+    coinList: CoinListItem[];
+    setCoinList: (tokenList: CoinListItem[]) => void;
+    accounts: Accounts[];
+    setAccounts: (accounts: Accounts[]) => void;
 }
 
 export type Transaction = {
-    type: "Recived" | "Sent",
+    type: "Received" | "Sent";
     date: string;
     amount: number;
 }
@@ -43,5 +50,13 @@ export type CoinListItem = {
     onTheRise: boolean;
     percent: number;
     transaction: Transaction[];
-
 }
+
+export interface Accounts {
+    id: number;
+    name: string;
+    avatar:  React.JSX.Element;
+    balance: number;
+}
+
+
