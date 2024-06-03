@@ -1,5 +1,5 @@
 import React, { useState, createContext, ReactNode } from 'react';
-import { AppContextInterface, ContextProps, CoinListItem, Accounts } from '../Router/types';
+import { AppContextInterface, ContextProps, CoinListItem, Accounts, Recent } from '../Router/types';
 import User1 from "../../assets/images/User-1.svg";
 import User2 from "../../assets/images/User-2.svg";
 import User3 from "../../assets/images/User-3.svg";
@@ -113,7 +113,8 @@ export const MainProvider = ({ children }: ContextProps) => {
                 height: 32,
                 transform: [{ scale: 1.5 }]
             }} />,
-            balance: 9.2362
+            balance: 9.2362,
+            adress:"0x4Dc6...DxR9"
         },
         {
             id: 2,
@@ -123,7 +124,9 @@ export const MainProvider = ({ children }: ContextProps) => {
                 height: 32,
                 transform: [{ scale: 1.5 }]
             }} />,
-            balance: 2.43
+            balance: 2.43,
+            adress:"0x3Dc6...DxE9"
+
         },
         {
             id: 3,
@@ -133,13 +136,46 @@ export const MainProvider = ({ children }: ContextProps) => {
                 height: 32,
                 transform: [{ scale: 1.5 }]
             }} />,
-            balance: 1.27
+            balance: 1.27,
+            adress:"0x2Dc6...DcT9"
+
         }
     ]);
 
-
+    const [recent,setRecent]= useState<Recent[]>([
+        {
+            id:1,
+            name:"Beexay",
+            adress:"0x3Dc6...DxE9",
+            avatar: <User1 style={{
+                width: 32,
+                height: 32,
+                transform: [{ scale: 1.5 }]
+            }} />
+        },
+        {
+            id:1,
+            name:"Dasun Bussi",
+            adress:"0x2Dc6...DcT9",
+            avatar: <User2 style={{
+                width: 32,
+                height: 32,
+                transform: [{ scale: 1.5 }]
+            }} />
+        },
+        {
+            id:1,
+            name:"Smart Gevan",
+            adress:"0x3R2E...DxR9",
+            avatar: <User3 style={{
+                width: 32,
+                height: 32,
+                transform: [{ scale: 1.5 }]
+            }} />
+        },
+    ])
     const data: AppContextInterface = {
-        coinList, setCoinList, accounts, setAccounts
+        coinList, setCoinList, accounts, setAccounts,recent,setRecent
     }
 
     return (

@@ -33,6 +33,8 @@ export type AppContextInterface = {
     setCoinList: (tokenList: CoinListItem[]) => void;
     accounts: Accounts[];
     setAccounts: (accounts: Accounts[]) => void;
+    recent: Recent[];
+    setRecent: (recent: Recent[]) => void;
 }
 
 export type Transaction = {
@@ -55,8 +57,19 @@ export type CoinListItem = {
 export interface Accounts {
     id: number;
     name: string;
-    avatar:  React.JSX.Element;
+    avatar: React.JSX.Element;
     balance: number;
+    adress: string;
+}
+export interface AccountProp {
+    currency: string;
+}
+export type Recent = {
+    id: number;
+    name: string;
+    adress: string;
+    avatar: React.JSX.Element
+
 }
 
 

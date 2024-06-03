@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, Pressable, StyleSheet, Modal, TextInput } from 'react-native';
-import { RouteProp } from '@react-navigation/native';
-import { CoinListItem, OnboardingStackParamList, Transaction } from '../../Router/types';
+import { CoinListItem, OnboardingStackParamList, Recent, Transaction } from '../../Router/types';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useAppNavigation } from '../../Router/useAppNavigation';
 import { AntDesign } from '@expo/vector-icons';
@@ -12,6 +11,11 @@ import { MaterialCommunityIcons } from '@expo/vector-icons'; import HomeShape fr
 import { BlurView } from 'expo-blur';
 import { MainContext } from '../../Context';
 import User1 from '../../../assets/images/User-1.svg'
+import User2 from '../../../assets/images/User-2.svg'
+import User3 from '../../../assets/images/User-3.svg'
+
+import Account from '../../../src/Components/TokenDetail/Account';
+import PrimaryButton from '../Buttons/Primary';
 
 type TokenDetailProps = NativeStackScreenProps<OnboardingStackParamList, 'TokenDetail'>;
 
@@ -24,11 +28,12 @@ const TokenDetail: React.FC<TokenDetailProps> = ({ route }) => {
     const [selectedTransaction, setSelectedTransaction] = useState<Transaction>()
     const [sentModalVisible, setSentModalVisible] = useState(false);
     const [receivedModalVisible, setReceivedModalVisible] = useState(false);
-
+    const [paymentTo, setPaymentTo] = useState<Recent>()
+    const [modalStep, setModalStep] = useState(1)
     const handleTabPress = (tab: string) => {
         setActiveTab(tab);
     };
-    const { coinList, accounts } = useContext(MainContext);
+    const { coinList, recent } = useContext(MainContext);
     useEffect(() => {
         setCoin(coinList.find((coin) => coin.currency === currency))
 
@@ -77,60 +82,198 @@ const TokenDetail: React.FC<TokenDetailProps> = ({ route }) => {
                 </View>
 
             </View>
-            <Modal
-                style={styles.blur}
-                visible={sentModalVisible}
-                animationType="slide"
-                transparent={true}
-            >
-                <BlurView intensity={80} style={{ flex: 1 }}>
-                    <View style={styles.centeredView}>
-                        <View style={{ backgroundColor: "#ABAFC4", height: 4, width: 40, borderRadius: 100, marginBottom: 5 }} />
-                        <View style={[styles.modalView, { position: "relative" }]}>
-                            <View style={{ paddingBottom: 32 }}>
-                                <Text style={styles.modalText}>Sent To</Text>
-                                <Pressable onPress={() => setSentModalVisible(false)} style={{ position: "absolute", top: "25%", right: 0 }}>
-                                    <AntDesign name="close" size={18} color="white" />
-                                </Pressable>
-                            </View>
-                            <View style={{ gap: 8 }}>
-                                <View style={{}}>
-                                    <Text style={{ fontSize: 16, lineHeight: 24, color: "white", fontFamily: "Poppins_500Medium" }}>From</Text>
-                                    <View style={{ padding: 16, flexDirection: "row", justifyContent: "space-between",alignItems:"center" }}>
-                                        <View style={{ gap: 8, flexDirection: "row", alignItems: "center" }}>
-                                            <View style={{ paddingVertical: 4, paddingRight: 8, position: "relative" }}>
-                                                <View style={styles.iconContainer}>
-                                                    <User1 style={{ width: 32, height: 32 }} />
-                                                </View>
+            {
+                modalStep === 1 ?
+                    <Modal
+                        style={styles.blur}
+                        visible={sentModalVisible}
+                        animationType="slide"
+                        transparent={true}
+                    >
+                        <BlurView intensity={80} style={{ flex: 1 }}>
+                            <View style={styles.centeredView}>
+                                <View style={{ backgroundColor: "#ABAFC4", height: 4, width: 40, borderRadius: 100, marginBottom: 5 }} />
+                                <View style={[styles.modalView, { position: "relative" }]}>
+                                    <View style={{ paddingBottom: 32 }}>
+                                        <Text style={styles.modalText}>Sent To</Text>
+                                        <Pressable onPress={() => setSentModalVisible(false)} style={{ position: "absolute", top: "25%", right: 0 }}>
+                                            <AntDesign name="close" size={18} color="white" />
+                                        </Pressable>
+                                    </View>
+                                    <View style={{ gap: 8 }}>
+                                        <View style={{}}>
+                                            <Text style={{ fontSize: 16, lineHeight: 24, color: "white", fontFamily: "Poppins_500Medium" }}>From</Text>
+                                            <Account currency={currency} />
+                                        </View>
+                                        <View style={{ gap: 8 }}>
+                                            <Text style={{ fontSize: 16, lineHeight: 24, color: "white", fontFamily: "Poppins_500Medium" }}>To</Text>
+                                            <View style={{ borderWidth: 2, borderColor: "#242424", borderRadius: 8, padding: 16, flexDirection: "row", alignItems: "center", gap: 20, }}>
+                                                <TextInput style={{ color: "white", width: "87%" }} value={paymentTo?.adress} placeholderTextColor={"#888DAA"} placeholder='Search, public address (0x), or ENS' />
+                                                <MaterialCommunityIcons style={{ paddingRight: 19, }} name="line-scan" size={24} color="white" />
+
                                             </View>
-                                            <View style={{ justifyContent: "space-between", flexDirection: "row", alignItems: "center" }}>
-                                                <View style={{ gap: 1 }}>
+                                        </View>
+                                    </View>
+                                    <Text style={{ color: "#5F97FF", paddingVertical: 24, lineHeight: 24, fontSize: 14, fontFamily: "Poppins_500Medium" }}>Transfer Between My Accounts</Text>
+                                    <View style={{ paddingBottom: 80 }}>
+                                        <Text style={{ fontSize: 16, lineHeight: 24, color: "white", fontFamily: "Poppins_500Medium" }}>Recent</Text>
+                                        {
+                                            recent.map((recent) =>
+                                                <Pressable onPress={() => {
+                                                    setPaymentTo({ id: 1, adress: recent.adress, avatar: recent.avatar, name: recent.name })
+                                                    setTimeout(() => {
+                                                        setModalStep(modalStep + 1)
+                                                    }, 100);
+                                                }
+
+                                                } style={{ alignItems: "center", flexDirection: "row", gap: 8, padding: 16 }}>
+                                                    <View style={styles.iconContainer}>
+                                                        {recent.avatar}
+                                                    </View>
+                                                    <View style={{ gap: 4 }}>
+                                                        <Text style={{ fontSize: 16, lineHeight: 24, fontFamily: "Poppins_500Medium", color: "white" }}>
+                                                            {recent.name}
+                                                        </Text>
+                                                        <Text style={{ fontSize: 12, lineHeight: 18, fontFamily: "Poppins_500Medium", color: "#ABAFC4" }}>
+                                                            {recent.adress}
+                                                        </Text>
+                                                    </View>
+                                                </Pressable>
+                                            )
+                                        }
+
+                                    </View>
+
+
+                                </View>
+                            </View>
+                        </BlurView>
+                    </Modal> : modalStep === 2 ?
+                        <Modal
+                            style={styles.blur}
+                            visible={sentModalVisible}
+                            animationType="slide"
+                            transparent={true}
+                        >
+                            <BlurView intensity={80} style={{ flex: 1 }}>
+                                <View style={styles.centeredView}>
+                                    <View style={{ backgroundColor: "#ABAFC4", height: 4, width: 40, borderRadius: 100, marginBottom: 5 }} />
+                                    <View style={[styles.modalView, { position: "relative" }]}>
+                                        <View style={{ paddingBottom: 32 }}>
+                                            <Text style={styles.modalText}>Sent To</Text>
+                                            <Pressable onPress={() => setSentModalVisible(false)} style={{ position: "absolute", top: "25%", right: 0 }}>
+                                                <AntDesign name="close" size={18} color="white" />
+                                            </Pressable>
+                                            <Pressable onPress={() => setModalStep(modalStep - 1)} style={{ position: "absolute", top: "25%", left: 0 }}>
+                                                <AntDesign name="left" size={18} color="white" />
+                                            </Pressable>
+                                        </View>
+                                        <View style={{ gap: 8 }}>
+                                            <View style={{}}>
+                                                <Text style={{ fontSize: 16, lineHeight: 24, color: "white", fontFamily: "Poppins_500Medium" }}>From</Text>
+                                                <Account currency={currency} />
+                                            </View>
+                                            <View style={{ gap: 8 }}>
+                                                <Text style={{ fontSize: 16, lineHeight: 24, color: "white", fontFamily: "Poppins_500Medium" }}>To</Text>
+
+                                            </View>
+                                        </View>
+                                        <View style={{ paddingBottom: 350 }}>
+                                            <View style={{ alignItems: "center", flexDirection: "row", gap: 8, padding: 16 }}>
+                                                <View style={styles.iconContainer}>
+                                                    {paymentTo?.avatar}
+                                                </View>
+                                                <View style={{ gap: 4 }}>
                                                     <Text style={{ fontSize: 16, lineHeight: 24, fontFamily: "Poppins_500Medium", color: "white" }}>
-                                                        Account 1
+                                                        {paymentTo?.name}
                                                     </Text>
                                                     <Text style={{ fontSize: 12, lineHeight: 18, fontFamily: "Poppins_500Medium", color: "#ABAFC4" }}>
-                                                        121321 ETH
+                                                        {paymentTo?.adress}
                                                     </Text>
                                                 </View>
-                                                
                                             </View>
 
                                         </View>
-                                        <AntDesign name="right" size={18} color="white" />
+                                        <PrimaryButton text='Next' onPress={() => setModalStep(modalStep + 1)} />
+
                                     </View>
                                 </View>
-                                <View style={{gap:8}}>
-                                    <Text style={{ fontSize: 16, lineHeight: 24, color: "white", fontFamily: "Poppins_500Medium" }}>To</Text>
-                                    <TextInput style={{borderWidth:2,borderColor:"#242424", borderRadius:6,padding:5}} placeholder='Search, public address (0x), or ENS'/>
-                                </View>
-                            </View>
+                            </BlurView>
+                        </Modal> : modalStep === 3 ?
+                            <Modal
+                                style={styles.blur}
+                                visible={sentModalVisible}
+                                animationType="slide"
+                                transparent={true}
+                            >
+                                <BlurView intensity={80} style={{ flex: 1 }}>
+                                    <View style={styles.centeredView}>
+                                        <View style={{ backgroundColor: "#ABAFC4", height: 4, width: 40, borderRadius: 100, marginBottom: 5 }} />
+                                        <View style={[styles.modalView, { position: "relative" }]}>
+                                            <View style={{ paddingBottom: 32 }}>
+                                                <Text style={styles.modalText}>Amount</Text>
+                                                <Pressable onPress={() => setSentModalVisible(false)} style={{ position: "absolute", top: "25%", right: 0 }}>
+                                                    <AntDesign name="close" size={18} color="white" />
+                                                </Pressable>
+                                                <Pressable onPress={() => setModalStep(modalStep - 1)} style={{ position: "absolute", top: "25%", left: 0 }}>
+                                                    <AntDesign name="left" size={18} color="white" />
+                                                </Pressable>
+                                            </View>
+                                            <View style={{ alignItems: "center" }}>
+                                                <Text>BNB</Text>
+                                            </View>
+
+                                        </View>
+                                    </View>
+                                </BlurView>
+                            </Modal> : modalStep === 4 ?
+                                <Modal
+                                    style={styles.blur}
+                                    visible={sentModalVisible}
+                                    animationType="slide"
+                                    transparent={true}
+                                >
+                                    <BlurView intensity={80} style={{ flex: 1 }}>
+                                        <View style={styles.centeredView}>
+                                            <View style={{ backgroundColor: "#ABAFC4", height: 4, width: 40, borderRadius: 100, marginBottom: 5 }} />
+                                            <View style={[styles.modalView, { position: "relative" }]}>
+                                                <View style={{ paddingBottom: 32 }}>
+                                                    <Text style={styles.modalText}>Sent To</Text>
+                                                    <Pressable onPress={() => setSentModalVisible(false)} style={{ position: "absolute", top: "25%", right: 0 }}>
+                                                        <AntDesign name="close" size={18} color="white" />
+                                                    </Pressable>
+                                                </View>
+                                            </View>
 
 
 
-                        </View>
-                    </View>
-                </BlurView>
-            </Modal>
+                                        </View>
+                                    </BlurView>
+                                </Modal> : modalStep === 5 ?
+                                    <Modal
+                                        style={styles.blur}
+                                        visible={sentModalVisible}
+                                        animationType="slide"
+                                        transparent={true}
+                                    >
+                                        <BlurView intensity={80} style={{ flex: 1 }}>
+                                            <View style={styles.centeredView}>
+                                                <View style={{ backgroundColor: "#ABAFC4", height: 4, width: 40, borderRadius: 100, marginBottom: 5 }} />
+                                                <View style={[styles.modalView, { position: "relative" }]}>
+                                                    <View style={{ paddingBottom: 32 }}>
+                                                        <Text style={styles.modalText}>Sent To</Text>
+                                                        <Pressable onPress={() => setSentModalVisible(false)} style={{ position: "absolute", top: "25%", right: 0 }}>
+                                                            <AntDesign name="close" size={18} color="white" />
+                                                        </Pressable>
+                                                    </View>
+
+                                                </View>
+                                            </View>
+                                        </BlurView>
+                                    </Modal> : null
+
+            }
+
             <View style={{ paddingHorizontal: 24, gap: 8 }}>
 
                 {
