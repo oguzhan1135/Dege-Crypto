@@ -4,7 +4,7 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 interface TextProps {
-    text: string;
+    text: string | number;
     fontSize: number;
     lineHeight: number;
     width: number;
@@ -39,23 +39,23 @@ const GradiantText: React.FC<TextProps> = ({ text, fontSize, lineHeight, width, 
 
         },
     });
-  
-        return (
-            <View style={styles.container}>
-                <MaskedView style={styles.maskedView} maskElement={<Text style={styles.title}>{text}</Text>}>
-                    <LinearGradient
-                        colors={['rgba(169,205,255,1)', 'rgba(114,246,209,1)', 'rgba(160,237,141,1)', 'rgba(254,211,101,1)', 'rgba(250,164,158,1)']}
-                        locations={[0, 0.22, 0.56, 0.82, 1]}
-                        style={[styles.gradient, { height: lineHeight * row }]}
-                        start={{ x: 0, y: 0.5 }}
-                        end={{ x: 1, y: 0.5 }}
-                    >
-                        <Text style={styles.transparentText}>{text}</Text>
-                    </LinearGradient>
-                </MaskedView>
-            </View>
-        );
-    }
+
+    return (
+        <View style={styles.container}>
+            <MaskedView style={styles.maskedView} maskElement={<Text style={styles.title}>{text}</Text>}>
+                <LinearGradient
+                    colors={['rgba(169,205,255,1)', 'rgba(114,246,209,1)', 'rgba(160,237,141,1)', 'rgba(254,211,101,1)', 'rgba(250,164,158,1)']}
+                    locations={[0, 0.22, 0.56, 0.82, 1]}
+                    style={[styles.gradient, { height: lineHeight * row }]}
+                    start={{ x: 0, y: 0.5 }}
+                    end={{ x: 1, y: 0.5 }}
+                >
+                    <Text style={styles.transparentText}>{text}</Text>
+                </LinearGradient>
+            </MaskedView>
+        </View>
+    );
+}
 
 
 export default GradiantText;

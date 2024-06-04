@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { View, Text, StyleSheet, Pressable, Modal, TextInput } from "react-native";
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { BlurView } from "expo-blur";
@@ -10,7 +10,7 @@ import PrimaryButton from "../../../Components/Buttons/Primary";
 import { MainContext } from "../../../Context";
 import { AccountProp } from "../../../Router/types";
 
-const Account: React.FC<AccountProp> = ({ currency }) => {
+const Account: React.FC<AccountProp> = ({ currency, onChangeAccount }) => {
     const font = "Poppins_500Medium";
     const { accounts, setAccounts } = useContext(MainContext);
 
@@ -25,7 +25,9 @@ const Account: React.FC<AccountProp> = ({ currency }) => {
     });
     const [modalStep, setModalStep] = useState("Account");
     const [newAccount, setNewAccount] = useState("");
-
+    useEffect(() => {
+        onChangeAccount(user)
+    }, [user])
     const handleChangeNewUser = () => {
         let newUser = {
             id: accounts.length + 1,
@@ -41,12 +43,8 @@ const Account: React.FC<AccountProp> = ({ currency }) => {
         setModalVisible(false);
     };
 
-    const handleNewAccountChange = (text: string) => {
-        setNewAccount(text);
-    };
-
     return (
-        <Pressable onPress={() => setModalVisible(!modalVisible)} style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center",padding:16 }}>
+        <Pressable onPress={() => setModalVisible(!modalVisible)} style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", padding: 16 }}>
             <View style={{ alignItems: "center", flexDirection: "row", gap: 8 }}>
                 <View style={styles.iconContainer}>
                     {user.avatar}
@@ -78,9 +76,12 @@ const Account: React.FC<AccountProp> = ({ currency }) => {
                                     {accounts.map((account) =>
                                         <Pressable key={account.id} onPress={() => {
                                             setUser({ id: account.id, name: account.name, avatar: account.avatar, balance: account.balance, adress: account.adress });
+
+                                            onChangeAccount(user)
                                             setModalVisible(false);
+                                            console.log("account sayfasındaki usrer", user)
                                         }} style={styles.account}>
-                                            <View style={{ gap: 8, justifyContent: "space-between", flexDirection: "row",alignItems:"center" }}>
+                                            <View style={{ gap: 8, justifyContent: "space-between", flexDirection: "row", alignItems: "center" }}>
                                                 <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
                                                     <View style={{ paddingVertical: 4, paddingRight: 8, position: "relative" }}>
                                                         <View style={styles.iconContainer}>
@@ -99,7 +100,7 @@ const Account: React.FC<AccountProp> = ({ currency }) => {
 
                                                 {
                                                     user.name === account.name ?
-                                                    <AntDesign name="checkcircleo" size={24} color="#76E268" /> : null
+                                                        <AntDesign name="checkcircleo" size={24} color="#76E268" /> : null
                                                 }
 
 

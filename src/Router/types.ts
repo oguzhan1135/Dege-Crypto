@@ -63,6 +63,7 @@ export interface Accounts {
 }
 export interface AccountProp {
     currency: string;
+    onChangeAccount: (account: Accounts) => void;
 }
 export type Recent = {
     id: number;
