@@ -13,94 +13,27 @@ export const MainProvider = ({ children }: ContextProps) => {
             id: 1,
             coinName: "Binance Coin",
             currency: "BNB",
-            balance: 19.2371,
             rate: 226.69,
             onTheRise: true,
             percent: 2,
-            transaction: [
-                {
-                    type: "Received",
-                    amount: 0.04,
-                    date: "Mar 3 at 10:04am"
-                },
-                {
-                    type: "Sent",
-                    amount: 2.35,
-                    date: "Mar 4 at 11:04am"
-                },
-                {
-                    type: "Received",
-                    amount: 1.876,
-                    date: "Mar 3 at 10:04am"
-                },
-                {
-                    type: "Received",
-                    amount: 0.04,
-                    date: "Mar 3 at 10:04am"
-                },
-            ]
+
         },
         {
             id: 2,
             coinName: "USD Coin",
             currency: "USDC",
-            balance: 92.3,
             rate: 1,
             onTheRise: true,
             percent: 4.3,
-            transaction: [
-                {
-                    type: "Received",
-                    amount: 0.04,
-                    date: "Mar 3 at 10:04am"
-                },
-                {
-                    type: "Sent",
-                    amount: 2.35,
-                    date: "Mar 4 at 11:04am"
-                },
-                {
-                    type: "Received",
-                    amount: 1.876,
-                    date: "Mar 3 at 10:04am"
-                },
-                {
-                    type: "Received",
-                    amount: 0.04,
-                    date: "Mar 3 at 10:04am"
-                },
-            ]
+
         },
         {
             id: 3,
             coinName: "Synthetix",
-            currency: "BNB",
-            balance: 42.74,
+            currency: "SNX",
             rate: 20.83,
             onTheRise: false,
             percent: 1.3,
-            transaction: [
-                {
-                    type: "Received",
-                    amount: 0.04,
-                    date: "Mar 3 at 10:04am"
-                },
-                {
-                    type: "Sent",
-                    amount: 2.35,
-                    date: "Mar 4 at 11:04am"
-                },
-                {
-                    type: "Received",
-                    amount: 1.876,
-                    date: "Mar 3 at 10:04am"
-                },
-                {
-                    type: "Received",
-                    amount: 0.04,
-                    date: "Mar 3 at 10:04am"
-                },
-            ]
         }
     ]);
 
@@ -113,8 +46,47 @@ export const MainProvider = ({ children }: ContextProps) => {
                 height: 32,
                 transform: [{ scale: 1.5 }]
             }} />,
-            balance: 9.2362,
-            adress:"0x4Dc6...DxR9"
+            balance: [
+                {
+                    coinName: "BNB",
+                    balance: 19.2371
+                },
+                {
+                    coinName: "USDC",
+                    balance: 92.3
+                },
+                {
+                    coinName: "SNX",
+                    balance: 42.74
+                },
+                {
+                    coinName: "ETH",
+                    balance: 9.2362
+                }
+            ],
+            adress: "0x4Dc6...DxR9",
+            transaction: [
+                {
+                    type: "Received",
+                    amount: 0.04,
+                    date: "Mar 3 at 10:04am"
+                },
+                {
+                    type: "Sent",
+                    amount: 2.35,
+                    date: "Mar 4 at 11:04am"
+                },
+                {
+                    type: "Received",
+                    amount: 1.876,
+                    date: "Mar 3 at 10:04am"
+                },
+                {
+                    type: "Received",
+                    amount: 0.04,
+                    date: "Mar 3 at 10:04am"
+                },
+            ]
         },
         {
             id: 2,
@@ -124,8 +96,48 @@ export const MainProvider = ({ children }: ContextProps) => {
                 height: 32,
                 transform: [{ scale: 1.5 }]
             }} />,
-            balance: 2.43,
-            adress:"0x3Dc6...DxE9"
+
+            balance: [
+                {
+                    coinName: "BNB",
+                    balance: 14.15
+                },
+                {
+                    coinName: "USDC",
+                    balance: 104
+                },
+                {
+                    coinName: "SNX",
+                    balance: 35.18
+                },
+                {
+                    coinName: "ETH",
+                    balance: 2.43
+                }
+            ],
+            adress: "0x3Dc6...DxE9",
+            transaction: [
+                {
+                    type: "Received",
+                    amount: 0.04,
+                    date: "Mar 3 at 10:04am"
+                },
+                {
+                    type: "Sent",
+                    amount: 2.35,
+                    date: "Mar 4 at 11:04am"
+                },
+                {
+                    type: "Received",
+                    amount: 1.876,
+                    date: "Mar 3 at 10:04am"
+                },
+                {
+                    type: "Received",
+                    amount: 0.04,
+                    date: "Mar 3 at 10:04am"
+                },
+            ]
 
         },
         {
@@ -136,17 +148,58 @@ export const MainProvider = ({ children }: ContextProps) => {
                 height: 32,
                 transform: [{ scale: 1.5 }]
             }} />,
-            balance: 1.27,
-            adress:"0x2Dc6...DcT9"
+            balance: [
+                {
+                    coinName: "BNB",
+                    balance: 9.2371
+                },
+                {
+                    coinName: "USDC",
+                    balance: 69
+                },
+                {
+                    coinName: "SNX",
+                    balance: 210
+                },
+                {
+                    coinName: "ETH",
+                    balance: 41.14
+                }
+            ],
+            adress: "0x2Dc6...DcT9",
+            transaction: [
+                {
+                    type: "Received",
+                    amount: 0.04,
+                    date: "Mar 3 at 10:04am"
+                },
+                {
+                    type: "Sent",
+                    amount: 2.35,
+                    date: "Mar 4 at 11:04am"
+                },
+                {
+                    type: "Received",
+                    amount: 1.876,
+                    date: "Mar 3 at 10:04am"
+                },
+                {
+                    type: "Received",
+                    amount: 0.04,
+                    date: "Mar 3 at 10:04am"
+                },
+            ]
 
         }
     ]);
 
-    const [recent,setRecent]= useState<Recent[]>([
+    const [sentAccount, setSentAccount] = useState<Accounts>();
+
+    const [recent, setRecent] = useState<Recent[]>([
         {
-            id:1,
-            name:"Beexay",
-            adress:"0x3Dc6...DxE9",
+            id: 1,
+            name: "Beexay",
+            adress: "0x3Dc6...DxE9",
             avatar: <User1 style={{
                 width: 32,
                 height: 32,
@@ -154,9 +207,9 @@ export const MainProvider = ({ children }: ContextProps) => {
             }} />
         },
         {
-            id:1,
-            name:"Dasun Bussi",
-            adress:"0x2Dc6...DcT9",
+            id: 1,
+            name: "Dasun Bussi",
+            adress: "0x2Dc6...DcT9",
             avatar: <User2 style={{
                 width: 32,
                 height: 32,
@@ -164,9 +217,9 @@ export const MainProvider = ({ children }: ContextProps) => {
             }} />
         },
         {
-            id:1,
-            name:"Smart Gevan",
-            adress:"0x3R2E...DxR9",
+            id: 1,
+            name: "Smart Gevan",
+            adress: "0x3R2E...DxR9",
             avatar: <User3 style={{
                 width: 32,
                 height: 32,
@@ -175,7 +228,7 @@ export const MainProvider = ({ children }: ContextProps) => {
         },
     ])
     const data: AppContextInterface = {
-        coinList, setCoinList, accounts, setAccounts,recent,setRecent
+        coinList, setCoinList, accounts, setAccounts, recent, setRecent, sentAccount, setSentAccount
     }
 
     return (

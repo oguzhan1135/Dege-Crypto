@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, Pressable, StyleSheet, Modal, TextInput } from 'react-native';
-import { Accounts, CoinListItem, OnboardingStackParamList, Recent, Transaction } from '../../Router/types';
+import { CoinListItem, OnboardingStackParamList, Recent, Transaction } from '../../Router/types';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useAppNavigation } from '../../Router/useAppNavigation';
 import { AntDesign } from '@expo/vector-icons';
@@ -11,17 +11,8 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import HomeShape from '../../../assets/images/HomeShape.svg'
 import { BlurView } from 'expo-blur';
 import { MainContext } from '../../Context';
-import User1 from '../../../assets/images/User-1.svg'
-import User2 from '../../../assets/images/User-2.svg'
-import User3 from '../../../assets/images/User-3.svg'
-import { FontAwesome6 } from '@expo/vector-icons';
-
-import Account from '../../../src/Components/TokenDetail/Account';
-import PrimaryButton from '../Buttons/Primary';
 import SentToV1 from './Modals/SentToV1';
-import SentToV2 from './Modals/SentToV2';
 import Amount from './Modals/Amount';
-import SelectToken from './Modals/SelectToken';
 import Confirm from './Modals/Confirm';
 
 type TokenDetailProps = NativeStackScreenProps<OnboardingStackParamList, 'TokenDetail'>;
@@ -39,20 +30,14 @@ const TokenDetail: React.FC<TokenDetailProps> = ({ route }) => {
     const [modalStep, setModalStep] = useState(1)
     const [amount, setAmount] = useState("0.2405")
     const [sentAmount, setSentAmount] = useState(0)
-    const [sentAccount, setSentAccount] = useState<Accounts>()
     const handleTabPress = (tab: string) => {
         setActiveTab(tab);
     };
-    const { coinList, recent } = useContext(MainContext);
+    const { accounts, recent, sentAccount, coinList } = useContext(MainContext);
     useEffect(() => {
         setCoin(coinList.find((coin) => coin.currency === currency))
 
     }, [])
-
-    const onchangeAccount = (account: Accounts) => {
-        setSentAccount(account)
-    }
-    console.log(sentAccount)
     return (
         <View style={styles.container}>
             <HomeShape style={{ position: "absolute", right: 0, top: "15%", transform: [{ scale: 1.2 }] }} />
@@ -73,7 +58,7 @@ const TokenDetail: React.FC<TokenDetailProps> = ({ route }) => {
                 </Pressable>
 
                 <View style={styles.navigationContainer}>
-                    <Text style={styles.navbarText}>{currency}</Text>
+                    <Text style={styles.navbarText}>{coin?.currency}</Text>
                 </View>
 
             </View>
@@ -106,53 +91,32 @@ const TokenDetail: React.FC<TokenDetailProps> = ({ route }) => {
                         currency={currency}
                         recent={recent}
                         setPaymentTo={setPaymentTo}
-                        onchangeAccount={onchangeAccount}
                     />
 
                     : modalStep === 2 ?
-                        <SentToV2
+                        <Amount
+                            setAmount={setAmount}
+                            amount={amount}
                             setModalStep={setModalStep}
+                            setSentModalVisible={setModalVisible}
                             modalStep={modalStep}
-                            paymentTo={paymentTo}
                             sentModalVisible={sentModalVisible}
-                            setSentModalVisible={setSentModalVisible}
-                            currency={currency}
-                            recent={recent}
-                            onchangeAccount={onchangeAccount}
-
-                        /> : modalStep === 3 ?
-                            <Amount
-                                setAmount={setAmount}
-                                amount={amount}
-                                setModalStep={setModalStep}
-                                setSentModalVisible={setModalVisible}
-                                modalStep={modalStep}
-                                sentModalVisible={sentModalVisible}
-                                coin={coin}
-                                setCoin={setCoin}
-                                sentAccount={sentAccount}
-
-                            /> : modalStep === 4 ?
-                                <SelectToken
+                            coin={coin}
+                            setCoin={setCoin}
+                        />  : modalStep === 3 ?
+                                <Confirm
                                     setModalStep={setModalStep}
                                     modalStep={modalStep}
                                     setSentModalVisible={setModalVisible}
                                     sentModalVisible={modalVisible}
-
-                                /> : modalStep === 5 ?
-                                    <Confirm
-                                        setModalStep={setModalStep}
-                                        modalStep={modalStep}
-                                        setSentModalVisible={setModalVisible}
-                                        sentModalVisible={modalVisible}
-                                    /> : null
+                                /> : null
 
             }
 
             <View style={{ paddingHorizontal: 24, gap: 8 }}>
 
                 {
-                    coin?.transaction.map((transaction) =>
+                    sentAccount?.transaction.map((transaction) =>
                         <Pressable onPress={() => {
                             setModalVisible(true);
                             setSelectedTransaction(transaction);

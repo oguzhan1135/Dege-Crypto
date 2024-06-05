@@ -2,7 +2,7 @@ import { ReactNode } from "react";
 import { SvgProps } from "react-native-svg";
 
 export type RootStackParamList = {
-    Onboarding: { screen: keyof OnboardingStackParamList } | undefined;
+    Onboarding: { screen: keyof OnboardingStackParamList, params?: CommonParams };
 };
 
 export type OnboardingStackParamList = {
@@ -35,6 +35,8 @@ export type AppContextInterface = {
     setAccounts: (accounts: Accounts[]) => void;
     recent: Recent[];
     setRecent: (recent: Recent[]) => void;
+    sentAccount?: Accounts;
+    setSentAccount: (sentAccount: Accounts) => void;
 }
 
 export type Transaction = {
@@ -47,23 +49,25 @@ export type CoinListItem = {
     id: number;
     coinName: string;
     currency: string;
-    balance: number;
     rate: number;
     onTheRise: boolean;
     percent: number;
-    transaction: Transaction[];
 }
 
 export interface Accounts {
     id: number;
     name: string;
     avatar: React.JSX.Element;
-    balance: number;
+    balance: Balance[];
     adress: string;
+    transaction: Transaction[];
+}
+interface Balance {
+    coinName: string;
+    balance: number;
 }
 export interface AccountProp {
     currency: string;
-    onChangeAccount: (account: Accounts) => void;
 }
 export type Recent = {
     id: number;

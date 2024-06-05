@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { View, StyleSheet, Text, Pressable, ScrollView, Modal } from "react-native";
 import User1 from '../../../assets/images/User-1.svg';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
@@ -14,15 +14,74 @@ import Network from "./Network";
 import Account from "./Account";
 import { useAppNavigation } from "../../Router/useAppNavigation";
 import { MainContext } from "../../Context";
-const Homescreen = () => {
+import { Accounts, CoinListItem } from "../../Router/types";
+
+const Homescreen: React.FC = () => {
     const [activeTab, setActiveTab] = useState("wallet");
     const navigation = useAppNavigation()
+    const { sentAccount, setSentAccount } = useContext(MainContext)
     const handleTabPress = (tab: string) => {
         setActiveTab(tab);
     };
+    useEffect(() => {
+        setSentAccount(
+            {
+                id: 1,
+                name: "Account 1",
+                avatar: <User1 style={{
+                    width: 32,
+                    height: 32,
+                    transform: [{ scale: 1.5 }]
+                }} />,
+                balance: [
+                    {
+                        coinName: "BNB",
+                        balance: 19.2371
+                    },
+                    {
+                        coinName: "USDC",
+                        balance: 92.3
+                    },
+                    {
+                        coinName: "Synthetix",
+                        balance: 42.74
+                    },
+                    {
+                        coinName: "ETH",
+                        balance: 9.2362
+                    }
+                ],
+                adress: "0x4Dc6...DxR9",
+                transaction: [
+                    {
+                        type: "Received",
+                        amount: 0.04,
+                        date: "Mar 3 at 10:04am"
+                    },
+                    {
+                        type: "Sent",
+                        amount: 2.35,
+                        date: "Mar 4 at 11:04am"
+                    },
+                    {
+                        type: "Received",
+                        amount: 1.876,
+                        date: "Mar 3 at 10:04am"
+                    },
+                    {
+                        type: "Received",
+                        amount: 0.04,
+                        date: "Mar 3 at 10:04am"
+                    },
+                ]
+            }
+        )
+    }, [])
 
+    const coinBalance = (coin: CoinListItem) => {
+        return sentAccount?.balance.find((balance) => balance.coinName === coin.currency)?.balance
+    }
     const { coinList } = useContext(MainContext)
-
     return (
         <View style={styles.container}>
             <HBomeShape style={{ position: "absolute", right: 0, top: "18%", transform: [{ scale: 1.5 }] }} />
@@ -36,7 +95,7 @@ const Homescreen = () => {
                 <View style={styles.rightSection}></View>
             </View>
             <View style={styles.aset}>
-                <GradiantText text="9.2362 ETH" row={1} lineHeight={56} fontSize={40} width={300} />
+                <GradiantText text={`${sentAccount?.balance[3].balance} ETH`} row={1} lineHeight={56} fontSize={40} width={300} />
                 <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
                     <Text style={{ color: "white", fontSize: 14, lineHeight: 24, fontFamily: "Poppins_500Medium" }}>$16,858.15</Text>
                     <Text style={{ color: "#76E268", fontSize: 14, lineHeight: 24, fontFamily: "Poppins_500Medium" }}>+0.7%</Text>
@@ -71,7 +130,7 @@ const Homescreen = () => {
                         {
                             coinList.map((coin) =>
                                 <Pressable onPress={() => {
-                                    navigation.navigate("TokenDetail", { currency: coin.currency, balance: coin.balance, rate: coin.rate });
+                                    navigation.navigate("Onboarding", { screen: "TokenDetail", params: { currency: coin.currency, balance: coinBalance(coin), rate: coin.rate } });
                                 }} style={styles.coin}>
                                     <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", gap: 10 }}>
                                         <View style={styles.iconContainer}>
@@ -80,7 +139,8 @@ const Homescreen = () => {
                                         <View style={{ flexDirection: "column", gap: 2, justifyContent: "flex-start" }}>
                                             <Text style={styles.coinTitle}>{coin.coinName}</Text>
                                             <View style={{ flexDirection: "row", gap: 8, alignItems: "center" }}>
-                                                <Text style={{ fontFamily: "Poppins_500Medium", color: "#ABAFC4" }}>${coin.currency}</Text>
+                                                <Text style={{ fontFamily: "Poppins_500Medium", color: "#ABAFC4" }}>${coin.rate}</Text>
+
                                                 {
                                                     coin.onTheRise ?
                                                         <Text style={{ fontFamily: "Poppins_500Medium", color: '#76E268' }}>+ {coin.percent}%</Text> :
@@ -90,7 +150,7 @@ const Homescreen = () => {
                                         </View>
                                     </View>
                                     <View style={{ justifyContent: "flex-start", alignItems: "flex-start" }}>
-                                        <Text style={styles.coinTitle}>{coin.balance} {coin.currency}</Text>
+                                        <Text style={styles.coinTitle}>{coinBalance(coin)} {coin.currency}</Text>
                                     </View>
                                 </Pressable>
                             )

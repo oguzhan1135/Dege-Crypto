@@ -1,34 +1,44 @@
 import { BlurView } from "expo-blur";
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Modal, View, Pressable, Text, StyleSheet } from "react-native";
 import Account from "../../Account";
-import { Recent } from "../../../../Router/types";
+import { CoinListItem, Recent } from "../../../../Router/types";
 import { AntDesign } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import PrimaryButton from "../../../Buttons/Primary";
+import { MainContext } from "../../../../Context";
+export interface Data {
+    coin: string;
+    index: number;
+}
 
 interface SelectTokenProps {
-    setSentModalVisible: (modalVisible: boolean) => void;
-    sentModalVisible: boolean;
-    modalStep: number;
-    setModalStep: (modalstep: number) => void;
-
-
+    setCoinSelect: (coinSelect: boolean) => void;
+    coinSelect: boolean;
+    onchangeCoin: (coin: Data) => void;
 }
 
 const SelectToken: React.FC<SelectTokenProps> = (
     {
-        sentModalVisible,
-        setModalStep,
-        setSentModalVisible,
-        modalStep
-
+        coinSelect,
+        setCoinSelect,
+        onchangeCoin
     }) => {
+    const { coinList, sentAccount } = useContext(MainContext)
+    const [selectedCoin, setSelectedCoin] = useState("BNB")
+    const [coin, setCoin] = useState<Data>(
+        {
+            index: 1, coin: "BNB"
+        }
+    )
 
+    useEffect(() => {
+        onchangeCoin({ coin: coin.coin, index: coin.index })
+    }, [coin])
     return (
         <Modal
             style={styles.blur}
-            visible={sentModalVisible}
+            visible={coinSelect}
             animationType="slide"
             transparent={true}
         >
@@ -38,20 +48,45 @@ const SelectToken: React.FC<SelectTokenProps> = (
                     <View style={[styles.modalView, { position: "relative" }]}>
                         <View style={{ paddingBottom: 32 }}>
                             <Text style={styles.modalText}>Token</Text>
-                            <Pressable onPress={() => setSentModalVisible(false)} style={{ position: "absolute", top: "25%", right: 0 }}>
+                            <Pressable onPress={() => setCoinSelect(false)} style={{ position: "absolute", top: "25%", right: 0 }}>
                                 <AntDesign name="close" size={18} color="white" />
                             </Pressable>
-                            <Pressable onPress={() => setModalStep(modalStep - 1)} style={{ position: "absolute", top: "25%", left: 0 }}>
-                                <AntDesign name="left" size={18} color="white" />
-                            </Pressable>
                         </View>
-                        
-                        <PrimaryButton text='Next' onPress={() => setModalStep(modalStep + 1)} />
+                        <View style={{ gap: 8 }}>
+                            {
+                                coinList.map((coin) =>
+                                    <Pressable onPress={() => {
+                                        setCoin({ coin: coin.currency, index: coin.id })
+                                        setCoinSelect(false)
+                                        setSelectedCoin(coin.currency)
+                                    }
+                                    }
+                                        style={{ borderWidth: 2, borderRadius: 8, borderColor: `${coin.currency === selectedCoin ? '#FEBF32' : "transparent"}` }}
+                                    >
+                                        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", padding: 16 }}>
+                                            <View style={{ alignItems: "flex-start", flexDirection: "row", gap: 8 }}>
+                                                <View style={styles.iconContainer}>
+                                                </View>
+                                                <Text style={{ color: "white", fontSize: 16, lineHeight: 24, fontFamily: "Poppins_500Medium" }}>{coin.coinName}</Text>
+                                            </View>
+                                            <View style={{ gap: 4, }}>
+                                                <Text style={{ color: "white", fontSize: 16, lineHeight: 24, fontFamily: "Poppins_500Medium" }}>{sentAccount?.balance[coin.id - 1].balance} {sentAccount?.balance[coin.id - 1].coinName}</Text>
+                                                <Text style={{ color: "#ABAFC4", fontFamily: "Poppins_500Medium", marginLeft: "auto" }}>
+                                                    ${sentAccount?.balance && sentAccount.balance[coin.id - 1] ? (sentAccount.balance[coin.id - 1].balance * coin.rate).toFixed(2) : '0.00'}
+                                                </Text>
+                                            </View>
+                                        </View>
+                                    </Pressable>
+
+
+                                )
+                            }
+                        </View>
 
                     </View>
                 </View>
             </BlurView>
-        </Modal>
+        </Modal >
     )
 
 }

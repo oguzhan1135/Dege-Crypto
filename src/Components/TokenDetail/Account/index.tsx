@@ -1,47 +1,73 @@
 import React, { useContext, useEffect, useState } from "react";
 import { View, Text, StyleSheet, Pressable, Modal, TextInput } from "react-native";
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { BlurView } from "expo-blur";
 import User1 from '../../../../assets/images/User-1.svg'
 import { AntDesign } from '@expo/vector-icons';
-import SwapShape from "../../../../assets/images/SwapShape.svg";
 import NewAccountuser from "../../../../assets/images/NewAccountAvatar.svg";
-import PrimaryButton from "../../../Components/Buttons/Primary";
 import { MainContext } from "../../../Context";
-import { AccountProp } from "../../../Router/types";
+import { AccountProp, Accounts } from "../../../Router/types";
 
-const Account: React.FC<AccountProp> = ({ currency, onChangeAccount }) => {
+const Account: React.FC<AccountProp> = ({ currency }) => {
     const font = "Poppins_500Medium";
-    const { accounts, setAccounts } = useContext(MainContext);
+    const { accounts, setAccounts, sentAccount, setSentAccount } = useContext(MainContext);
 
 
     const [modalVisible, setModalVisible] = useState(false);
-    let [user, setUser] = useState({
+    let [user, setUser] = useState<Accounts>({
         id: 1,
         name: "Account 1",
-        balance: 9.2362,
-        avatar: <User1 />,
-        adress: "0x4Dc6...DxR9"
+        avatar: <User1 style={{
+            width: 32,
+            height: 32,
+            transform: [{ scale: 1.5 }]
+        }} />,
+        balance: [
+            {
+                coinName: "BNB",
+                balance: 19.2371
+            },
+            {
+                coinName: "USDC",
+                balance: 92.3
+            },
+            {
+                coinName: "Synthetix",
+                balance: 42.74
+            },
+            {
+                coinName: "ETH",
+                balance: 9.2362
+            }
+        ],
+        adress: "0x4Dc6...DxR9",
+        transaction: [
+            {
+                type: "Received",
+                amount: 0.04,
+                date: "Mar 3 at 10:04am"
+            },
+            {
+                type: "Sent",
+                amount: 2.35,
+                date: "Mar 4 at 11:04am"
+            },
+            {
+                type: "Received",
+                amount: 1.876,
+                date: "Mar 3 at 10:04am"
+            },
+            {
+                type: "Received",
+                amount: 0.04,
+                date: "Mar 3 at 10:04am"
+            },
+        ]
     });
     const [modalStep, setModalStep] = useState("Account");
     const [newAccount, setNewAccount] = useState("");
     useEffect(() => {
-        onChangeAccount(user)
+        setSentAccount(user)
     }, [user])
-    const handleChangeNewUser = () => {
-        let newUser = {
-            id: accounts.length + 1,
-            name: newAccount,
-            balance: 0,
-            avatar: <NewAccountuser />,
-            adress: "0x2Dc6...DcT91"
-        };
-
-        setAccounts([...accounts, newUser]);
-        setNewAccount("");
-        setModalStep("Account");
-        setModalVisible(false);
-    };
 
     return (
         <Pressable onPress={() => setModalVisible(!modalVisible)} style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", padding: 16 }}>
@@ -54,7 +80,7 @@ const Account: React.FC<AccountProp> = ({ currency, onChangeAccount }) => {
                         {user.name}
                     </Text>
                     <Text style={{ fontSize: 12, lineHeight: 18, fontFamily: font, color: "#ABAFC4" }}>
-                        Balance: {user.balance} {currency}
+                        Balance: {user.balance[3].balance} {currency}
                     </Text>
                 </View>
             </View>
@@ -75,11 +101,8 @@ const Account: React.FC<AccountProp> = ({ currency, onChangeAccount }) => {
                                 <View style={{ paddingBottom: 24 }}>
                                     {accounts.map((account) =>
                                         <Pressable key={account.id} onPress={() => {
-                                            setUser({ id: account.id, name: account.name, avatar: account.avatar, balance: account.balance, adress: account.adress });
-
-                                            onChangeAccount(user)
+                                            setUser(account);
                                             setModalVisible(false);
-                                            console.log("account sayfasındaki usrer", user)
                                         }} style={styles.account}>
                                             <View style={{ gap: 8, justifyContent: "space-between", flexDirection: "row", alignItems: "center" }}>
                                                 <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
@@ -93,7 +116,7 @@ const Account: React.FC<AccountProp> = ({ currency, onChangeAccount }) => {
                                                             {account.name}
                                                         </Text>
                                                         <Text style={{ fontSize: 12, lineHeight: 18, fontFamily: font, color: "#ABAFC4" }}>
-                                                            {account.balance} ETH
+                                                            {account.balance[3].balance} ETH
                                                         </Text>
                                                     </View>
                                                 </View>

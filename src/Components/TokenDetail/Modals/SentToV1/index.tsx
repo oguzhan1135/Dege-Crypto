@@ -5,6 +5,8 @@ import Account from "../../Account";
 import { Accounts, Recent } from "../../../../Router/types";
 import { AntDesign } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import User1 from "../../../../../assets/images/User-1.svg"
+import PrimaryButton from "../../../Buttons/Primary";
 
 interface SenToProps {
     setSentModalVisible: (modalVisible: boolean) => void;
@@ -15,8 +17,6 @@ interface SenToProps {
     recent: Recent[];
     modalStep: number;
     setModalStep: (modalstep: number) => void;
-    onchangeAccount: (account: Accounts) => void;
-
 }
 
 const SentToV1: React.FC<SenToProps> = (
@@ -29,8 +29,6 @@ const SentToV1: React.FC<SenToProps> = (
         recent,
         currency,
         modalStep,
-        onchangeAccount
-
     }) => {
 
     return (
@@ -53,46 +51,79 @@ const SentToV1: React.FC<SenToProps> = (
                         <View style={{ gap: 8 }}>
                             <View style={{}}>
                                 <Text style={{ fontSize: 16, lineHeight: 24, color: "white", fontFamily: "Poppins_500Medium" }}>From</Text>
-                                <Account currency={currency} onChangeAccount={onchangeAccount} />
+                                <Account currency={currency} />
                             </View>
                             <View style={{ gap: 8 }}>
                                 <Text style={{ fontSize: 16, lineHeight: 24, color: "white", fontFamily: "Poppins_500Medium" }}>To</Text>
-                                <View style={{ borderWidth: 2, borderColor: "#242424", borderRadius: 8, padding: 16, flexDirection: "row", alignItems: "center", gap: 20, }}>
-                                    <TextInput style={{ color: "white", width: "87%" }} value={paymentTo?.adress} placeholderTextColor={"#888DAA"} placeholder='Search, public address (0x), or ENS' />
-                                    <MaterialCommunityIcons style={{ paddingRight: 19, }} name="line-scan" size={24} color="white" />
+                                {
+                                    paymentTo?.adress === "" ?
+                                        <View style={{ borderWidth: 2, borderColor: "#242424", borderRadius: 8, padding: 16, flexDirection: "row", alignItems: "center", gap: 20, }}>
+                                            <TextInput style={{ color: "white", width: "87%" }} value={paymentTo?.adress} placeholderTextColor={"#888DAA"} placeholder='Search, public address (0x), or ENS' />
+                                            <MaterialCommunityIcons style={{ paddingRight: 19, }} name="line-scan" size={24} color="white" />
 
-                                </View>
+                                        </View> :
+                                        <View style={{ alignItems: "center", flexDirection: "row", padding: 16, justifyContent: "space-between" }}>
+                                            <View style={{ alignItems: "center", flexDirection: "row", gap: 8, }}>
+                                                <View style={styles.iconContainer}>
+                                                    {paymentTo?.avatar}
+                                                </View>
+                                                <View style={{ gap: 4 }}>
+                                                    <Text style={{ fontSize: 16, lineHeight: 24, fontFamily: "Poppins_500Medium", color: "white" }}>
+                                                        {paymentTo?.name}
+                                                    </Text>
+                                                    <Text style={{ fontSize: 12, lineHeight: 18, fontFamily: "Poppins_500Medium", color: "#ABAFC4" }}>
+                                                        {paymentTo?.adress}
+                                                    </Text>
+                                                </View>
+                                            </View>
+
+                                            <Pressable onPress={() => setPaymentTo({ id: 1, adress: "", avatar: <User1 />, name: "" })}>
+                                                <AntDesign name="close" size={20} color={"white"} />
+                                            </Pressable>
+
+                                        </View>
+                                }
+
                             </View>
                         </View>
-                        <Text style={{ color: "#5F97FF", paddingVertical: 24, lineHeight: 24, fontSize: 14, fontFamily: "Poppins_500Medium" }}>Transfer Between My Accounts</Text>
-                        <View style={{ paddingBottom: 80 }}>
-                            <Text style={{ fontSize: 16, lineHeight: 24, color: "white", fontFamily: "Poppins_500Medium" }}>Recent</Text>
-                            {
-                                recent.map((recent) =>
-                                    <Pressable onPress={() => {
-                                        setPaymentTo({ id: 1, adress: recent.adress, avatar: recent.avatar, name: recent.name })
-                                        setTimeout(() => {
-                                            setModalStep(modalStep + 1)
-                                        }, 100);
-                                    }
 
-                                    } style={{ alignItems: "center", flexDirection: "row", gap: 8, padding: 16 }}>
-                                        <View style={styles.iconContainer}>
-                                            {recent.avatar}
-                                        </View>
-                                        <View style={{ gap: 4 }}>
-                                            <Text style={{ fontSize: 16, lineHeight: 24, fontFamily: "Poppins_500Medium", color: "white" }}>
-                                                {recent.name}
-                                            </Text>
-                                            <Text style={{ fontSize: 12, lineHeight: 18, fontFamily: "Poppins_500Medium", color: "#ABAFC4" }}>
-                                                {recent.adress}
-                                            </Text>
-                                        </View>
-                                    </Pressable>
-                                )
-                            }
+                        {
+                            paymentTo?.adress === "" ?
+                                <View>
+                                    <Text style={{ color: "#5F97FF", paddingVertical: 24, lineHeight: 24, fontSize: 14, fontFamily: "Poppins_500Medium" }}>Transfer Between My Accounts</Text>
+                                    <View style={{ paddingBottom: 80 }}>
+                                        <Text style={{ fontSize: 16, lineHeight: 24, color: "white", fontFamily: "Poppins_500Medium" }}>Recent</Text>
+                                        {
+                                            recent.map((recent) =>
+                                                <Pressable onPress={() => {
+                                                    setPaymentTo({ id: 1, adress: recent.adress, avatar: recent.avatar, name: recent.name })
 
-                        </View>
+                                                }
+
+                                                } style={{ alignItems: "center", flexDirection: "row", gap: 8, padding: 16 }}>
+                                                    <View style={styles.iconContainer}>
+                                                        {recent.avatar}
+                                                    </View>
+                                                    <View style={{ gap: 4 }}>
+                                                        <Text style={{ fontSize: 16, lineHeight: 24, fontFamily: "Poppins_500Medium", color: "white" }}>
+                                                            {recent.name}
+                                                        </Text>
+                                                        <Text style={{ fontSize: 12, lineHeight: 18, fontFamily: "Poppins_500Medium", color: "#ABAFC4" }}>
+                                                            {recent.adress}
+                                                        </Text>
+                                                    </View>
+                                                </Pressable>
+                                            )
+                                        }
+
+                                    </View>
+                                </View> :
+                                <View style={{ paddingTop: 360 }}>
+                                    <PrimaryButton text="Next" onPress={() => setModalStep(modalStep + 1)} />
+                                </View>
+                        }
+
+
 
 
                     </View>

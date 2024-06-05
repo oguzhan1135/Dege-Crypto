@@ -1,5 +1,5 @@
 import { BlurView } from "expo-blur";
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Modal, View, Pressable, Text, StyleSheet, TextInput } from "react-native";
 import Account from "../../Account";
 import { Accounts, CoinListItem, Recent } from "../../../../Router/types";
@@ -9,6 +9,7 @@ import PrimaryButton from "../../../Buttons/Primary";
 import GradiantText from "../../../GradiantText";
 import { FontAwesome6 } from '@expo/vector-icons';
 import { MainContext } from "../../../../Context";
+import SelectToken, { Data } from "../SelectToken";
 
 interface AmountProps {
     setSentModalVisible: (modalVisible: boolean) => void;
@@ -20,7 +21,6 @@ interface AmountProps {
     coin?: CoinListItem;
     setCoin: (coin: CoinListItem) => void;
     currency?: string;
-    sentAccount?: Accounts
 
 }
 
@@ -32,12 +32,17 @@ const Amount: React.FC<AmountProps> = (
         modalStep,
         amount,
         setAmount,
-        coin,
-        sentAccount
-
+        coin
 
     }) => {
-    let calculatedAmount = ((parseFloat(amount) || 0) * (coin?.rate || 0)).toFixed(4);
+    const [coinSelect, setCoinSelect] = useState(false)
+    const [getCoin, setGetCoin] = useState({ coin: "BNB", index: 1 })
+    const { sentAccount,coinList } = useContext(MainContext)
+    const onchangeCoin = (coinData: Data) => {
+        setGetCoin(coinData);
+    };
+
+    let calculatedAmount = ((parseFloat(amount) || 0) * (coinList.find((coin)=> coin.currency === getCoin.coin)?.rate || 0)).toFixed(2);
 
     return (
         <Modal
@@ -60,12 +65,12 @@ const Amount: React.FC<AmountProps> = (
                             </Pressable>
                         </View>
                         <View style={{ alignItems: "center", position: "relative", paddingBottom: 60 }}>
-                            <View style={{ borderRadius: 8, paddingVertical: 12, paddingLeft: 16, paddingRight: 24, flexDirection: "row", alignItems: "center", justifyContent: "space-between", borderWidth: 2, borderColor: "#2a2d3c", gap: 30 }}>
-                                <Text style={{ color: "white", fontSize: 14, lineHeight: 24, fontFamily: "Poppins_500Medium" }}>BNB</Text>
+                            <Pressable onPress={() => setCoinSelect(true)} style={{ borderRadius: 8, paddingVertical: 12, paddingLeft: 16, paddingRight: 24, flexDirection: "row", alignItems: "center", justifyContent: "space-between", borderWidth: 2, borderColor: "#2a2d3c", gap: 30 }}>
+                                <Text style={{ color: "white", fontSize: 14, lineHeight: 24, fontFamily: "Poppins_500Medium" }}>{getCoin.coin}</Text>
                                 <AntDesign name='down' size={16} color={"white"} />
-                            </View>
+                            </Pressable>
                             <Text style={{ position: "absolute", color: "#FEBF32", fontSize: 14, lineHeight: 24, fontFamily: "Poppins_500Medium", right: 0, top: "25%" }}>Use Max</Text>
-
+                            <SelectToken coinSelect={coinSelect} setCoinSelect={setCoinSelect} onchangeCoin={onchangeCoin} />
                         </View>
                         <View style={{ position: 'relative', alignItems: 'center', justifyContent: 'center', paddingBottom: 40 }}>
                             <TextInput
@@ -88,10 +93,10 @@ const Amount: React.FC<AmountProps> = (
                                 <FontAwesome6 name="money-bill-transfer" size={18} color="white" />
                             </View>
                         </View>
-                        <View style={{ alignItems: "center",paddingBottom:80 }}>
-                            <Text style={{ fontFamily: "Poppins_500Medium", fontSize: 14, lineHeight: 24, color: "white" }}>Balance: {sentAccount?.balance}</Text>
+                        <View style={{ alignItems: "center", paddingBottom: 80 }}>
+                            <Text style={{ fontFamily: "Poppins_500Medium", fontSize: 14, lineHeight: 24, color: "white" }}>Balance: {sentAccount?.balance[getCoin.index - 1].balance}</Text>
                         </View>
-                        <PrimaryButton text="Next" onPress={()=> setModalStep(modalStep + 1 )} />
+                        <PrimaryButton text="Next" onPress={() => setModalStep(modalStep + 1)} />
                     </View>
                 </View>
             </BlurView>

@@ -56,8 +56,6 @@ function CreateNewWallet() {
     const handleStepChange = (step: number) => {
         setSmallStep(step);
         setCaseNumber(caseNumber + 1);
-        console.log(smallStep);
-        console.log("case numarası =>", caseNumber);
     };
 
     const handleConfirmButtonPress = () => {
@@ -71,8 +69,7 @@ function CreateNewWallet() {
         } else {
             setCurrentStep(currentStep + 1);
         }
-        console.log(passwordData);
-        console.log(currentStep);
+        //user password and confirm password control point
     };
 
     const handleBackButtonPress = () => {
