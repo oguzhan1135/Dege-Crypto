@@ -24,6 +24,7 @@ interface AmountProps {
 
 }
 
+
 const Amount: React.FC<AmountProps> = (
     {
         sentModalVisible,
@@ -37,12 +38,37 @@ const Amount: React.FC<AmountProps> = (
     }) => {
     const [coinSelect, setCoinSelect] = useState(false)
     const [getCoin, setGetCoin] = useState({ coin: "BNB", index: 1 })
-    const { sentAccount,coinList } = useContext(MainContext)
+    const { sentAccount, coinList, setSentCoin } = useContext(MainContext)
     const onchangeCoin = (coinData: Data) => {
         setGetCoin(coinData);
     };
 
-    let calculatedAmount = ((parseFloat(amount) || 0) * (coinList.find((coin)=> coin.currency === getCoin.coin)?.rate || 0)).toFixed(2);
+    let calculatedAmount = ((parseFloat(amount) || 0) * (coinList.find((coin) => coin.currency === getCoin.coin)?.rate || 0)).toFixed(2);
+    const [message, setMessage] = useState("");
+    const useMax = () => {
+        let maxAmount = sentAccount?.balance && sentAccount.balance[getCoin.index - 1]
+            ? (sentAccount.balance[getCoin.index - 1].balance - 0.13).toFixed(5).replace(/\.?0+$/, '')
+            : (0).toFixed(4).replace(/\.?0+$/, '');
+
+        setAmount(maxAmount)
+        console.log(amount)
+    }
+    const amountControl = (amount: string, balance: number) => {
+        if (parseFloat(amount) > balance) {
+            setModalStep(modalStep);
+            setMessage("Your balance is insufficient")
+        }
+        else {
+            setModalStep(3)
+            setSentCoin({
+                currency: getCoin.coin,
+                amount: parseFloat(amount),
+                balance: sentAccount?.balance && sentAccount.balance[getCoin.index - 1]
+                    ? sentAccount.balance[getCoin.index - 1].balance
+                    : 0
+            });
+        }
+    }
 
     return (
         <Modal
@@ -69,7 +95,9 @@ const Amount: React.FC<AmountProps> = (
                                 <Text style={{ color: "white", fontSize: 14, lineHeight: 24, fontFamily: "Poppins_500Medium" }}>{getCoin.coin}</Text>
                                 <AntDesign name='down' size={16} color={"white"} />
                             </Pressable>
-                            <Text style={{ position: "absolute", color: "#FEBF32", fontSize: 14, lineHeight: 24, fontFamily: "Poppins_500Medium", right: 0, top: "25%" }}>Use Max</Text>
+                            <Pressable style={{ position: "absolute", right: 0, top: "25%" }} onPress={() => useMax()}>
+                                <Text style={{ color: "#FEBF32", fontSize: 14, lineHeight: 24, fontFamily: "Poppins_500Medium" }}>Use Max</Text>
+                            </Pressable>
                             <SelectToken coinSelect={coinSelect} setCoinSelect={setCoinSelect} onchangeCoin={onchangeCoin} />
                         </View>
                         <View style={{ position: 'relative', alignItems: 'center', justifyContent: 'center', paddingBottom: 40 }}>
@@ -94,9 +122,22 @@ const Amount: React.FC<AmountProps> = (
                             </View>
                         </View>
                         <View style={{ alignItems: "center", paddingBottom: 80 }}>
-                            <Text style={{ fontFamily: "Poppins_500Medium", fontSize: 14, lineHeight: 24, color: "white" }}>Balance: {sentAccount?.balance[getCoin.index - 1].balance}</Text>
+                            <Text style={{ fontFamily: "Poppins_500Medium", fontSize: 14, lineHeight: 24, color: "white" }}>Balance: {sentAccount?.balance[getCoin.index - 1].balance} {getCoin.coin}</Text>
                         </View>
-                        <PrimaryButton text="Next" onPress={() => setModalStep(modalStep + 1)} />
+
+                        <View style={{ alignItems: "center" }}>
+                            {
+                                message !== "" ? <View style={{ backgroundColor: "#301c1c", borderRadius: 10, padding: 10, position: "absolute", bottom: 25 }}>
+
+                                    <Text style={{ color: "red", fontSize: 16, lineHeight: 30, fontFamily: "Poppins_500Medium" }}>{message}</Text>
+
+
+                                </View> : null
+                            }
+
+                        </View>
+
+                        <PrimaryButton text="Next" onPress={() => amountControl(amount, sentAccount?.balance[getCoin.index - 1].balance)} />
                     </View>
                 </View>
             </BlurView>

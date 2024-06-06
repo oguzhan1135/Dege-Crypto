@@ -14,7 +14,8 @@ import { MainContext } from '../../Context';
 import SentToV1 from './Modals/SentToV1';
 import Amount from './Modals/Amount';
 import Confirm from './Modals/Confirm';
-
+import User1 from '../../../assets/images/User-1.svg'
+import TransactionView from './Modals/TransactionView';
 type TokenDetailProps = NativeStackScreenProps<OnboardingStackParamList, 'TokenDetail'>;
 
 const TokenDetail: React.FC<TokenDetailProps> = ({ route }) => {
@@ -26,7 +27,7 @@ const TokenDetail: React.FC<TokenDetailProps> = ({ route }) => {
     const [selectedTransaction, setSelectedTransaction] = useState<Transaction>()
     const [sentModalVisible, setSentModalVisible] = useState(false);
     const [receivedModalVisible, setReceivedModalVisible] = useState(false);
-    const [paymentTo, setPaymentTo] = useState<Recent>()
+    const [paymentTo, setPaymentTo] = useState<Recent>({ id: 1, adress: "", avatar: <User1 />, name: "" })
     const [modalStep, setModalStep] = useState(1)
     const [amount, setAmount] = useState("0.2405")
     const [sentAmount, setSentAmount] = useState(0)
@@ -38,6 +39,10 @@ const TokenDetail: React.FC<TokenDetailProps> = ({ route }) => {
         setCoin(coinList.find((coin) => coin.currency === currency))
 
     }, [])
+
+    useEffect(() => {
+        console.log(modalStep)
+    }, [modalStep])
     return (
         <View style={styles.container}>
             <HomeShape style={{ position: "absolute", right: 0, top: "15%", transform: [{ scale: 1.2 }] }} />
@@ -103,13 +108,15 @@ const TokenDetail: React.FC<TokenDetailProps> = ({ route }) => {
                             sentModalVisible={sentModalVisible}
                             coin={coin}
                             setCoin={setCoin}
-                        />  : modalStep === 3 ?
-                                <Confirm
-                                    setModalStep={setModalStep}
-                                    modalStep={modalStep}
-                                    setSentModalVisible={setModalVisible}
-                                    sentModalVisible={modalVisible}
-                                /> : null
+                        /> : modalStep === 3 ?
+
+                            <Confirm
+                                setModalStep={setModalStep}
+                                modalStep={modalStep}
+                                setSentModalVisible={setSentModalVisible}
+                                sentModalVisible={sentModalVisible}
+                            />
+                            : null
 
             }
 
@@ -145,88 +152,16 @@ const TokenDetail: React.FC<TokenDetailProps> = ({ route }) => {
                     )
 
                 }
-                <Modal
-                    style={styles.blur}
-                    visible={modalVisible}
-                    animationType="slide"
-                    transparent={true}
-                >
-                    <BlurView intensity={80} style={{ flex: 1 }}>
-                        <View style={styles.centeredView}>
-                            <View style={{ backgroundColor: "#ABAFC4", height: 4, width: 40, borderRadius: 100, marginBottom: 5 }} />
-                            <View style={styles.modalView}>
-                                <Text style={styles.modalText}>Recived {currency}</Text>
-                                <View style={{ gap: 2, paddingVertical: 16 }}>
-                                    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-                                        <Text style={{ color: "#ABAFC4", fontSize: 12, lineHeight: 18, fontFamily: "Poppins_500Medium" }}>Status</Text>
-                                        <Text style={{ color: "#ABAFC4", fontSize: 12, lineHeight: 18, fontFamily: "Poppins_500Medium" }}>Date</Text>
-                                    </View>
-                                    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-                                        <Text style={{ fontFamily: "Poppins_700Bold", fontSize: 14, lineHeight: 24, color: "#76E268" }}>Confirmed</Text>
-                                        <Text style={{ color: "white", fontSize: 12, lineHeight: 18, fontFamily: "Poppins_500Medium" }}>{selectedTransaction?.date}</Text>
-                                    </View>
-                                </View>
-                                <View style={{ gap: 2, paddingVertical: 16 }}>
-                                    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-                                        <Text style={{ color: "#ABAFC4", fontSize: 12, lineHeight: 18, fontFamily: "Poppins_500Medium" }}>From</Text>
-                                        <Text style={{ color: "#ABAFC4", fontSize: 12, lineHeight: 18, fontFamily: "Poppins_500Medium" }}>To</Text>
-                                    </View>
-                                    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-                                        <Text style={{ fontFamily: "Poppins_500Medium", fontSize: 14, lineHeight: 24, color: "white" }}>0x3Dc6...DfCE</Text>
-                                        <Text style={{ fontFamily: "Poppins_500Medium", fontSize: 14, lineHeight: 24, color: "white" }}>0x3Dc6...DfF9</Text>
-                                    </View>
-                                </View>
-                                <View style={{ gap: 2, paddingVertical: 16 }}>
-                                    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-                                        <Text style={{ color: "#ABAFC4", fontSize: 12, lineHeight: 18, fontFamily: "Poppins_500Medium" }}>Nonce</Text>
-                                    </View>
-                                    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-                                        <Text style={{ fontFamily: "Poppins_500Medium", fontSize: 14, lineHeight: 24, color: "white" }}>#0</Text>
-                                    </View>
-                                </View>
-                                <View style={{ paddingVertical: 16, gap: 8, borderRadius: 8, borderWidth: 1, borderColor: "#242424" }}>
-                                    {
-                                        selectedTransaction?.type === "Sent" &&
-                                        <View style={{ gap: 16 }}>
-                                            <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 16 }}>
-                                                <Text style={{ fontSize: 16, lineHeight: 24, fontFamily: "Poppins_500Medium", color: "white" }}>Total Amount</Text>
-                                                <Text style={{ fontSize: 16, lineHeight: 24, fontFamily: "Poppins_500Medium", color: "white" }}>{selectedTransaction.amount} {currency}</Text>
-                                            </View>
-                                            <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", borderBottomWidth: 2, paddingHorizontal: 16, paddingBottom: 16, borderBottomColor: "#242424" }}>
-                                                <Text style={{ fontSize: 16, lineHeight: 24, fontFamily: "Poppins_500Medium", color: "white" }}>Network fee</Text>
-                                                <Text style={{ fontSize: 16, lineHeight: 24, fontFamily: "Poppins_500Medium", color: "white" }}>0.21 {currency}</Text>
-                                            </View>
-                                        </View>
-                                    }
-                                    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 16, paddingTop: 8 }}>
-                                        <Text style={{ fontSize: 16, lineHeight: 24, fontFamily: "Poppins_500Medium", color: "white" }}>Total Amount</Text>
-                                        {selectedTransaction &&
-                                            <Text style={{ fontSize: 16, lineHeight: 24, fontFamily: "Poppins_500Medium", color: "white" }}>
-                                                {selectedTransaction.type === "Sent"
-                                                    ? `${(selectedTransaction.amount + 0.21).toFixed(5)} ${currency}`
-                                                    : `${selectedTransaction.amount.toFixed(5)} ${currency}`}
-                                            </Text>
-                                        }
-                                    </View>
-                                    {selectedTransaction &&
-                                        <Text style={{ marginLeft: "auto", color: "#ABAFC4", fontSize: 12, lineHeight: 18, fontFamily: "Poppins_500Medium", paddingHorizontal: 16 }}>
-                                            ${selectedTransaction.type === "Sent"
-                                                ? ((selectedTransaction.amount + 0.21) * rate).toFixed(5)
-                                                : (selectedTransaction.amount * rate).toFixed(5)}
-                                        </Text>
-                                    }
-                                </View>
-
-                                <Pressable onPress={() => setModalVisible(false)} style={{ alignItems: "center" }}>
-                                    <Text style={{ paddingTop: 30, fontFamily: "Poppins_500Medium", color: "#FEBF32", fontSize: 16, lineHeight: 24 }}>View on Mainnet</Text>
-                                </Pressable>
-
-
-
-                            </View>
-                        </View>
-                    </BlurView>
-                </Modal>
+                <TransactionView
+                    modalStep={modalStep}
+                    setModalStep={setModalStep}
+                    modalVisible={modalVisible}
+                    setModalVisible={setModalVisible}
+                    rate={rate}
+                    currency={currency}
+                    selectedTransaction={selectedTransaction}
+                    setSelectedTransaction={setSelectedTransaction}
+                />
             </View>
             <View style={styles.tabBar}>
                 <Pressable onPress={() => handleTabPress("wallet")} style={{ flex: 1 }}>

@@ -37,6 +37,10 @@ export type AppContextInterface = {
     setRecent: (recent: Recent[]) => void;
     sentAccount?: Accounts;
     setSentAccount: (sentAccount: Accounts) => void;
+    receiverAccount?: Recent;
+    setReceiverAccount: (receiverAccount: Recent) => void;
+    sentCoin?: SentCoin;
+    setSentCoin: (sentCoin: SentCoin) => void;
 }
 
 export type Transaction = {
@@ -74,7 +78,12 @@ export type Recent = {
     name: string;
     adress: string;
     avatar: React.JSX.Element
-
 }
+export type SentCoin = {
+    currency: string;
+    amount: number;
+    balance: number;
+}
+
 
 

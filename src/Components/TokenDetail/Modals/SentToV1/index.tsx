@@ -1,5 +1,5 @@
 import { BlurView } from "expo-blur";
-import React from "react";
+import React, { useContext } from "react";
 import { Modal, View, Pressable, TextInput, Text, StyleSheet } from "react-native";
 import Account from "../../Account";
 import { Accounts, Recent } from "../../../../Router/types";
@@ -7,6 +7,7 @@ import { AntDesign } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import User1 from "../../../../../assets/images/User-1.svg"
 import PrimaryButton from "../../../Buttons/Primary";
+import { MainContext } from "../../../../Context";
 
 interface SenToProps {
     setSentModalVisible: (modalVisible: boolean) => void;
@@ -30,6 +31,7 @@ const SentToV1: React.FC<SenToProps> = (
         currency,
         modalStep,
     }) => {
+        const {setReceiverAccount}=useContext(MainContext)
 
     return (
         <Modal
@@ -97,7 +99,7 @@ const SentToV1: React.FC<SenToProps> = (
                                             recent.map((recent) =>
                                                 <Pressable onPress={() => {
                                                     setPaymentTo({ id: 1, adress: recent.adress, avatar: recent.avatar, name: recent.name })
-
+                                                    setReceiverAccount({ id: 1, adress: recent.adress, avatar: recent.avatar, name: recent.name })
                                                 }
 
                                                 } style={{ alignItems: "center", flexDirection: "row", gap: 8, padding: 16 }}>

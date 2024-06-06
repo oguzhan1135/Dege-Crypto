@@ -1,5 +1,5 @@
 import React, { useState, createContext, ReactNode } from 'react';
-import { AppContextInterface, ContextProps, CoinListItem, Accounts, Recent } from '../Router/types';
+import { AppContextInterface, ContextProps, CoinListItem, Accounts, Recent, SentCoin } from '../Router/types';
 import User1 from "../../assets/images/User-1.svg";
 import User2 from "../../assets/images/User-2.svg";
 import User3 from "../../assets/images/User-3.svg";
@@ -192,9 +192,9 @@ export const MainProvider = ({ children }: ContextProps) => {
 
         }
     ]);
-
+    const [sentCoin, setSentCoin] = useState<SentCoin>()
     const [sentAccount, setSentAccount] = useState<Accounts>();
-
+    const [receiverAccount, setReceiverAccount] = useState<Recent>();
     const [recent, setRecent] = useState<Recent[]>([
         {
             id: 1,
@@ -228,7 +228,7 @@ export const MainProvider = ({ children }: ContextProps) => {
         },
     ])
     const data: AppContextInterface = {
-        coinList, setCoinList, accounts, setAccounts, recent, setRecent, sentAccount, setSentAccount
+        coinList, setCoinList, accounts, setAccounts, recent, setRecent, sentAccount, setSentAccount, receiverAccount, setReceiverAccount, sentCoin, setSentCoin
     }
 
     return (

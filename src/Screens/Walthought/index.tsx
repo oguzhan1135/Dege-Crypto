@@ -6,6 +6,7 @@ import SafeandConvenients from '../../../assets/images/SafeandConvenient.svg'
 import ConvenienTransaction from '../../../assets/images/ConvenientTransaction.svg'
 import GradiantText from '../../Components/GradiantText';
 import SecondaryButton from '../../Components/Buttons/Secondary';
+import PrimaryButton from '../../Components/Buttons/Primary';
 
 const styles = StyleSheet.create({
     container: {
@@ -75,6 +76,7 @@ function Walthought() {
             </Swiper>
             <View style={{ paddingLeft: 24, paddingRight: 24 }}>
                 <SecondaryButton page='WalletSetUp' text='Get Start'/>
+                <PrimaryButton text='Anasayfa' page='Homescreen'/>
             </View>
         </View>
     );
