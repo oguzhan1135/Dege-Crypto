@@ -43,7 +43,7 @@ const Homescreen: React.FC = () => {
                         balance: 92.3
                     },
                     {
-                        coinName: "Synthetix",
+                        coinName: "SNX",
                         balance: 42.74
                     },
                     {
@@ -54,28 +54,88 @@ const Homescreen: React.FC = () => {
                 adress: "0x4Dc6...DxR9",
                 transaction: [
                     {
+                        id: 1,
                         type: "Received",
                         amount: 0.04,
-                        date: "Mar 3 at 10:04am"
+                        date: "Mar 3 at 10:04am",
+                        networkFee: 0.12,
+                        paymenToAdress: "0x3Dc6...DxE9",
+                        currency: "BNB",
+                        status: "Confirmed"
                     },
                     {
+                        id: 2,
+                        type: "Received",
+                        amount: 1.88,
+                        date: "Aug 14 at 10:04am",
+                        networkFee: 0.13,
+                        paymenToAdress: "0x3Dc6...DxE9",
+                        currency: "BNB",
+                        status: "Confirmed"
+                    },
+                    {
+                        id: 3,
                         type: "Sent",
                         amount: 2.35,
-                        date: "Mar 4 at 11:04am"
+                        date: "Sep 4 at 11:04am",
+                        networkFee: 0.08,
+                        paymenToAdress: "0x3Dc6...DxE12",
+                        currency: "BNB",
+                        status: "Cancelled"
                     },
                     {
+                        id: 4,
                         type: "Received",
                         amount: 1.876,
-                        date: "Mar 3 at 10:04am"
+                        date: "Aug 3 at 10:04am",
+                        networkFee: 0.12,
+                        paymenToAdress: "0x3Dc6...DxL9",
+                        currency: "USDC",
+                        status: "Confirmed"
                     },
                     {
+                        id: 5,
                         type: "Received",
-                        amount: 0.04,
-                        date: "Mar 3 at 10:04am"
+                        amount: 410,
+                        date: "Feb 3 at 10:04am",
+                        networkFee: 0.12,
+                        paymenToAdress: "0x3Dc6...DxL9",
+                        currency: "USDC",
+                        status: "Confirmed"
+                    },
+                    {
+                        id: 6,
+                        type: "Received",
+                        amount: 100,
+                        date: "Aug 30 at 10:04am",
+                        networkFee: 0.12,
+                        paymenToAdress: "0x3Dc6...DxL9",
+                        currency: "USDC",
+                        status: "Cancelled"
+                    },
+                    {
+                        id: 7,
+                        type: "Received",
+                        amount: 3,
+                        date: "Feb 12 at 10:04am",
+                        networkFee: 0.13,
+                        paymenToAdress: "0x3Dc6...DxE14",
+                        currency: "SNX",
+                        status: "Confirmed"
+                    },
+                    {
+                        id: 8,
+                        type: "Received",
+                        amount: 10,
+                        date: "Jan 21 at 10:04am",
+                        networkFee: 0.13,
+                        paymenToAdress: "0x3Dc6...DxE14",
+                        currency: "SNX",
+                        status: "Cancelled"
                     },
                 ]
-            }
-        )
+            })
+    
     }, [])
 
     const coinBalance = (coin: CoinListItem) => {

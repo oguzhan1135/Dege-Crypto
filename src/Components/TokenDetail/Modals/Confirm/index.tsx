@@ -1,5 +1,5 @@
 import { BlurView } from "expo-blur";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Modal, View, Pressable, Text, StyleSheet } from "react-native";
 import { AntDesign } from '@expo/vector-icons';
 import PrimaryButton from "../../../Buttons/Primary";
@@ -11,28 +11,99 @@ interface ConfirmProps {
     setSentModalVisible: (modalVisible: boolean) => void;
     sentModalVisible: boolean;
     modalStep: number;
-    setModalStep: (modalstep: number) => void;
+    setModalStep: (modalStep: number) => void;
 }
 
-const Confirm: React.FC<ConfirmProps> = (
-    {
-        sentModalVisible,
-        setModalStep,
-        setSentModalVisible,
-        modalStep
-
-    }) => {
-    const { receiverAccount, sentAccount, sentCoin } = useContext(MainContext)
+const Confirm: React.FC<ConfirmProps> = ({
+    sentModalVisible,
+    setModalStep,
+    setSentModalVisible,
+    modalStep
+}) => {
+    const { receiverAccount, sentAccount, sentCoin, coinList, setAccounts, accounts, setSentAccount } = useContext(MainContext);
     const font = "Poppins_500Medium";
     const [modalVisible, setModalVisible] = useState(false);
-    const [editFee, setEditFee] = useState<number>()
+    const [editFee, setEditFee] = useState<number>(500);
+
     const onchangeFee = (fee: number) => {
-        setEditFee(fee)
-        console.log(fee)
+        setEditFee(fee);
+        console.log(fee);
     }
+    useEffect(() => {
+        setEditFee(0.12)
+    }, [])
+
+    const totalAmount = (sentCoin?.amount || 0) + (editFee || 0);
+    const totalInUSD = (totalAmount * (coinList.find((coin) => coin.currency === sentCoin?.currency)?.rate || 0)).toFixed(2);
+
+    const sentOperation = () => {
+        // Gönderen hesabı bul
+        const findAccountIndex = accounts.findIndex((account) => account.adress === sentAccount?.adress);
+    
+        // Eğer hesap bulunamazsa işlemi sonlandır
+        if (findAccountIndex === -1) {
+            console.log("Hesap bulunamadı.");
+            return;
+        }
+    
+        const currentDate = new Date();
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const hour = currentDate.getHours() + 3; 
+        const minute = currentDate.getMinutes();
+        const day = currentDate.getDate();
+        const month = months[currentDate.getMonth()];
+        const formattedDate = `${month} ${day} at ${hour}:${minute}`;
+        const amount = sentCoin?.amount && sentCoin.amount;
+    
+        const newTransaction = {
+            id: Math.floor(Math.random() * 90000) + 10000,
+            type: "Sent",
+            amount: amount,
+            date: formattedDate,
+            status: "Submitted",
+            currency: sentCoin?.currency,
+            networkFee: editFee,
+            paymenToAdress: receiverAccount?.adress
+        };
+    
+        const updatedAccounts = [...accounts];
+        updatedAccounts[findAccountIndex].transaction.push(newTransaction);
+    
+        const updatedBalance = updatedAccounts[findAccountIndex].balance.map((item) => {
+            if (item.currency === sentCoin?.currency) {
+                return {
+                    ...item,
+                    balance: item.balance - (amount + editFee)
+                };
+            }
+            return item;
+        });
+    
+        updatedAccounts[findAccountIndex].balance = updatedBalance;
+    
+        setAccounts(updatedAccounts);
+        setSentAccount(updatedAccounts[findAccountIndex]);
+    
+        setSentModalVisible(false);
+        setModalStep(modalStep + 1);
+    
+        setTimeout(() => {
+            const updatedTransactionIndex = updatedAccounts[findAccountIndex].transaction.findIndex((transaction) => transaction.id === newTransaction.id);
+    
+            if (updatedTransactionIndex !== -1) {
+                updatedAccounts[findAccountIndex].transaction[updatedTransactionIndex].status = "Confirmed";
+                setAccounts([...updatedAccounts]); 
+                setSentAccount(updatedAccounts[findAccountIndex]);
+            }
+        }, 3000);
+    };
+
+    useEffect(() => {
+        console.log(accounts)
+    }, [accounts])
+
     return (
         <Modal
-            style={styles.blur}
             visible={sentModalVisible}
             animationType="slide"
             transparent={true}
@@ -79,7 +150,7 @@ const Confirm: React.FC<ConfirmProps> = (
                                 <Text style={{ fontSize: 16, lineHeight: 24, color: "white", fontFamily: "Poppins_500Medium" }}>To</Text>
 
                                 <View style={{ alignItems: "center", flexDirection: "row", padding: 16, justifyContent: "space-between", paddingBottom: 40 }}>
-                                    <View style={{ alignItems: "center", flexDirection: "row", gap: 8, }}>
+                                    <View style={{ alignItems: "center", flexDirection: "row", gap: 8 }}>
                                         <View style={styles.iconContainer}>
                                             {receiverAccount?.avatar}
                                         </View>
@@ -112,35 +183,30 @@ const Confirm: React.FC<ConfirmProps> = (
                                                 modalVisible={modalVisible}
                                                 onchangeFee={onchangeFee}
                                             />
-                                            <Text style={{ fontSize: 16, lineHeight: 24, fontFamily: "Poppins_500Medium", color: "white" }}>0.12 {sentCoin?.currency}</Text>
+                                            <Text style={{ fontSize: 16, lineHeight: 24, fontFamily: "Poppins_500Medium", color: "white" }}>{editFee} {sentCoin?.currency}</Text>
                                         </View>
                                     </View>
                                     <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 16, paddingTop: 8 }}>
                                         <Text style={{ fontSize: 16, lineHeight: 24, fontFamily: "Poppins_500Medium", color: "white" }}>Total Amount</Text>
                                         <Text style={{ fontSize: 16, lineHeight: 24, fontFamily: "Poppins_500Medium", color: "white" }}>
-
+                                            {totalAmount} {sentCoin?.currency}
                                         </Text>
-
                                     </View>
-
                                     <Text style={{ marginLeft: "auto", color: "#ABAFC4", fontSize: 12, lineHeight: 18, fontFamily: "Poppins_500Medium", paddingHorizontal: 16 }}>
-                                        qwer
+                                        ${totalInUSD}
                                     </Text>
-
                                 </View>
                             </View>
                         </View>
 
-
-                        <PrimaryButton text='Next' onPress={() => setSentModalVisible(false)} />
-
+                        <PrimaryButton text='Send' onPress={() => sentOperation()} />
                     </View>
                 </View>
             </BlurView>
         </Modal>
     )
-
 }
+
 const styles = StyleSheet.create({
     iconContainer: {
         backgroundColor: "#222531",
@@ -150,15 +216,12 @@ const styles = StyleSheet.create({
         borderRadius: 50,
         justifyContent: "center",
         alignItems: "center",
-
     },
     modalView: {
         width: "100%",
         backgroundColor: "#17171A",
         paddingBottom: 40,
         paddingHorizontal: 24,
-
-
     },
     modalText: {
         fontSize: 16,
@@ -182,7 +245,8 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: "flex-end",
         alignItems: "center",
-        backgroundColor: 'rgb(0,0,0,10)',
+        backgroundColor: 'rgba(0,0,0,0.1)',
     }
-})
-export default Confirm
+});
+
+export default Confirm;

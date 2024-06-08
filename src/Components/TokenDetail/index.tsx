@@ -1,61 +1,80 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, Text, Pressable, StyleSheet, Modal, TextInput } from 'react-native';
-import { CoinListItem, OnboardingStackParamList, Recent, Transaction } from '../../Router/types';
+import { View, Text, Pressable, StyleSheet, ScrollView } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { AntDesign, Entypo, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useAppNavigation } from '../../Router/useAppNavigation';
-import { AntDesign } from '@expo/vector-icons';
-import GradiantText from '../GradiantText';
-import { Entypo } from '@expo/vector-icons';
-import { Ionicons } from '@expo/vector-icons';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import HomeShape from '../../../assets/images/HomeShape.svg'
-import { BlurView } from 'expo-blur';
 import { MainContext } from '../../Context';
+import GradiantText from '../GradiantText';
+import HomeShape from '../../../assets/images/HomeShape.svg';
+import User1 from '../../../assets/images/User-1.svg';
 import SentToV1 from './Modals/SentToV1';
 import Amount from './Modals/Amount';
 import Confirm from './Modals/Confirm';
-import User1 from '../../../assets/images/User-1.svg'
 import TransactionView from './Modals/TransactionView';
+import { OnboardingStackParamList, CoinListItem, Transaction, Recent } from '../../Router/types';
+import { BlurView } from 'expo-blur';
+import { Feather } from '@expo/vector-icons';
+
 type TokenDetailProps = NativeStackScreenProps<OnboardingStackParamList, 'TokenDetail'>;
 
 const TokenDetail: React.FC<TokenDetailProps> = ({ route }) => {
     const { balance, currency, rate } = route.params;
     const [coin, setCoin] = useState<CoinListItem>();
-    const [activeTab, setActiveTab] = React.useState("wallet");
-    const [modalVisible, setModalVisible] = useState(false)
-    const navigation = useAppNavigation()
-    const [selectedTransaction, setSelectedTransaction] = useState<Transaction>()
+    const [activeTab, setActiveTab] = useState("wallet");
+    const [modalVisible, setModalVisible] = useState(false);
+    const navigation = useAppNavigation();
+    const [selectedTransaction, setSelectedTransaction] = useState<Transaction>();
     const [sentModalVisible, setSentModalVisible] = useState(false);
-    const [receivedModalVisible, setReceivedModalVisible] = useState(false);
-    const [paymentTo, setPaymentTo] = useState<Recent>({ id: 1, adress: "", avatar: <User1 />, name: "" })
-    const [modalStep, setModalStep] = useState(1)
-    const [amount, setAmount] = useState("0.2405")
-    const [sentAmount, setSentAmount] = useState(0)
+    const [paymentTo, setPaymentTo] = useState<Recent>({ id: 1, adress: "", avatar: <User1 />, name: "" });
+    const [modalStep, setModalStep] = useState(1);
+    const [amount, setAmount] = useState("0.2405");
+    const [sentAmount, setSentAmount] = useState(0);
+    const [details, setDetails] = useState<Transaction[]>([]);
+    const { accounts, recent, sentAccount } = useContext(MainContext);
+    const [message, setMessage] = useState("")
     const handleTabPress = (tab: string) => {
         setActiveTab(tab);
     };
-    const { accounts, recent, sentAccount, coinList } = useContext(MainContext);
-    useEffect(() => {
-        setCoin(coinList.find((coin) => coin.currency === currency))
-
-    }, [])
 
     useEffect(() => {
-        console.log(modalStep)
-    }, [modalStep])
+        if (sentAccount?.transaction.length === sentAccount?.transaction.length || 0 + 1) {
+            const upgradeDetails = sentAccount?.transaction.filter((account) => account.currency === currency);
+            setDetails(upgradeDetails);
+        }
+    }, [accounts, sentAccount, currency]);
+
+    useEffect(() => {
+        if (modalStep === 4) {
+            setMessage("Submitted");
+
+            const timer1 = setTimeout(() => {
+                setMessage("Confirmed");
+            }, 3000);
+
+            const timer2 = setTimeout(() => {
+                setMessage("");
+                setModalStep(1);
+            }, 6000);
+
+            return () => {
+                clearTimeout(timer1);
+                clearTimeout(timer2);
+            };
+        }
+    }, [modalStep]);
+
     return (
         <View style={styles.container}>
             <HomeShape style={{ position: "absolute", right: 0, top: "15%", transform: [{ scale: 1.2 }] }} />
             <View style={styles.navbar}>
                 <Pressable
                     onPress={() => {
-                        navigation.navigate("Onboarding", { screen: "Homescreen", })
+                        navigation.navigate("Onboarding", { screen: "Homescreen" });
                     }}
                     style={({ pressed }) => [
                         styles.navigationArrow,
                         {
                             backgroundColor: pressed ? '#44485F' : 'transparent',
-
                         }
                     ]}
                 >
@@ -65,7 +84,6 @@ const TokenDetail: React.FC<TokenDetailProps> = ({ route }) => {
                 <View style={styles.navigationContainer}>
                     <Text style={styles.navbarText}>{coin?.currency}</Text>
                 </View>
-
             </View>
 
             <View style={styles.aset}>
@@ -83,7 +101,6 @@ const TokenDetail: React.FC<TokenDetailProps> = ({ route }) => {
                     <AntDesign name="arrowdown" size={24} color="#FEBF32" />
                     <Text style={{ color: "#FEBF32", fontFamily: "Poppins_500Medium", fontSize: 14, lineHeight: 24 }}>Receive</Text>
                 </View>
-
             </View>
             {
                 modalStep === 1 ?
@@ -97,7 +114,6 @@ const TokenDetail: React.FC<TokenDetailProps> = ({ route }) => {
                         recent={recent}
                         setPaymentTo={setPaymentTo}
                     />
-
                     : modalStep === 2 ?
                         <Amount
                             setAmount={setAmount}
@@ -109,37 +125,73 @@ const TokenDetail: React.FC<TokenDetailProps> = ({ route }) => {
                             coin={coin}
                             setCoin={setCoin}
                         /> : modalStep === 3 ?
-
                             <Confirm
                                 setModalStep={setModalStep}
                                 modalStep={modalStep}
                                 setSentModalVisible={setSentModalVisible}
                                 sentModalVisible={sentModalVisible}
                             />
-                            : null
+                            : modalStep === 4 ?
+                                <>
 
+                                    {
+                                        message === "Submitted" ?
+                                            <View style={{ position: "absolute", bottom: 90, zIndex: 1, width: "100%", paddingHorizontal: 16, borderRadius: 8, overflow: "hidden" }}>
+                                                <BlurView intensity={0} style={{ flex: 1, padding: 16, borderRadius: 8, backgroundColor: "#292618" }}>
+                                                    <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+                                                        <Feather name="clock" size={40} color="#FEBF32" />
+                                                        <View style={{ gap: 4 }}>
+                                                            <Text style={{ fontSize: 16, lineHeight: 24, fontFamily: "Poppins_500Medium", color: "white" }}>Transaction Submitted</Text>
+                                                            <Text style={{ color: "#ABAFC4", fontFamily: "Poppins_500Medium", fontSize: 12, lineHeight: 18 }}>Waiting for confirmation</Text>
+                                                        </View>
+                                                    </View>
+                                                </BlurView>
+                                            </View> : null}
+                                    {
+
+                                        message === "Confirmed" ?
+                                            <View style={{ position: "absolute", bottom: 90, zIndex: 1, width: "100%", paddingHorizontal: 16, borderRadius: 8, overflow: "hidden" }}>
+                                                <BlurView intensity={0} style={{ flex: 1, padding: 16, borderRadius: 8, backgroundColor: "#1e2720" }}>
+                                                    <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+                                                        <AntDesign name="checkcircleo" size={40} color="#76E268" />
+                                                        <View style={{ gap: 4 }}>
+                                                            <Text style={{ fontSize: 16, lineHeight: 24, fontFamily: "Poppins_500Medium", color: "white" }}>Transaction #0 Complete!</Text>
+                                                            <Text style={{ color: "#ABAFC4", fontFamily: "Poppins_500Medium", fontSize: 12, lineHeight: 18 }}>Tap to view this transaction</Text>
+                                                        </View>
+                                                    </View>
+                                                </BlurView>
+                                            </View> : null
+                                    }
+
+
+                                </>
+
+                                : null
             }
 
-            <View style={{ paddingHorizontal: 24, gap: 8 }}>
-
+            <ScrollView style={{ paddingHorizontal: 24, gap: 8, overflow: "scroll", maxHeight: 450 }}>
                 {
-                    sentAccount?.transaction.map((transaction) =>
-                        <Pressable onPress={() => {
-                            setModalVisible(true);
-                            setSelectedTransaction(transaction);
-                        }}
-                            style={styles.listItem}>
+                    details?.map((transaction) =>
+                        <Pressable
+                            key={transaction.id}
+                            onPress={() => {
+                                setModalVisible(true);
+                                setSelectedTransaction(transaction);
+                            }}
+                            style={styles.listItem}
+                        >
                             <Text style={{ color: "#ABAFC4", fontSize: 12, lineHeight: 18, fontFamily: "Poppins_500Medium" }}>{transaction.date}</Text>
                             <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-                                <AntDesign name="arrowdown" size={24} style={{ paddingHorizontal: 5 }} color="#76E268" />
+                                <AntDesign name={transaction.type === "Sent" ? "arrowup" : "arrowdown"} size={24} style={{ paddingHorizontal: 5 }} color={transaction.type === "Sent" ? "#EA3943" : "#76E268"} />
                                 <View style={{ flexDirection: "row", justifyContent: "space-between", flex: 1 }}>
                                     <View style={{ flexDirection: "column", gap: 4 }}>
                                         <Text style={{ fontFamily: "Poppins_700Bold", fontSize: 16, lineHeight: 24, color: "white" }}>{transaction.type} {currency}</Text>
-
                                         {
-                                            transaction.type === "Received" ?
-                                                <Text style={{ fontFamily: "Poppins_700Bold", fontSize: 14, lineHeight: 24, color: "#76E268" }}>Confirmed</Text> :
-                                                <Text style={{ fontFamily: "Poppins_700Bold", fontSize: 14, lineHeight: 24, color: "#EA3943" }}>Cancelled</Text>
+                                            transaction.status === "Confirmed" ?
+                                                <Text style={{ fontFamily: "Poppins_700Bold", fontSize: 14, lineHeight: 24, color: "#76E268" }}>Confirmed</Text>
+                                                : transaction.status === "Cancelled" ?
+                                                    <Text style={{ fontFamily: "Poppins_700Bold", fontSize: 14, lineHeight: 24, color: "#EA3943" }}>Cancelled</Text> :
+                                                    <Text style={{ fontFamily: "Poppins_700Bold", fontSize: 14, lineHeight: 24, color: "#FEBF32" }}>Submitted</Text>
                                         }
                                     </View>
                                     <View style={{ flexDirection: "column", alignItems: "flex-start", gap: 4 }}>
@@ -150,7 +202,6 @@ const TokenDetail: React.FC<TokenDetailProps> = ({ route }) => {
                             </View>
                         </Pressable>
                     )
-
                 }
                 <TransactionView
                     modalStep={modalStep}
@@ -162,7 +213,7 @@ const TokenDetail: React.FC<TokenDetailProps> = ({ route }) => {
                     selectedTransaction={selectedTransaction}
                     setSelectedTransaction={setSelectedTransaction}
                 />
-            </View>
+            </ScrollView>
             <View style={styles.tabBar}>
                 <Pressable onPress={() => handleTabPress("wallet")} style={{ flex: 1 }}>
                     <View style={styles.tabBarContentBox}>
@@ -192,17 +243,13 @@ const TokenDetail: React.FC<TokenDetailProps> = ({ route }) => {
         </View >
     );
 }
+
 const styles = StyleSheet.create({
-
-
-
     modalView: {
         width: "100%",
         backgroundColor: "#17171A",
         paddingBottom: 40,
         paddingHorizontal: 24,
-
-
     },
     modalText: {
         fontSize: 16,
@@ -285,7 +332,6 @@ const styles = StyleSheet.create({
         borderRadius: 50,
         padding: 5
     },
-
     tabBar: {
         position: "absolute",
         flexDirection: "row",
@@ -312,7 +358,6 @@ const styles = StyleSheet.create({
         alignItems: "center",
         paddingHorizontal: 24,
     },
-
     container: {
         flex: 1,
         backgroundColor: '#17171a',
@@ -321,7 +366,6 @@ const styles = StyleSheet.create({
         gap: 24,
         position: "relative"
     },
-
-
 });
+
 export default TokenDetail;

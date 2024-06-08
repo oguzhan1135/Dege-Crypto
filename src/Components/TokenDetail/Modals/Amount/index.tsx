@@ -1,15 +1,13 @@
 import { BlurView } from "expo-blur";
 import React, { useContext, useEffect, useState } from "react";
 import { Modal, View, Pressable, Text, StyleSheet, TextInput } from "react-native";
-import Account from "../../Account";
-import { Accounts, CoinListItem, Recent } from "../../../../Router/types";
 import { AntDesign } from '@expo/vector-icons';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { FontAwesome6 } from '@expo/vector-icons';
 import PrimaryButton from "../../../Buttons/Primary";
 import GradiantText from "../../../GradiantText";
-import { FontAwesome6 } from '@expo/vector-icons';
 import { MainContext } from "../../../../Context";
 import SelectToken, { Data } from "../SelectToken";
+import { CoinListItem } from "../../../../Router/types";
 
 interface AmountProps {
     setSentModalVisible: (modalVisible: boolean) => void;
@@ -21,54 +19,52 @@ interface AmountProps {
     coin?: CoinListItem;
     setCoin: (coin: CoinListItem) => void;
     currency?: string;
-
 }
 
+const Amount: React.FC<AmountProps> = ({
+    sentModalVisible,
+    setModalStep,
+    setSentModalVisible,
+    modalStep,
+    amount,
+    setAmount,
+    coin
+}) => {
+    const [coinSelect, setCoinSelect] = useState(false);
+    const [getCoin, setGetCoin] = useState({ coin: "BNB", index: 1 });
+    const { sentAccount, coinList, setSentCoin } = useContext(MainContext);
+    const [message, setMessage] = useState("");
 
-const Amount: React.FC<AmountProps> = (
-    {
-        sentModalVisible,
-        setModalStep,
-        setSentModalVisible,
-        modalStep,
-        amount,
-        setAmount,
-        coin
-
-    }) => {
-    const [coinSelect, setCoinSelect] = useState(false)
-    const [getCoin, setGetCoin] = useState({ coin: "BNB", index: 1 })
-    const { sentAccount, coinList, setSentCoin } = useContext(MainContext)
     const onchangeCoin = (coinData: Data) => {
         setGetCoin(coinData);
     };
 
     let calculatedAmount = ((parseFloat(amount) || 0) * (coinList.find((coin) => coin.currency === getCoin.coin)?.rate || 0)).toFixed(2);
-    const [message, setMessage] = useState("");
+
     const useMax = () => {
         let maxAmount = sentAccount?.balance && sentAccount.balance[getCoin.index - 1]
             ? (sentAccount.balance[getCoin.index - 1].balance - 0.13).toFixed(5).replace(/\.?0+$/, '')
             : (0).toFixed(4).replace(/\.?0+$/, '');
 
-        setAmount(maxAmount)
-        console.log(amount)
-    }
+        setAmount(maxAmount);
+        console.log(maxAmount);
+    };
+
     const amountControl = (amount: string, balance: number) => {
         if (parseFloat(amount) > balance) {
             setModalStep(modalStep);
-            setMessage("Your balance is insufficient")
-        }
-        else {
-            setModalStep(3)
+            setMessage("Your balance is insufficient");
+        } else {
+            setModalStep(3);
             setSentCoin({
                 currency: getCoin.coin,
                 amount: parseFloat(amount),
-                balance: sentAccount?.balance && sentAccount.balance[getCoin.index - 1]
-                    ? sentAccount.balance[getCoin.index - 1].balance
-                    : 0
+                balance: balance
             });
         }
-    }
+    };
+
+    const coinBalance = sentAccount?.balance && sentAccount.balance[getCoin.index - 1]?.balance;
 
     return (
         <Modal
@@ -108,8 +104,6 @@ const Amount: React.FC<AmountProps> = (
                                 style={styles.textInput}
                                 maxLength={10}
                                 selectionColor={"white"}
-
-
                             />
                             <View style={styles.overlayText}>
                                 <GradiantText text={amount} fontSize={40} lineHeight={56} width={300} row={1} />
@@ -122,29 +116,34 @@ const Amount: React.FC<AmountProps> = (
                             </View>
                         </View>
                         <View style={{ alignItems: "center", paddingBottom: 80 }}>
-                            <Text style={{ fontFamily: "Poppins_500Medium", fontSize: 14, lineHeight: 24, color: "white" }}>Balance: {sentAccount?.balance[getCoin.index - 1].balance} {getCoin.coin}</Text>
+                            <Text style={{ fontFamily: "Poppins_500Medium", fontSize: 14, lineHeight: 24, color: "white" }}>Balance: {coinBalance} {getCoin.coin}</Text>
                         </View>
 
                         <View style={{ alignItems: "center" }}>
-                            {
-                                message !== "" ? <View style={{ backgroundColor: "#301c1c", borderRadius: 10, padding: 10, position: "absolute", bottom: 25 }}>
-
+                            {message !== "" && (
+                                <View style={{ backgroundColor: "#301c1c", borderRadius: 10, padding: 10, position: "absolute", bottom: 25 }}>
                                     <Text style={{ color: "red", fontSize: 16, lineHeight: 30, fontFamily: "Poppins_500Medium" }}>{message}</Text>
-
-
-                                </View> : null
-                            }
-
+                                </View>
+                            )}
                         </View>
 
-                        <PrimaryButton text="Next" onPress={() => amountControl(amount, sentAccount?.balance[getCoin.index - 1].balance)} />
+                        <PrimaryButton
+                            text="Next"
+                            onPress={() => {
+                                if (coinBalance !== undefined) {
+                                    amountControl(amount, coinBalance);
+                                } else {
+                                    setMessage("Unable to retrieve balance.");
+                                }
+                            }}
+                        />
                     </View>
                 </View>
             </BlurView>
         </Modal>
-    )
+    );
+};
 
-}
 const styles = StyleSheet.create({
     textInput: {
         fontSize: 42,
@@ -160,7 +159,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         height: 56,
-
     },
     iconContainer: {
         backgroundColor: "#222531",
@@ -170,15 +168,12 @@ const styles = StyleSheet.create({
         borderRadius: 50,
         justifyContent: "center",
         alignItems: "center",
-
     },
     modalView: {
         width: "100%",
         backgroundColor: "#17171A",
         paddingBottom: 40,
         paddingHorizontal: 24,
-
-
     },
     modalText: {
         fontSize: 16,
@@ -187,7 +182,7 @@ const styles = StyleSheet.create({
         fontFamily: "Poppins_500Medium",
         textAlign: "center",
         paddingTop: 16,
-        paddingBottom: 24
+        paddingBottom: 24,
     },
     blur: {
         position: "absolute",
@@ -203,6 +198,7 @@ const styles = StyleSheet.create({
         justifyContent: "flex-end",
         alignItems: "center",
         backgroundColor: 'rgb(0,0,0,10)',
-    }
-})
-export default Amount
+    },
+});
+
+export default Amount;

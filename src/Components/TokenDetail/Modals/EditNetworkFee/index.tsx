@@ -3,6 +3,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { Modal, View, Pressable, Text, StyleSheet } from "react-native";
 import { AntDesign } from '@expo/vector-icons';
 import { MainContext } from "../../../../Context";
+import PrimaryButton from "../../../Buttons/Primary";
 interface EditNetworkFeeProp {
     onchangeFee: (fee: number) => void;
     setModalVisible: (modalVisible: boolean) => void;
@@ -17,6 +18,11 @@ const EditNetworkEdit: React.FC<EditNetworkFeeProp> = ({ onchangeFee, modalVisib
         onchangeFee(fee)
     }, [fee])
     const { sentCoin, coinList } = useContext(MainContext)
+    const getFeeInUSD = (amount: number) => {
+        const rate = coinList.find((coin) => coin.currency === sentCoin?.currency)?.rate || 0;
+        return (amount * rate).toFixed(2);
+    };
+
     return (
         <Modal
             style={styles.blur}
@@ -68,12 +74,12 @@ const EditNetworkEdit: React.FC<EditNetworkFeeProp> = ({ onchangeFee, modalVisib
                         </View>
                         <Pressable onPress={() => {
                             setSelectedFee("Slow")
-                            setModalVisible(false)
+                            setFee(0.08)
                         }} style={{ borderWidth: 2, borderColor: "#222531", padding: 16, gap: 8, flexDirection: "row", alignItems: "center", borderTopLeftRadius: 8, borderTopRightRadius: 8, borderBottomWidth: 0 }}>
                             <Text style={{ color: "white", fontSize: 16, lineHeight: 24, fontFamily: "Poppins_500Medium", width: 112 }}>Slow</Text>
                             <View style={{ gap: 8, width: 135 }}>
                                 <Text style={{ color: "white", fontSize: 16, lineHeight: 24, fontFamily: "Poppins_500Medium" }}>0.08 {sentCoin?.currency}</Text>
-                                <Text style={{ fontSize: 12, lineHeight: 18, color: "#ABAFC4" }}>${coinList.find((coin) => coin.currency === sentCoin?.currency)?.rate * 0.08}</Text>
+                                <Text style={{ fontSize: 12, lineHeight: 18, color: "#ABAFC4" }}>${getFeeInUSD(0.08)}</Text>
                             </View>
                             {
                                 selectedFee === "Slow" ?
@@ -86,12 +92,12 @@ const EditNetworkEdit: React.FC<EditNetworkFeeProp> = ({ onchangeFee, modalVisib
 
                         <Pressable onPress={() => {
                             setSelectedFee("Avarage")
-                            setModalVisible(false)
+                            setFee(0.12)
                         }} style={{ borderWidth: 2, borderColor: "#222531", padding: 16, gap: 8, flexDirection: "row", alignItems: "center", borderBottomWidth: 0 }}>
                             <Text style={{ color: "white", fontSize: 16, lineHeight: 24, fontFamily: "Poppins_500Medium", width: 112 }}>Avarage</Text>
                             <View style={{ gap: 8, width: 135 }}>
                                 <Text style={{ color: "white", fontSize: 16, lineHeight: 24, fontFamily: "Poppins_500Medium" }}>0.12 {sentCoin?.currency}</Text>
-                                <Text style={{ fontSize: 12, lineHeight: 18, color: "#ABAFC4" }}>${coinList.find((coin) => coin.currency === sentCoin?.currency)?.rate * 0.12}</Text>
+                                <Text style={{ fontSize: 12, lineHeight: 18, color: "#ABAFC4" }}>${getFeeInUSD(0.12)}</Text>
                             </View>
                             {
                                 selectedFee === "Avarage" ?
@@ -104,12 +110,12 @@ const EditNetworkEdit: React.FC<EditNetworkFeeProp> = ({ onchangeFee, modalVisib
                         </Pressable>
                         <Pressable onPress={() => {
                             setSelectedFee("Fast")
-                            setModalVisible(false)
+                            setFee(0.13)
                         }} style={{ borderWidth: 2, borderColor: "#222531", padding: 16, gap: 8, flexDirection: "row", alignItems: "center", borderBottomLeftRadius: 8, borderBottomRightRadius: 8 }}>
                             <Text style={{ color: "white", fontSize: 16, lineHeight: 24, fontFamily: "Poppins_500Medium", width: 112 }}>Fast</Text>
                             <View style={{ gap: 8, width: 135 }}>
                                 <Text style={{ color: "white", fontSize: 16, lineHeight: 24, fontFamily: "Poppins_500Medium" }}>0.13 {sentCoin?.currency}</Text>
-                                <Text style={{ fontSize: 12, lineHeight: 18, color: "#ABAFC4" }}>${coinList.find((coin) => coin.currency === sentCoin?.currency)?.rate * 0.13}</Text>
+                                <Text style={{ fontSize: 12, lineHeight: 18, color: "#ABAFC4" }}>${getFeeInUSD(0.13)}</Text>
                             </View>
                             {
                                 selectedFee === "Fast" ?
@@ -119,11 +125,11 @@ const EditNetworkEdit: React.FC<EditNetworkFeeProp> = ({ onchangeFee, modalVisib
                                     <View></View>}
 
                         </Pressable>
+                        <View style={{ paddingBottom: 45, paddingTop: 25 }}>
+                            <Text style={{ fontSize: 14, lineHeight: 24, color: "#ABAFC4", fontFamily: "Poppins_500Medium" }}>The network fee covers the cost of processing your transaction on the Ethereum network.</Text>
+                        </View>
+                        <PrimaryButton text="Save" onPress={() => { setModalVisible(false) }} />
 
-                        <Pressable onPress={() => {
-                            setFee(120)
-                            setModalVisible(false)
-                        }}><Text>Bana Bas</Text></Pressable>
                     </View>
                 </View>
             </BlurView>

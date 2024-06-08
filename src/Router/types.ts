@@ -44,9 +44,14 @@ export type AppContextInterface = {
 }
 
 export type Transaction = {
+    id: number;
     type: "Received" | "Sent";
     date: string;
     amount: number;
+    networkFee: number;
+    paymenToAdress: string;
+    currency: string;
+    status: "Cancelled" | "Submitted" | "Confirmed"
 }
 
 export type CoinListItem = {
