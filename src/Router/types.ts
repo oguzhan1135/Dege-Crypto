@@ -41,6 +41,10 @@ export type AppContextInterface = {
     setReceiverAccount: (receiverAccount: Recent) => void;
     sentCoin?: SentCoin;
     setSentCoin: (sentCoin: SentCoin) => void;
+    deneme: number;
+    setDeneme: (deneme: number) => void;
+    tokenFee?: number;
+    setTokenFee: (tokenFee: number) => void;
 }
 
 export type Transaction = {

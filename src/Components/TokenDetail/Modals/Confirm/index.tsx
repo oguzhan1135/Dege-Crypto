@@ -12,49 +12,49 @@ interface ConfirmProps {
     sentModalVisible: boolean;
     modalStep: number;
     setModalStep: (modalStep: number) => void;
+    timer?: number;
 }
 
 const Confirm: React.FC<ConfirmProps> = ({
     sentModalVisible,
     setModalStep,
     setSentModalVisible,
-    modalStep
+    modalStep,
+    timer
+
 }) => {
-    const { receiverAccount, sentAccount, sentCoin, coinList, setAccounts, accounts, setSentAccount } = useContext(MainContext);
+    const { receiverAccount, sentAccount, sentCoin, coinList, setAccounts, accounts, setSentAccount, setTokenFee } = useContext(MainContext);
     const font = "Poppins_500Medium";
     const [modalVisible, setModalVisible] = useState(false);
-    const [editFee, setEditFee] = useState<number>(500);
+    const [editFee, setEditFee] = useState<number>(0.12);
 
     const onchangeFee = (fee: number) => {
         setEditFee(fee);
-        console.log(fee);
     }
     useEffect(() => {
+        setTokenFee(editFee)
+    }, [editFee])
+
+    useEffect(()=>{
         setEditFee(0.12)
-    }, [])
+    },[])
+
 
     const totalAmount = (sentCoin?.amount || 0) + (editFee || 0);
     const totalInUSD = (totalAmount * (coinList.find((coin) => coin.currency === sentCoin?.currency)?.rate || 0)).toFixed(2);
 
     const sentOperation = () => {
-        // Gönderen hesabı bul
         const findAccountIndex = accounts.findIndex((account) => account.adress === sentAccount?.adress);
-    
-        // Eğer hesap bulunamazsa işlemi sonlandır
-        if (findAccountIndex === -1) {
-            console.log("Hesap bulunamadı.");
-            return;
-        }
-    
+
         const currentDate = new Date();
         const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-        const hour = currentDate.getHours() + 3; 
+        const hour = currentDate.getHours() + 3;
         const minute = currentDate.getMinutes();
         const day = currentDate.getDate();
         const month = months[currentDate.getMonth()];
         const formattedDate = `${month} ${day} at ${hour}:${minute}`;
         const amount = sentCoin?.amount && sentCoin.amount;
-    
+
         const newTransaction = {
             id: Math.floor(Math.random() * 90000) + 10000,
             type: "Sent",
@@ -65,42 +65,40 @@ const Confirm: React.FC<ConfirmProps> = ({
             networkFee: editFee,
             paymenToAdress: receiverAccount?.adress
         };
-    
+
         const updatedAccounts = [...accounts];
         updatedAccounts[findAccountIndex].transaction.push(newTransaction);
-    
-        const updatedBalance = updatedAccounts[findAccountIndex].balance.map((item) => {
-            if (item.currency === sentCoin?.currency) {
-                return {
-                    ...item,
-                    balance: item.balance - (amount + editFee)
-                };
-            }
-            return item;
-        });
-    
-        updatedAccounts[findAccountIndex].balance = updatedBalance;
-    
+
+        let beforeBalance = updatedAccounts[findAccountIndex].balance.find((balance) => balance.coinName === sentCoin?.currency);
+        let afterBalance = beforeBalance?.balance - (editFee + amount);
+
+        if (beforeBalance) {
+            beforeBalance.balance = afterBalance;
+        }
+
         setAccounts(updatedAccounts);
-        setSentAccount(updatedAccounts[findAccountIndex]);
-    
+        setSentAccount({
+            id: updatedAccounts[findAccountIndex].id,
+            name: updatedAccounts[findAccountIndex].name,
+            avatar: updatedAccounts[findAccountIndex].avatar,
+            adress: updatedAccounts[findAccountIndex].adress,
+            transaction: updatedAccounts[findAccountIndex].transaction,
+            balance: updatedAccounts[findAccountIndex].balance
+        });
         setSentModalVisible(false);
         setModalStep(modalStep + 1);
-    
+        setSentAccount(updatedAccounts[findAccountIndex]);
         setTimeout(() => {
             const updatedTransactionIndex = updatedAccounts[findAccountIndex].transaction.findIndex((transaction) => transaction.id === newTransaction.id);
-    
+
             if (updatedTransactionIndex !== -1) {
                 updatedAccounts[findAccountIndex].transaction[updatedTransactionIndex].status = "Confirmed";
-                setAccounts([...updatedAccounts]); 
-                setSentAccount(updatedAccounts[findAccountIndex]);
+                setAccounts([...updatedAccounts]);
             }
-        }, 3000);
+        }, timer);
     };
 
-    useEffect(() => {
-        console.log(accounts)
-    }, [accounts])
+
 
     return (
         <Modal
@@ -125,7 +123,7 @@ const Confirm: React.FC<ConfirmProps> = ({
                         <View style={{ alignItems: "center", gap: 16 }}>
                             <Text style={{ color: "white", fontSize: 14, lineHeight: 24, fontFamily: "Poppins_500Medium" }}>Amount</Text>
                             <View style={{ alignItems: "center", paddingBottom: 24 }}>
-                                <GradiantText text={"0.2405 BNB"} fontSize={40} lineHeight={56} width={300} row={1} />
+                                <GradiantText text={`${sentCoin?.amount} ${sentCoin?.currency}`} fontSize={40} lineHeight={56} width={300} row={1} />
                             </View>
                         </View>
 

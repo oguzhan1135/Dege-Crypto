@@ -271,7 +271,7 @@ export const MainProvider = ({ children }: ContextProps) => {
             balance: [
                 {
                     coinName: "BNB",
-                    balance: 9.2371
+                    balance: 24.2371
                 },
                 {
                     coinName: "USDC",
@@ -375,6 +375,7 @@ export const MainProvider = ({ children }: ContextProps) => {
     const [sentCoin, setSentCoin] = useState<SentCoin>()
     const [sentAccount, setSentAccount] = useState<Accounts>();
     const [receiverAccount, setReceiverAccount] = useState<Recent>();
+    const [tokenFee,setTokenFee]=useState<number>();
     const [recent, setRecent] = useState<Recent[]>([
         {
             id: 1,
@@ -408,7 +409,7 @@ export const MainProvider = ({ children }: ContextProps) => {
         },
     ])
     const data: AppContextInterface = {
-        coinList, setCoinList, accounts, setAccounts, recent, setRecent, sentAccount, setSentAccount, receiverAccount, setReceiverAccount, sentCoin, setSentCoin
+        coinList, setCoinList, accounts, setAccounts, recent, setRecent, sentAccount, setSentAccount, receiverAccount, setReceiverAccount, sentCoin, setSentCoin,tokenFee,setTokenFee
     }
 
     return (

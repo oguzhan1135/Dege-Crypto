@@ -30,8 +30,9 @@ const TokenDetail: React.FC<TokenDetailProps> = ({ route }) => {
     const [amount, setAmount] = useState("0.2405");
     const [sentAmount, setSentAmount] = useState(0);
     const [details, setDetails] = useState<Transaction[]>([]);
-    const { accounts, recent, sentAccount } = useContext(MainContext);
+    const { accounts, recent, sentAccount, tokenFee } = useContext(MainContext);
     const [message, setMessage] = useState("")
+    const [timer, setTimer] = useState<number>();
     const handleTabPress = (tab: string) => {
         setActiveTab(tab);
     };
@@ -44,24 +45,44 @@ const TokenDetail: React.FC<TokenDetailProps> = ({ route }) => {
     }, [accounts, sentAccount, currency]);
 
     useEffect(() => {
+        let timer1: NodeJS.Timeout | undefined;
+        let timer2: NodeJS.Timeout | undefined;
+        let waitTime1 = 0;
+        let waitTime2 = 0;
+
+        if (tokenFee === 0.13) {
+            waitTime1 = 2000;
+            waitTime2 = 4000;
+            setTimer(2000)
+        } else if (tokenFee === 0.12) {
+            waitTime1 = 4000;
+            waitTime2 = 6000;
+            setTimer(4000)
+        } else if (tokenFee === 0.08) {
+            waitTime1 = 14000;
+            waitTime2 = 16000;
+            setTimer(14000)
+        }
+
         if (modalStep === 4) {
             setMessage("Submitted");
 
-            const timer1 = setTimeout(() => {
+            timer1 = setTimeout(() => {
                 setMessage("Confirmed");
-            }, 3000);
+            }, waitTime1);
 
-            const timer2 = setTimeout(() => {
+            timer2 = setTimeout(() => {
                 setMessage("");
                 setModalStep(1);
-            }, 6000);
+            }, waitTime2);
 
             return () => {
-                clearTimeout(timer1);
-                clearTimeout(timer2);
+                if (timer1) clearTimeout(timer1);
+                if (timer2) clearTimeout(timer2);
             };
         }
-    }, [modalStep]);
+    }, [modalStep, tokenFee]);
+
 
     return (
         <View style={styles.container}>
@@ -87,9 +108,9 @@ const TokenDetail: React.FC<TokenDetailProps> = ({ route }) => {
             </View>
 
             <View style={styles.aset}>
-                <GradiantText text={`${balance} ${currency}`} row={1} lineHeight={56} fontSize={40} width={300} />
+                <GradiantText text={`${sentAccount?.balance.find((balance) => balance.coinName === currency)?.balance.toFixed(4)} ${currency}`} row={1} lineHeight={56} fontSize={40} width={300} />
                 <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
-                    <Text style={{ color: "white", fontSize: 14, lineHeight: 24, fontFamily: "Poppins_500Medium" }}>${rate * balance}</Text>
+                    <Text style={{ color: "white", fontSize: 14, lineHeight: 24, fontFamily: "Poppins_500Medium" }}>${rate * sentAccount?.balance.find((balance) => balance.coinName === currency)?.balance}</Text>
                 </View>
             </View>
             <View style={styles.buttonGroup}>
@@ -124,12 +145,14 @@ const TokenDetail: React.FC<TokenDetailProps> = ({ route }) => {
                             sentModalVisible={sentModalVisible}
                             coin={coin}
                             setCoin={setCoin}
+
                         /> : modalStep === 3 ?
                             <Confirm
                                 setModalStep={setModalStep}
                                 modalStep={modalStep}
                                 setSentModalVisible={setSentModalVisible}
                                 sentModalVisible={sentModalVisible}
+                                timer={timer}
                             />
                             : modalStep === 4 ?
                                 <>

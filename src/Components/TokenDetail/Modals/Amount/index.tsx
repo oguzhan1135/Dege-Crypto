@@ -32,7 +32,7 @@ const Amount: React.FC<AmountProps> = ({
 }) => {
     const [coinSelect, setCoinSelect] = useState(false);
     const [getCoin, setGetCoin] = useState({ coin: "BNB", index: 1 });
-    const { sentAccount, coinList, setSentCoin } = useContext(MainContext);
+    const { sentAccount, coinList, setSentCoin} = useContext(MainContext);
     const [message, setMessage] = useState("");
 
     const onchangeCoin = (coinData: Data) => {
@@ -46,12 +46,16 @@ const Amount: React.FC<AmountProps> = ({
             ? (sentAccount.balance[getCoin.index - 1].balance - 0.13).toFixed(5).replace(/\.?0+$/, '')
             : (0).toFixed(4).replace(/\.?0+$/, '');
 
-        setAmount(maxAmount);
-        console.log(maxAmount);
+        if (parseFloat(maxAmount) < 0.13) {
+            setMessage("Your balance is insufficient");
+        } else {
+            setAmount(maxAmount);
+        }
+
     };
 
     const amountControl = (amount: string, balance: number) => {
-        if (parseFloat(amount) > balance) {
+        if (balance - parseFloat(amount) < 0.13) {
             setModalStep(modalStep);
             setMessage("Your balance is insufficient");
         } else {
@@ -116,7 +120,7 @@ const Amount: React.FC<AmountProps> = ({
                             </View>
                         </View>
                         <View style={{ alignItems: "center", paddingBottom: 80 }}>
-                            <Text style={{ fontFamily: "Poppins_500Medium", fontSize: 14, lineHeight: 24, color: "white" }}>Balance: {coinBalance} {getCoin.coin}</Text>
+                            <Text style={{ fontFamily: "Poppins_500Medium", fontSize: 14, lineHeight: 24, color: "white" }}>Balance: {sentAccount?.balance.find((balance) => balance.coinName === getCoin.coin)?.balance} {getCoin.coin}</Text>
                         </View>
 
                         <View style={{ alignItems: "center" }}>
