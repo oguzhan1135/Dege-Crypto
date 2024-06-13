@@ -59,9 +59,9 @@ const TokenDetail: React.FC<TokenDetailProps> = ({ route }) => {
             waitTime2 = 6000;
             setTimer(4000)
         } else if (tokenFee === 0.08) {
-            waitTime1 = 14000;
-            waitTime2 = 16000;
-            setTimer(14000)
+            waitTime1 = 20000;
+            waitTime2 = 22000;
+            setTimer(20000)
         }
 
         if (modalStep === 4) {
@@ -227,14 +227,12 @@ const TokenDetail: React.FC<TokenDetailProps> = ({ route }) => {
                     )
                 }
                 <TransactionView
-                    modalStep={modalStep}
-                    setModalStep={setModalStep}
                     modalVisible={modalVisible}
                     setModalVisible={setModalVisible}
                     rate={rate}
                     currency={currency}
                     selectedTransaction={selectedTransaction}
-                    setSelectedTransaction={setSelectedTransaction}
+                    fee={tokenFee}
                 />
             </ScrollView>
             <View style={styles.tabBar}>

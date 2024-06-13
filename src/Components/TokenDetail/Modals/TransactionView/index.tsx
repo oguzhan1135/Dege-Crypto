@@ -1,21 +1,24 @@
 import { BlurView } from "expo-blur";
-import React from "react";
+import React, { useState } from "react";
 import { Modal, View, Pressable, Text, StyleSheet } from "react-native";
 import { Transaction } from "../../../../Router/types";
+import PrimaryButton from "../../../Buttons/Primary";
+import CancelAtempt from "./Modal/CancelAttempt";
+import SpeedUp from "./Modal/SpeedUp";
 
 interface TransactionProp {
     setModalVisible: (modalVisible: boolean) => void;
     modalVisible: boolean;
-    modalStep: number;
-    setModalStep: (modalstep: number) => void;
     currency: string;
     selectedTransaction?: Transaction;
-    setSelectedTransaction: (selectedTransaction: Transaction) => void;
     rate: number;
+    fee?: number
 }
 
-const TransactionView: React.FC<TransactionProp> = ({ setModalVisible, modalVisible, modalStep, setModalStep, currency, selectedTransaction, setSelectedTransaction, rate }) => {
+const TransactionView: React.FC<TransactionProp> = ({ setModalVisible, modalVisible, currency, selectedTransaction, rate, fee }) => {
 
+    const [cancelModal, setCancelModal] = useState(false);
+    const [speedModal, setSpeedModal] = useState(false);
     return (
         <Modal
             style={styles.blur}
@@ -34,7 +37,17 @@ const TransactionView: React.FC<TransactionProp> = ({ setModalVisible, modalVisi
                                 <Text style={{ color: "#ABAFC4", fontSize: 12, lineHeight: 18, fontFamily: "Poppins_500Medium" }}>Date</Text>
                             </View>
                             <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-                                <Text style={{ fontFamily: "Poppins_700Bold", fontSize: 14, lineHeight: 24, color: "#76E268" }}>Confirmed</Text>
+                                {
+                                    selectedTransaction?.status === "Confirmed" ?
+                                        <Text style={{ fontFamily: "Poppins_700Bold", fontSize: 14, lineHeight: 24, color: "#76E268" }}>Confirmed</Text>
+                                        : selectedTransaction?.status === "Cancelled" ?
+                                            <Text style={{ fontFamily: "Poppins_700Bold", fontSize: 14, lineHeight: 24, color: "#EA3943" }}>Cancelled</Text>
+                                            : selectedTransaction?.status === "Submitted" ?
+                                                <Text style={{ fontFamily: "Poppins_700Bold", fontSize: 14, lineHeight: 24, color: "#FEBF32" }}>Submitted</Text>
+                                                : null
+
+
+                                }
                                 <Text style={{ color: "white", fontSize: 12, lineHeight: 18, fontFamily: "Poppins_500Medium" }}>{selectedTransaction?.date}</Text>
                             </View>
                         </View>
@@ -66,7 +79,7 @@ const TransactionView: React.FC<TransactionProp> = ({ setModalVisible, modalVisi
                                     </View>
                                     <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", borderBottomWidth: 2, paddingHorizontal: 16, paddingBottom: 16, borderBottomColor: "#242424" }}>
                                         <Text style={{ fontSize: 16, lineHeight: 24, fontFamily: "Poppins_500Medium", color: "white" }}>Network fee</Text>
-                                        <Text style={{ fontSize: 16, lineHeight: 24, fontFamily: "Poppins_500Medium", color: "white" }}>0.21 {currency}</Text>
+                                        <Text style={{ fontSize: 16, lineHeight: 24, fontFamily: "Poppins_500Medium", color: "white" }}>{fee} {currency}</Text>
                                     </View>
                                 </View>
                             }
@@ -75,7 +88,7 @@ const TransactionView: React.FC<TransactionProp> = ({ setModalVisible, modalVisi
                                 {selectedTransaction &&
                                     <Text style={{ fontSize: 16, lineHeight: 24, fontFamily: "Poppins_500Medium", color: "white" }}>
                                         {selectedTransaction.type === "Sent"
-                                            ? `${(selectedTransaction.amount + 0.21).toFixed(5)} ${currency}`
+                                            ? `${(selectedTransaction.amount + fee).toFixed(5)} ${currency}`
                                             : `${selectedTransaction.amount.toFixed(5)} ${currency}`}
                                     </Text>
                                 }
@@ -83,15 +96,39 @@ const TransactionView: React.FC<TransactionProp> = ({ setModalVisible, modalVisi
                             {selectedTransaction &&
                                 <Text style={{ marginLeft: "auto", color: "#ABAFC4", fontSize: 12, lineHeight: 18, fontFamily: "Poppins_500Medium", paddingHorizontal: 16 }}>
                                     ${selectedTransaction.type === "Sent"
-                                        ? ((selectedTransaction.amount + 0.21) * rate).toFixed(5)
+                                        ? ((selectedTransaction.amount + fee) * rate).toFixed(5)
                                         : (selectedTransaction.amount * rate).toFixed(5)}
                                 </Text>
                             }
                         </View>
 
-                        <Pressable onPress={() => setModalVisible(false)} style={{ alignItems: "center" }}>
-                            <Text style={{ paddingTop: 30, fontFamily: "Poppins_500Medium", color: "#FEBF32", fontSize: 16, lineHeight: 24 }}>View on Mainnet</Text>
-                        </Pressable>
+                        {
+                            fee === 0.08 ?
+                                <View style={styles.buttonContainer}>
+                                    <Pressable onPress={() => setCancelModal(true)} style={{ width: "48%" }}>
+                                        <Text style={{ fontSize: 16, fontFamily: "Poppins_500Medium", lineHeight: 24, fontWeight: "bold", color: "#FEBF32", textAlign: "center" }}>Cancel</Text>
+                                    </Pressable>
+                                    <View style={{ width: "48%" }}>
+                                        <PrimaryButton text="Speed Up" onPress={() => setSpeedModal(true)} />
+                                    </View>
+                                    <CancelAtempt
+                                        cancelModal={cancelModal}
+                                        setCancelModal={setCancelModal}
+                                        setModalVisible={setModalVisible}
+                                    />
+                                    <SpeedUp
+                                        speedModal={speedModal}
+                                        setSpeedModal={setSpeedModal}
+                                        setModalVisible={setModalVisible}
+
+                                    />
+                                </View> :
+                                <Pressable onPress={() => setModalVisible(false)} style={{ alignItems: "center" }}>
+                                    <Text style={{ paddingTop: 30, fontFamily: "Poppins_500Medium", color: "#FEBF32", fontSize: 16, lineHeight: 24 }}>View on Mainnet</Text>
+                                </Pressable>
+                        }
+
+
 
 
 
@@ -102,6 +139,12 @@ const TransactionView: React.FC<TransactionProp> = ({ setModalVisible, modalVisi
     )
 }
 const styles = StyleSheet.create({
+    buttonContainer: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        paddingTop: 32
+    },
     modalView: {
         width: "100%",
         backgroundColor: "#17171A",

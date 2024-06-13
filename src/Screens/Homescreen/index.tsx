@@ -15,13 +15,17 @@ import Account from "./Account";
 import { useAppNavigation } from "../../Router/useAppNavigation";
 import { MainContext } from "../../Context";
 import { Accounts, CoinListItem } from "../../Router/types";
+import AddCollectibles from "./AddCollectibles";
 
 const Homescreen: React.FC = () => {
-    const [activeTab, setActiveTab] = useState("wallet");
+    const [activeTabBar, setActiveTabBar] = useState("wallet");
+    const [activeTab, setActiveTab] = useState('Token');
+
     const navigation = useAppNavigation()
     const { sentAccount, setSentAccount } = useContext(MainContext)
+    const [collectiblesModal, setCollectiblesModal] = useState(false);
     const handleTabPress = (tab: string) => {
-        setActiveTab(tab);
+        setActiveTabBar(tab);
     };
     useEffect(() => {
         setSentAccount(
@@ -135,11 +139,11 @@ const Homescreen: React.FC = () => {
                     },
                 ]
             })
-    
+
     }, [])
 
     const coinBalance = (coin: CoinListItem) => {
-        return sentAccount?.balance.find((balance) => balance.coinName === coin.currency)?.balance
+        return sentAccount?.balance.find((balance) => balance.coinName === coin.currency)?.balance.toFixed(2)
     }
     const { coinList } = useContext(MainContext)
     return (
@@ -177,78 +181,127 @@ const Homescreen: React.FC = () => {
             </View>
             <View style={styles.tabContainer}>
                 <View style={{ flexDirection: "row", alignItems: "center", gap: 24 }}>
-                    <View style={styles.tabButtonActive}>
-                        <Text style={{ color: "white", fontFamily: "Poppins_500Medium" }}>Token</Text>
-                    </View>
-                    <View style={styles.tabButtonDeactive}>
-                        <Text style={{ color: "#888DAA", fontFamily: "Poppins_500Medium" }}>Collectibles</Text>
-                    </View>
+                    <Pressable onPress={() => setActiveTab('Token')} style={activeTab === 'Token' ? styles.tabButtonActive : styles.tabButtonDeactive}>
+                        <Text style={{ color: activeTab === 'Token' ? "white" : "#888DAA", fontFamily: "Poppins_500Medium" }}>Token</Text>
+                    </Pressable>
+                    <Pressable onPress={() => setActiveTab('Collectibles')} style={activeTab === 'Collectibles' ? styles.tabButtonActive : styles.tabButtonDeactive}>
+                        <Text style={{ color: activeTab === 'Collectibles' ? "white" : "#888DAA", fontFamily: "Poppins_500Medium" }}>Collectibles</Text>
+                    </Pressable>
                 </View>
-                <ScrollView style={{ maxHeight: 350, overflow: "scroll" }}>
-                    <View style={{ gap: 8 }}>
-
-                        {
-                            coinList.map((coin) =>
-                                <Pressable onPress={() => {
-                                    navigation.navigate("Onboarding", { screen: "TokenDetail", params: { currency: coin.currency, balance: coinBalance(coin), rate: coin.rate } });
-                                }} style={styles.coin}>
-                                    <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", gap: 10 }}>
-                                        <View style={styles.iconContainer}>
-
-                                        </View>
-                                        <View style={{ flexDirection: "column", gap: 2, justifyContent: "flex-start" }}>
-                                            <Text style={styles.coinTitle}>{coin.coinName}</Text>
-                                            <View style={{ flexDirection: "row", gap: 8, alignItems: "center" }}>
-                                                <Text style={{ fontFamily: "Poppins_500Medium", color: "#ABAFC4" }}>${coin.rate}</Text>
-
-                                                {
-                                                    coin.onTheRise ?
-                                                        <Text style={{ fontFamily: "Poppins_500Medium", color: '#76E268' }}>+ {coin.percent}%</Text> :
-                                                        <Text style={{ fontFamily: "Poppins_500Medium", color: '#EA3943' }}>- {coin.percent}%</Text>
-                                                }
+                {activeTab === 'Token' && (
+                    <ScrollView style={{ maxHeight: 350, overflow: "scroll" }}>
+                        <View style={{ gap: 8 }}>
+                            {
+                                coinList.map((coin) =>
+                                    <Pressable key={coin.currency} onPress={() => {
+                                        navigation.navigate("Onboarding", { screen: "TokenDetail", params: { currency: coin.currency, balance: coinBalance(coin), rate: coin.rate } });
+                                    }} style={styles.coin}>
+                                        <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", gap: 10 }}>
+                                            <View style={styles.iconContainer}>
+                                            </View>
+                                            <View style={{ flexDirection: "column", gap: 2, justifyContent: "flex-start" }}>
+                                                <Text style={styles.coinTitle}>{coin.coinName}</Text>
+                                                <View style={{ flexDirection: "row", gap: 8, alignItems: "center" }}>
+                                                    <Text style={{ fontFamily: "Poppins_500Medium", color: "#ABAFC4" }}>${coin.rate}</Text>
+                                                    {
+                                                        coin.onTheRise ?
+                                                            <Text style={{ fontFamily: "Poppins_500Medium", color: '#76E268' }}>+ {coin.percent}%</Text> :
+                                                            <Text style={{ fontFamily: "Poppins_500Medium", color: '#EA3943' }}>- {coin.percent}%</Text>
+                                                    }
+                                                </View>
                                             </View>
                                         </View>
+                                        <View style={{ justifyContent: "flex-start", alignItems: "flex-start" }}>
+                                            <Text style={styles.coinTitle}>{coinBalance(coin)} {coin.currency}</Text>
+                                        </View>
+                                    </Pressable>
+                                )
+                            }
+                        </View>
+                    </ScrollView>
+                )}
+                {activeTab === 'Collectibles' && (
+                    <ScrollView style={{ maxHeight: 350, overflow: "scroll" }}>
+                        <Text style={{ color: "white", fontFamily: "Poppins_500Medium", fontSize: 16, lineHeight: 24, paddingVertical: 16 }}>CryptoKitties (2)</Text>
+                        <View style={{ gap: 8 }}>
+                            <View style={styles.coin}>
+                                <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", gap: 10 }}>
+                                    <View style={styles.iconContainer}>
                                     </View>
-                                    <View style={{ justifyContent: "flex-start", alignItems: "flex-start" }}>
-                                        <Text style={styles.coinTitle}>{coinBalance(coin)} {coin.currency}</Text>
+                                    <View style={{ flexDirection: "column", gap: 2, justifyContent: "flex-start" }}>
+                                        <Text style={styles.coinTitle}>Fabio Ahempip</Text>
+                                        <View style={{ flexDirection: "row", gap: 8, alignItems: "center" }}>
+                                            <Text style={{ fontFamily: "Poppins_500Medium", color: "#ABAFC4" }}>$164.41</Text>
+                                        </View>
                                     </View>
-                                </Pressable>
-                            )
-                        }
+                                </View>
+                                <View style={{ justifyContent: "flex-start", alignItems: "flex-start" }}>
+                                    <Text style={styles.coinTitle}>0.09 ETH</Text>
+                                </View>
+                            </View>
+                            <View style={styles.coin}>
+                                <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", gap: 10 }}>
+                                    <View style={styles.iconContainer}>
+                                    </View>
+                                    <View style={{ flexDirection: "column", gap: 2, justifyContent: "flex-start" }}>
+                                        <Text style={styles.coinTitle}>Master Lubzap</Text>
+                                        <View style={{ flexDirection: "row", gap: 8, alignItems: "center" }}>
+                                            <Text style={{ fontFamily: "Poppins_500Medium", color: "#ABAFC4" }}>$10,937.22</Text>
+                                        </View>
+                                    </View>
+                                </View>
+                                <View style={{ justifyContent: "flex-start", alignItems: "flex-start" }}>
+                                    <Text style={styles.coinTitle}>6 ETH</Text>
+                                </View>
+                            </View>
+                        </View>
+                    </ScrollView>
+                )}
+                {
+                    activeTab === "Token" ?
+                        <Pressable style={{ padding: 16 }} onPress={() => console.log("Add Coin")}>
+                            <View style={{ flexDirection: "row", alignItems: "center", gap: 10, justifyContent: "center" }}>
+                                <Entypo name="plus" size={24} color="#FEBF32" />
+                                <Text style={{ color: "#FEBF32", fontFamily: "Poppins_500Medium", fontSize: 16, lineHeight: 24 }}>Add Tokens
+                                </Text>
+                            </View>
+                        </Pressable> :
+                        <Pressable style={{ padding: 16 }} onPress={() => setCollectiblesModal(true)}>
+                            <View style={{ flexDirection: "row", alignItems: "center", gap: 10, justifyContent: "center" }}>
+                                <Entypo name="plus" size={24} color="#FEBF32" />
+                                <Text style={{ color: "#FEBF32", fontFamily: "Poppins_500Medium", fontSize: 16, lineHeight: 24 }}>Add Collectibles
+                                </Text>
+                            </View>
+                        </Pressable>
 
-
-                    </View>
-
-                </ScrollView>
-                <Pressable style={{ padding: 16 }} onPress={() => console.log("Add Coin")}>
-                    <View style={{ flexDirection: "row", alignItems: "center", gap: 10, justifyContent: "center" }}>
-                        <Entypo name="plus" size={24} color="#FEBF32" />
-                        <Text style={{ color: "#FEBF32", fontFamily: "Poppins_500Medium", fontSize: 16, lineHeight: 24 }}>Add Tokens</Text>
-                    </View>
-                </Pressable>
-            </View >
+                }
+                <AddCollectibles
+                    collectiblesModal={collectiblesModal}
+                    setCollectiblesModal={setCollectiblesModal}
+                />
+            </View>
             <View style={styles.tabBar}>
                 <Pressable onPress={() => handleTabPress("wallet")} style={{ flex: 1 }}>
                     <View style={styles.tabBarContentBox}>
                         <View style={{ alignItems: "center", justifyContent: "center", gap: 1 }}>
-                            <Entypo name="wallet" style={activeTab === "wallet" ? styles.activeTabBarIcon : styles.deActiveTabBarIcon} />
-                            <Text style={activeTab === "wallet" ? styles.activeTabBarText : styles.deActiveTabBarText}>Wallet</Text>
+                            <Entypo name="wallet" style={activeTabBar === "wallet" ? styles.activeTabBarIcon : styles.deActiveTabBarIcon} />
+                            <Text style={activeTabBar === "wallet" ? styles.activeTabBarText : styles.deActiveTabBarText}>Wallet</Text>
                         </View>
                     </View>
                 </Pressable>
                 <Pressable onPress={() => handleTabPress("swap")} style={{ flex: 1 }}>
                     <View style={styles.tabBarContentBox}>
                         <View style={{ alignItems: "center", justifyContent: "center", gap: 1 }}>
-                            <MaterialCommunityIcons name="swap-horizontal-circle-outline" style={activeTab === "swap" ? styles.activeTabBarIcon : styles.deActiveTabBarIcon} />
-                            <Text style={activeTab === "swap" ? styles.activeTabBarText : styles.deActiveTabBarText}>Swap</Text>
+                            <MaterialCommunityIcons name="swap-horizontal-circle-outline" style={activeTabBar === "swap" ? styles.activeTabBarIcon : styles.deActiveTabBarIcon} />
+                            <Text style={activeTabBar === "swap" ? styles.activeTabBarText : styles.deActiveTabBarText}>Swap</Text>
                         </View>
                     </View>
                 </Pressable>
                 <Pressable onPress={() => handleTabPress("setting")} style={{ flex: 1 }}>
                     <View style={styles.tabBarContentBox}>
                         <View style={{ alignItems: "center", justifyContent: "center", gap: 1 }}>
-                            <Ionicons name="settings-outline" style={activeTab === "setting" ? styles.activeTabBarIcon : styles.deActiveTabBarIcon} />
-                            <Text style={activeTab === "setting" ? styles.activeTabBarText : styles.deActiveTabBarText}>Settings</Text>
+                            <Ionicons name="settings-outline" style={activeTabBar === "setting" ? styles.activeTabBarIcon : styles.deActiveTabBarIcon} />
+                            <Text style={activeTabBar === "setting" ? styles.activeTabBarText : styles.deActiveTabBarText}>Settings</Text>
                         </View>
                     </View>
                 </Pressable>
