@@ -16,6 +16,7 @@ import { useAppNavigation } from "../../Router/useAppNavigation";
 import { MainContext } from "../../Context";
 import { Accounts, CoinListItem } from "../../Router/types";
 import AddCollectibles from "./AddCollectibles";
+import Receive from "./Receive";
 
 const Homescreen: React.FC = () => {
     const [activeTabBar, setActiveTabBar] = useState("wallet");
@@ -24,6 +25,7 @@ const Homescreen: React.FC = () => {
     const navigation = useAppNavigation()
     const { sentAccount, setSentAccount } = useContext(MainContext)
     const [collectiblesModal, setCollectiblesModal] = useState(false);
+    const [receiveModal, setReceiveModal] = useState<boolean>(false)
     const handleTabPress = (tab: string) => {
         setActiveTabBar(tab);
     };
@@ -170,10 +172,14 @@ const Homescreen: React.FC = () => {
                     <AntDesign name="arrowup" size={24} color="#FEBF32" />
                     <Text style={{ color: "#FEBF32", fontFamily: "Poppins_500Medium", fontSize: 14, lineHeight: 24 }}>Sent</Text>
                 </View>
-                <View style={styles.button}>
+                <Pressable style={styles.button} onPress={() => setReceiveModal(true)}>
                     <AntDesign name="arrowdown" size={24} color="#FEBF32" />
                     <Text style={{ color: "#FEBF32", fontFamily: "Poppins_500Medium", fontSize: 14, lineHeight: 24 }}>Receive</Text>
-                </View>
+                </Pressable>
+                <Receive
+                    receiveModal={receiveModal}
+                    setReceiveModal={setReceiveModal}
+                />
                 <View style={styles.button}>
                     <MaterialIcons name="attach-money" size={24} color="#FEBF32" />
                     <Text style={{ color: "#FEBF32", fontFamily: "Poppins_500Medium", fontSize: 14, lineHeight: 24 }}>Buy</Text>
