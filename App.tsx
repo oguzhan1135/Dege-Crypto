@@ -2,23 +2,34 @@ import React, { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import AppLoading from 'expo-app-loading';
 import * as Font from 'expo-font';
-import { Poppins_500Medium, Poppins_700Bold } from '@expo-google-fonts/poppins';
+import { useFonts, Poppins_500Medium, Poppins_700Bold } from '@expo-google-fonts/poppins';
 import { RootNavigator } from './src/Router/navigation';
 import { MainProvider } from './src/Context';
+import { MaterialIcons } from '@expo/vector-icons';
 
 export default function App() {
   const [fontsLoaded, setFontsLoaded] = useState(false);
 
+  const loadFonts = async () => {
+    await Font.loadAsync({
+      Poppins_500Medium,
+      Poppins_700Bold,
+      'MaterialIcons': require('react-native-vector-icons/Fonts/MaterialIcons.ttf'),
+      'MaterialCommunityIcons': require('react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf'),
+    });
+    setFontsLoaded(true);
+  };
+
+  const [googleFontsLoaded] = useFonts({
+    Poppins_500Medium,
+    Poppins_700Bold,
+  });
+
   useEffect(() => {
-    async function loadFonts() {
-      await Font.loadAsync({
-        Poppins_500Medium,
-        Poppins_700Bold,
-      });
-      setFontsLoaded(true);
+    if (googleFontsLoaded) {
+      loadFonts();
     }
-    loadFonts();
-  }, []);
+  }, [googleFontsLoaded]);
 
   if (!fontsLoaded) {
     return <AppLoading />;
@@ -30,6 +41,5 @@ export default function App() {
         <RootNavigator />
       </NavigationContainer>
     </MainProvider>
-
   );
 }

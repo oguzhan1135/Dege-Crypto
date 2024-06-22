@@ -20,7 +20,6 @@ const GradiantText: React.FC<TextProps> = ({ text, fontSize, lineHeight, width, 
             fontSize: fontSize,
             width: width,
             lineHeight: lineHeight,
-            fontFamily: "Poppins_500Medium"
         },
         gradient: {
             justifyContent: "center",

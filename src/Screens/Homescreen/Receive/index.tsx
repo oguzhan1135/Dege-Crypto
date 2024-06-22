@@ -7,6 +7,7 @@ import { AntDesign } from '@expo/vector-icons';
 import PrimaryButton from "../../../Components/Buttons/Primary";
 import Amount from "../Receive/Amount";
 import SentLink from "./SentLink";
+import QrCodeModal from "./QrCode";
 interface ReceiveProp {
     receiveModal: boolean;
     setReceiveModal: (receiveModal: boolean) => void;
@@ -62,7 +63,13 @@ const Receive: React.FC<ReceiveProp> = ({ receiveModal, setReceiveModal }) => {
                             modalStep={modalStep}
                             setModalStep={setModalStep}/>
                            
-                            :null
+                            :modalStep === 3?
+                            <QrCodeModal
+                            receiveModalVisible={receiveModalVisible}
+                            setReceiveModalVisible={setReceiveModal}
+                            modalStep={modalStep}
+                            setModalStep={setModalStep}
+                            />:null
 
 
                             

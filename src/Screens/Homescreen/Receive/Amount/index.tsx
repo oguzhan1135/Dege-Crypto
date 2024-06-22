@@ -1,6 +1,6 @@
 import { BlurView } from "expo-blur";
-import React, { useContext, useEffect, useState } from "react";
-import { Modal, View, Pressable, Text, StyleSheet, TextInput } from "react-native";
+import React, { useContext, useState } from "react";
+import { Modal, View, Pressable, Text, StyleSheet, TextInput, KeyboardAvoidingView, Platform } from "react-native";
 import { AntDesign } from '@expo/vector-icons';
 import { FontAwesome6 } from '@expo/vector-icons';
 import PrimaryButton from "../../../../Components/Buttons/Primary/index";
@@ -20,7 +20,6 @@ const Amount: React.FC<AmountProps> = ({
     setModalStep,
     setReceiveModalVisible,
     modalStep,
-
 }) => {
     const [coinSelect, setCoinSelect] = useState(false);
     const [getCoin, setGetCoin] = useState({ coin: "BNB", index: 1 });
@@ -29,10 +28,10 @@ const Amount: React.FC<AmountProps> = ({
     const onchangeCoin = (coinData: Data) => {
         setGetCoin(coinData);
     };
-   const [amount, setAmount] = useState(0);
-    let calculatedAmount = ((amount) * (coinList.find((coin) => coin.currency === getCoin.coin)?.rate || 0)).toFixed(2);
 
- 
+    const [amount, setAmount] = useState('0');
+    let calculatedAmount = ((parseFloat(amount)) * (coinList.find((coin) => coin.currency === getCoin.coin)?.rate || 0)).toFixed(2);
+
     return (
         <Modal
             style={styles.blur}
@@ -41,55 +40,59 @@ const Amount: React.FC<AmountProps> = ({
             transparent={true}
         >
             <BlurView intensity={80} style={{ flex: 1 }}>
-                <View style={styles.centeredView}>
-                    <View style={{ backgroundColor: "#ABAFC4", height: 4, width: 40, borderRadius: 100, marginBottom: 5 }} />
-                    <View style={[styles.modalView, { position: "relative" }]}>
-                        <View style={{ paddingBottom: 0 }}>
-                            <Text style={styles.modalText}>Amount</Text>
-                            <Pressable onPress={() => setReceiveModalVisible(false)} style={{ position: "absolute", top: "25%", right: 0 }}>
-                                <AntDesign name="close" size={18} color="white" />
-                            </Pressable>
-                            <Pressable onPress={() => setModalStep(modalStep - 1)} style={{ position: "absolute", top: "25%", left: 0 }}>
-                                <AntDesign name="left" size={18} color="white" />
-                            </Pressable>
-                        </View>
-                        <View style={{ alignItems: "center", position: "relative", paddingBottom: 60 }}>
-                            <Pressable onPress={() => setCoinSelect(true)} style={{ borderRadius: 8, paddingVertical: 12, paddingLeft: 16, paddingRight: 24, flexDirection: "row", alignItems: "center", justifyContent: "space-between", borderWidth: 2, borderColor: "#2a2d3c", gap: 30 }}>
-                                <Text style={{ color: "white", fontSize: 14, lineHeight: 24, fontFamily: "Poppins_500Medium" }}>{getCoin.coin}</Text>
-                                <AntDesign name='down' size={16} color={"white"} />
-                            </Pressable>
+                <KeyboardAvoidingView
+                    behavior={Platform.OS === "ios" ? "padding" : "height"}
+                    style={{ flex: 1 }}
+                >
+                    <View style={styles.centeredView}>
+                        <View style={{ backgroundColor: "#ABAFC4", height: 4, width: 40, borderRadius: 100, marginBottom: 5 }} />
+                        <View style={[styles.modalView, { position: "relative" }]}>
+                            <View style={{ paddingBottom: 0 }}>
+                                <Text style={styles.modalText}>Amount</Text>
+                                <Pressable onPress={() => setReceiveModalVisible(false)} style={{ position: "absolute", top: "25%", right: 0 }}>
+                                    <AntDesign name="close" size={18} color="white" />
+                                </Pressable>
+                                <Pressable onPress={() => setModalStep(modalStep - 1)} style={{ position: "absolute", top: "25%", left: 0 }}>
+                                    <AntDesign name="left" size={18} color="white" />
+                                </Pressable>
+                            </View>
+                            <View style={{ alignItems: "center", position: "relative", paddingBottom: 60 }}>
+                                <Pressable onPress={() => setCoinSelect(true)} style={{ borderRadius: 8, paddingVertical: 12, paddingLeft: 16, paddingRight: 24, flexDirection: "row", alignItems: "center", justifyContent: "space-between", borderWidth: 2, borderColor: "#2a2d3c", gap: 30 }}>
+                                    <Text style={{ color: "white", fontSize: 14, lineHeight: 24, fontFamily: "Poppins_500Medium" }}>{getCoin.coin}</Text>
+                                    <AntDesign name='down' size={16} color={"white"} />
+                                </Pressable>
 
-                            <SelectToken coinSelect={coinSelect} setCoinSelect={setCoinSelect} onchangeCoin={onchangeCoin} />
-                        </View>
-                        <View style={{ position: 'relative', alignItems: 'center', justifyContent: 'center', paddingBottom: 40 }}>
-                            <TextInput
-                                value={amount}
-                                onChangeText={setAmount}
-                                keyboardType='numeric'
-                                style={styles.textInput}
-                                maxLength={10}
-                                selectionColor={"white"}
+                                <SelectToken coinSelect={coinSelect} setCoinSelect={setCoinSelect} onchangeCoin={onchangeCoin} />
+                            </View>
+                            <View style={{ position: 'relative', alignItems: 'center', justifyContent: 'center', paddingBottom: 40 }}>
+                                <TextInput
+                                    value={amount}
+                                    onChangeText={setAmount}
+                                    keyboardType='numeric'
+                                    style={styles.textInput}
+                                    maxLength={10}
+                                    selectionColor={"white"}
+                                />
+                                <View style={styles.overlayText}>
+                                    <GradiantText text={amount} fontSize={40} lineHeight={56} width={300} row={1} />
+                                </View>
+                            </View>
+                            <View style={{ alignItems: "center", paddingTop: 36, paddingBottom: 24 }}>
+                                <View style={{ backgroundColor: "#2A2D3C", borderRadius: 100, flexDirection: "row", alignItems: "center", paddingVertical: 8, paddingHorizontal: 16, gap: 10 }}>
+                                    <Text style={{ color: "white", fontSize: 14, lineHeight: 24, fontFamily: "Poppins_500Medium" }}>$ {calculatedAmount}</Text>
+                                    <FontAwesome6 name="money-bill-transfer" size={18} color="white" />
+                                </View>
+                            </View>
+
+                            <PrimaryButton
+                                text="Next"
+                                onPress={() => {
+                                    setModalStep(modalStep + 1);
+                                }}
                             />
-                            <View style={styles.overlayText}>
-                                <GradiantText text={amount} fontSize={40} lineHeight={56} width={300} row={1} />
-                            </View>
                         </View>
-                        <View style={{ alignItems: "center", paddingTop: 36, paddingBottom: 24 }}>
-                            <View style={{ backgroundColor: "#2A2D3C", borderRadius: 100, flexDirection: "row", alignItems: "center", paddingVertical: 8, paddingHorizontal: 16, gap: 10 }}>
-                                <Text style={{ color: "white", fontSize: 14, lineHeight: 24, fontFamily: "Poppins_500Medium" }}>$ {calculatedAmount}</Text>
-                                <FontAwesome6 name="money-bill-transfer" size={18} color="white" />
-                            </View>
-                        </View>
-
-
-                        <PrimaryButton
-                            text="Next"
-                            onPress={() => {
-                                setModalStep(modalStep + 1)
-                            }}
-                        />
                     </View>
-                </View>
+                </KeyboardAvoidingView>
             </BlurView>
         </Modal>
     );

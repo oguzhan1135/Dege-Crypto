@@ -1,9 +1,8 @@
 import { BlurView } from "expo-blur";
-import React, { useContext, useEffect, useState } from "react";
-import { Modal, View, Pressable, Text, StyleSheet, TextInput } from "react-native";
-import { AntDesign } from '@expo/vector-icons';
+import React, { useState } from "react";
+import { Modal, View, Pressable, Text, StyleSheet, Share } from "react-native";
+import { AntDesign, Feather } from '@expo/vector-icons';
 import PrimaryButton from "../../../../Components/Buttons/Primary/index";
-import { Feather } from '@expo/vector-icons';
 
 interface SentLinkProps {
     setReceiveModalVisible: (modalVisible: boolean) => void;
@@ -17,11 +16,32 @@ const SentLink: React.FC<SentLinkProps> = ({
     setModalStep,
     setReceiveModalVisible,
     modalStep,
-
 }) => {
+    const shareMessage ="https://dege.app.link/send/0xBBB6A12945aC14C84185a17C6BD2eAe96e/value=21jq";
 
+    const shareLink = async () => {
+        try {
+            const result = await Share.share({
+                message: shareMessage,
+            });
 
-    const [message, setMessage] = useState(false)
+            if (result.action === Share.sharedAction) {
+                if (result.activityType) {
+                } else {
+                    setMessage(true);
+                    setTimeout(() => {
+                        setMessage(false);
+                    }, 2000);
+                }
+            } else if (result.action === Share.dismissedAction) {
+            }
+        } catch (error) {
+            console.log('Paylaşım hatası:', error.message);
+        }
+    };
+
+    const [message, setMessage] = useState(false);
+
     return (
         <Modal
             style={styles.blur}
@@ -54,13 +74,22 @@ const SentLink: React.FC<SentLinkProps> = ({
                         <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 40, paddingVertical: 40 }}>
                             <Pressable onPress={() => {
                                 setMessage(true)
+                                shareLink();
                                 setTimeout(() => {
                                     setMessage(false)
                                 }, 2000);
                             }}>
                                 <Text style={{ color: "#FEBF32", fontSize: 16, lineHeight: 24, fontFamily: "Poppins_500Medium" }}>Copy Link</Text>
                             </Pressable>
-                            <Pressable>
+                            <Pressable onPress={()=> 
+                                {
+                                    setModalStep(modalStep + 1)
+                                    setTimeout(() => {
+                                        setReceiveModalVisible(false)
+                                        setModalStep(0)
+                                    }, 5100);
+                                }
+                            }>
                                 <Text style={{ color: "#FEBF32", fontSize: 16, lineHeight: 24, fontFamily: "Poppins_500Medium" }}>Qr code</Text>
                             </Pressable>
                         </View>
@@ -71,7 +100,9 @@ const SentLink: React.FC<SentLinkProps> = ({
                             text="Send Link "
                             onPress={() => {
                                 setTimeout(() => {
-                                    setReceiveModalVisible(false)
+                                    setReceiveModalVisible(false);
+                                    shareLink();
+                                    setModalStep(1)
                                 }, 2500);
                             }}
                         />
