@@ -36,7 +36,7 @@ const SentLink: React.FC<SentLinkProps> = ({
             } else if (result.action === Share.dismissedAction) {
             }
         } catch (error) {
-            console.log('Paylaşım hatası:', error.message);
+            console.log('Paylaşım hatası:', error);
         }
     };
 

@@ -17,15 +17,18 @@ import { MainContext } from "../../Context";
 import { Accounts, CoinListItem } from "../../Router/types";
 import AddCollectibles from "./AddCollectibles";
 import Receive from "./Receive";
+import BuyModal from "./Buy";
+import AddTokenModal from "./AddToken";
 
 const Homescreen: React.FC = () => {
     const [activeTabBar, setActiveTabBar] = useState("wallet");
     const [activeTab, setActiveTab] = useState('Token');
-
     const navigation = useAppNavigation()
     const { sentAccount, setSentAccount } = useContext(MainContext)
     const [collectiblesModal, setCollectiblesModal] = useState(false);
     const [receiveModal, setReceiveModal] = useState<boolean>(false)
+    const [buyModal, setBuyModal] = useState(false);
+    const [addTokenModal, setAddTokenModal] = useState(false);
     const handleTabPress = (tab: string) => {
         setActiveTabBar(tab);
     };
@@ -180,10 +183,14 @@ const Homescreen: React.FC = () => {
                     receiveModal={receiveModal}
                     setReceiveModal={setReceiveModal}
                 />
-                <View style={styles.button}>
+                <Pressable onPress={() => setBuyModal(true)} style={styles.button}>
                     <MaterialIcons name="attach-money" size={24} color="#FEBF32" />
                     <Text style={{ color: "#FEBF32", fontFamily: "Poppins_500Medium", fontSize: 14, lineHeight: 24 }}>Buy</Text>
-                </View>
+                </Pressable>
+                <BuyModal
+                    buyModal={buyModal}
+                    setBuyModal={setBuyModal}
+                />
             </View>
             <View style={styles.tabContainer}>
                 <View style={{ flexDirection: "row", alignItems: "center", gap: 24 }}>
@@ -265,7 +272,7 @@ const Homescreen: React.FC = () => {
                 )}
                 {
                     activeTab === "Token" ?
-                        <Pressable style={{ padding: 16 }} onPress={() => console.log("Add Coin")}>
+                        <Pressable style={{ padding: 16 }} onPress={() => setAddTokenModal(true)}>
                             <View style={{ flexDirection: "row", alignItems: "center", gap: 10, justifyContent: "center" }}>
                                 <Entypo name="plus" size={24} color="#FEBF32" />
                                 <Text style={{ color: "#FEBF32", fontFamily: "Poppins_500Medium", fontSize: 16, lineHeight: 24 }}>Add Tokens
@@ -284,6 +291,10 @@ const Homescreen: React.FC = () => {
                 <AddCollectibles
                     collectiblesModal={collectiblesModal}
                     setCollectiblesModal={setCollectiblesModal}
+                />
+                <AddTokenModal
+                addTokenModal={addTokenModal}
+                setAddTokenModal={setAddTokenModal}
                 />
             </View>
             <View style={styles.tabBar}>
