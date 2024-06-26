@@ -202,7 +202,7 @@ const Homescreen: React.FC = () => {
                     </Pressable>
                 </View>
                 {activeTab === 'Token' && (
-                    <ScrollView style={{ maxHeight: 350, overflow: "scroll" }}>
+                    <ScrollView style={{ maxHeight: 320, overflow: "scroll" }}>
                         <View style={{ gap: 8 }}>
                             {
                                 coinList.map((coin) =>
