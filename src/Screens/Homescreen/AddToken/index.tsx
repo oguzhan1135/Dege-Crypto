@@ -1,6 +1,6 @@
 import { BlurView } from "expo-blur";
-import React, { useContext, useState } from "react";
-import { Modal, View, Text, StyleSheet, Pressable, TextInput, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, ScrollView } from "react-native";
+import React, { useContext, useState, useEffect } from "react";
+import { Modal, View, Text, StyleSheet, Pressable, TextInput, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, ScrollView, KeyboardEvent, TurboModuleRegistry } from "react-native";
 import { AntDesign } from '@expo/vector-icons';
 import PrimaryButton from "../../../Components/Buttons/Primary";
 import { MainContext } from "../../../Context";
@@ -14,11 +14,14 @@ const AddTokenModal: React.FC<AddTokenProps> = ({
     addTokenModal,
     setAddTokenModal,
 }) => {
-
     const [activeTab, setActiveTab] = useState('Search');
-    const [token, setToken] = useState("");
+    const [tokenAddress, setTokenAddress] = useState("");
+    const [tokenSymbol, setTokenSymbol] = useState("");
+    const [tokenPrecision, setTokenPrecision] = useState("");
     const [selectToken, setSelectToken] = useState("");
-    const { coinList, setCoinList, sentAccount, setSentAccount } = useContext(MainContext)
+    const [paddingBottom, setPaddingBottom] = useState(270);
+    const [nextStep, setNextStep] = useState(false)
+    const { coinList, setCoinList, sentAccount, setSentAccount } = useContext(MainContext);
     const [tokens, setTokens] = useState([
         {
             id: 30,
@@ -46,14 +49,32 @@ const AddTokenModal: React.FC<AddTokenProps> = ({
         }
     ]);
 
+    useEffect(() => {
+        const keyboardDidShow = (event: KeyboardEvent) => {
+            setPaddingBottom(100);
+        };
+
+        const keyboardDidHide = (event: KeyboardEvent) => {
+            setPaddingBottom(270);
+        };
+
+        const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', keyboardDidShow);
+        const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', keyboardDidHide);
+
+        return () => {
+            keyboardDidShowListener.remove();
+            keyboardDidHideListener.remove();
+        };
+    }, []);
+
     const filteredTokens = tokens.filter(t =>
-        t.coinName.toLowerCase().includes(token.toLowerCase()) ||
-        t.currency.toLowerCase().includes(token.toLowerCase())
+        t.coinName.toLowerCase().includes(tokenAddress.toLowerCase()) ||
+        t.currency.toLowerCase().includes(tokenAddress.toLowerCase())
     );
 
     const addToken = () => {
         let selectedToken = tokens.find((token) => token.currency === selectToken);
-
+    
         if (selectedToken) {
             const newToken = {
                 id: coinList.length + 1,
@@ -63,25 +84,53 @@ const AddTokenModal: React.FC<AddTokenProps> = ({
                 onTheRise: selectedToken.onTheRise,
                 percent: selectedToken.percent,
             };
-
+    
             setCoinList([...coinList, newToken]);
-
+    
+            if (sentAccount) {
+                setSentAccount({
+                    ...sentAccount,
+                    balance: [
+                        ...sentAccount.balance,
+                        {
+                            balance: 0,
+                            coinName: selectedToken.currency,
+                        }
+                    ]
+                });
+            }
+    
+            setTokens(tokens.filter((token) => token.currency !== selectToken));
+            setSelectToken("");
+            setTokenAddress("");
+        }
+    };
+    
+    const customAddToken = () => {
+        const newToken = {
+            id: coinList.length + 1,
+            coinName: tokenAddress,
+            currency: tokenSymbol,
+            rate: tokenPrecision,
+            onTheRise: true,
+            percent: 1,
+        };
+        setCoinList([...coinList, newToken]);
+    
+        if (sentAccount) {
             setSentAccount({
                 ...sentAccount,
                 balance: [
                     ...sentAccount.balance,
                     {
                         balance: 0,
-                        coinName: selectedToken.currency,
+                        coinName: tokenSymbol,
                     }
                 ]
             });
-
-            setTokens(tokens.filter((token) => token.currency !== selectToken));
-            setSelectToken("");
-            setToken("");
         }
-    };
+    }
+    
 
     return (
         <Modal
@@ -126,20 +175,20 @@ const AddTokenModal: React.FC<AddTokenProps> = ({
                                                                 placeholder="Search..."
                                                                 placeholderTextColor="#ABAFC4"
                                                                 style={{ color: "white", textAlignVertical: "center" }}
-                                                                value={token}
-                                                                onChangeText={setToken}
+                                                                value={tokenAddress}
+                                                                onChangeText={setTokenAddress}
                                                                 scrollEnabled={false}
                                                                 multiline
                                                             />
                                                         </View>
-                                                        <Pressable onPress={() => setToken("")}>
+                                                        <Pressable onPress={() => setTokenAddress("")}>
                                                             <AntDesign name="close" size={20} color="white" />
                                                         </Pressable>
                                                     </View>
                                                 </View>
                                                 <Text style={{ color: "#ABAFC4", fontSize: 14, lineHeight: 24, fontFamily: "Poppins_700Bold" }}>Select Token</Text>
                                                 <ScrollView style={{ gap: 8, paddingBottom: 80, maxHeight: 250 }}>
-                                                    {token === "" ? null : (
+                                                    {tokenAddress === "" ? null : (
                                                         filteredTokens.map((token, index) => (
                                                             <Pressable
                                                                 key={index}
@@ -160,20 +209,66 @@ const AddTokenModal: React.FC<AddTokenProps> = ({
                                                 </ScrollView>
                                             </>
                                             :
-                                            <View style={{ gap: 24, paddingBottom: 270 }}>
-                                                <View style={{ paddingVertical: 20, paddingHorizontal: 16, borderWidth: 1, borderColor: "#2a2d3c", borderRadius: 8 }}>
-                                                    <Text style={{ color: "#ABAFC4", fontSize: 14, lineHeight: 24, fontFamily: "Poppins_700Bold" }}>Token Adress</Text>
+                                            <>
+                                                {
+                                                    nextStep === true ?
+                                                        <>
+                                                            <View style={{ gap: 18, paddingBottom: 400 }}>
+                                                                <Text style={{ color: "#ABAFC4", fontFamily: "Poppins_500Medium", fontSize: 14, lineHeight: 24 }}>Would you like add these tokens?</Text>
+                                                                <View
+                                                                    style={{ padding: 16, flexDirection: "row", alignItems: "center", gap: 10, justifyContent: "space-between" }}
+                                                                >
+                                                                    <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+                                                                        <View style={{ backgroundColor: "#44485F", padding: 20, borderRadius: 100 }} />
+                                                                        <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
+                                                                            <Text style={{ color: "white", fontSize: 16, lineHeight: 24, fontFamily: "Poppins_500Medium" }}>{tokenAddress}</Text>
+                                                                            <Text style={{ color: "#ABAFC4", fontSize: 16, lineHeight: 24, fontFamily: "Poppins_500Medium" }}>({tokenSymbol})</Text>
+                                                                        </View>
+                                                                    </View>
+                                                                    <AntDesign name="checkcircleo" size={24} color="#76E268" />
+                                                                </View>
+                                                            </View>
+                                                        </> :
+                                                        <View style={{ gap: 24, paddingBottom }}>
+                                                            <View style={{ paddingVertical: 20, paddingHorizontal: 16, borderWidth: 1, borderColor: "#2a2d3c", borderRadius: 8 }}>
+                                                                <TextInput
+                                                                    placeholder="Token Address"
+                                                                    placeholderTextColor="#ABAFC4"
+                                                                    style={{ color: "white", textAlignVertical: "center" }}
+                                                                    value={tokenAddress}
+                                                                    onChangeText={setTokenAddress}
+                                                                    scrollEnabled={false}
+                                                                    multiline
+                                                                />
+                                                            </View>
+                                                            <View style={{ paddingVertical: 20, paddingHorizontal: 16, borderWidth: 1, borderColor: "#2a2d3c", borderRadius: 8 }}>
+                                                                <TextInput
+                                                                    placeholder="Token Symbol"
+                                                                    placeholderTextColor="#ABAFC4"
+                                                                    style={{ color: "white", textAlignVertical: "center" }}
+                                                                    value={tokenSymbol}
+                                                                    onChangeText={setTokenSymbol}
+                                                                    scrollEnabled={false}
+                                                                    multiline
+                                                                />
+                                                            </View>
+                                                            <View style={{ paddingVertical: 20, paddingHorizontal: 16, borderWidth: 1, borderColor: "#2a2d3c", borderRadius: 8 }}>
+                                                                <TextInput
+                                                                    placeholder="Token of Precision"
+                                                                    placeholderTextColor="#ABAFC4"
+                                                                    style={{ color: "white", textAlignVertical: "center" }}
+                                                                    value={tokenPrecision}
+                                                                    onChangeText={setTokenPrecision}
+                                                                    scrollEnabled={false}
+                                                                    multiline
+                                                                />
+                                                            </View>
+                                                        </View>
 
-                                                </View>
-                                                <View style={{ paddingVertical: 20, paddingHorizontal: 16, borderWidth: 1, borderColor: "#2a2d3c", borderRadius: 8 }}>
-                                                    <Text style={{ color: "#ABAFC4", fontSize: 14, lineHeight: 24, fontFamily: "Poppins_700Bold" }}>Token Symbol</Text>
+                                                }
 
-                                                </View>
-                                                <View style={{ paddingVertical: 20, paddingHorizontal: 16, borderWidth: 1, borderColor: "#2a2d3c", borderRadius: 8 }}>
-                                                    <Text style={{ color: "#ABAFC4", fontSize: 14, lineHeight: 24, fontFamily: "Poppins_700Bold" }}>Token of Precision</Text>
+                                            </>
 
-                                                </View>
-                                            </View>
                                     }
 
                                 </View>
@@ -184,14 +279,44 @@ const AddTokenModal: React.FC<AddTokenProps> = ({
                                         <Text style={{ fontSize: 16, fontFamily: "Poppins_500Medium", lineHeight: 24, fontWeight: "bold", color: "#FEBF32", textAlign: "center" }}>Cancel</Text>
                                     </Pressable>
                                     <View style={{ width: "48%" }}>
-                                        <PrimaryButton
-                                            text="Add Token"
-                                            onPress={() => {
-                                                setAddTokenModal(false);
-                                                addToken();
-                                            }}
-                                            disabled={selectToken === "" ? true : false}
-                                        />
+                                        {
+                                            activeTab === "Custom Token" ?
+                                                <>
+                                                    {
+                                                        nextStep ?
+                                                            <PrimaryButton
+                                                                text="Add Token"
+                                                                onPress={() => {
+                                                                    setAddTokenModal(false);
+                                                                    customAddToken();
+                                                                    setNextStep(false);
+                                                                    setActiveTab("Search");
+                                                                    setTokenAddress("");
+                                                                    setTokenSymbol("");
+                                                                    setTokenPrecision("");
+                                                                }}
+                                                            /> :
+                                                            <PrimaryButton
+                                                                text="Next"
+                                                                onPress={() => {
+                                                                    setNextStep(true)
+                                                                }}
+                                                                disabled={tokenAddress === "" ? true : false}
+                                                            />
+
+                                                    }
+                                                </>
+                                                :
+                                                <PrimaryButton
+                                                    text="Add Token"
+                                                    onPress={() => {
+                                                        setAddTokenModal(false);
+                                                        addToken();
+                                                    }}
+                                                    disabled={selectToken === "" ? true : false}
+                                                />
+                                        }
+
                                     </View>
                                 </View>
                             </View>
@@ -260,6 +385,11 @@ const styles = StyleSheet.create({
         alignItems: "center",
         backgroundColor: 'rgb(0,0,0,10)',
     },
+    input: {
+        color: "white",
+        textAlignVertical: "center",
+        paddingVertical: 8,
+    }
 });
 
 export default AddTokenModal;
