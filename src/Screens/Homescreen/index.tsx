@@ -1,27 +1,23 @@
 import React, { useContext, useEffect, useState } from "react";
-import { View, StyleSheet, Text, Pressable, ScrollView, Modal } from "react-native";
+import { View, StyleSheet, Text, Pressable, ScrollView } from "react-native";
 import User1 from '../../../assets/images/User-1.svg';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import GradiantText from "../../Components/GradiantText";
 import AntDesign from '@expo/vector-icons/AntDesign';
 import HBomeShape from "../../../assets/images/HomeShape.svg";
 import { Entypo } from '@expo/vector-icons';
-import { Ionicons } from '@expo/vector-icons';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import SwapShape from "../../../assets/images/SwapShape.svg";
-import { BlurView } from "expo-blur";
 import Network from "./Network";
 import Account from "./Account";
 import { useAppNavigation } from "../../Router/useAppNavigation";
 import { MainContext } from "../../Context";
-import { Accounts, CoinListItem } from "../../Router/types";
+import { CoinListItem } from "../../Router/types";
 import AddCollectibles from "./AddCollectibles";
 import Receive from "./Receive";
 import BuyModal from "./Buy";
 import AddTokenModal from "./AddToken";
+import TabBar from "../../Components/TabBar";
 
 const Homescreen: React.FC = () => {
-    const [activeTabBar, setActiveTabBar] = useState("wallet");
     const [activeTab, setActiveTab] = useState('Token');
     const navigation = useAppNavigation()
     const { sentAccount, setSentAccount } = useContext(MainContext)
@@ -29,9 +25,7 @@ const Homescreen: React.FC = () => {
     const [receiveModal, setReceiveModal] = useState<boolean>(false)
     const [buyModal, setBuyModal] = useState(false);
     const [addTokenModal, setAddTokenModal] = useState(false);
-    const handleTabPress = (tab: string) => {
-        setActiveTabBar(tab);
-    };
+
     useEffect(() => {
         setSentAccount(
             {
@@ -293,71 +287,18 @@ const Homescreen: React.FC = () => {
                     setCollectiblesModal={setCollectiblesModal}
                 />
                 <AddTokenModal
-                addTokenModal={addTokenModal}
-                setAddTokenModal={setAddTokenModal}
+                    addTokenModal={addTokenModal}
+                    setAddTokenModal={setAddTokenModal}
                 />
             </View>
-            <View style={styles.tabBar}>
-                <Pressable onPress={() => handleTabPress("wallet")} style={{ flex: 1 }}>
-                    <View style={styles.tabBarContentBox}>
-                        <View style={{ alignItems: "center", justifyContent: "center", gap: 1 }}>
-                            <Entypo name="wallet" style={activeTabBar === "wallet" ? styles.activeTabBarIcon : styles.deActiveTabBarIcon} />
-                            <Text style={activeTabBar === "wallet" ? styles.activeTabBarText : styles.deActiveTabBarText}>Wallet</Text>
-                        </View>
-                    </View>
-                </Pressable>
-                <Pressable onPress={() => handleTabPress("swap")} style={{ flex: 1 }}>
-                    <View style={styles.tabBarContentBox}>
-                        <View style={{ alignItems: "center", justifyContent: "center", gap: 1 }}>
-                            <MaterialCommunityIcons name="swap-horizontal-circle-outline" style={activeTabBar === "swap" ? styles.activeTabBarIcon : styles.deActiveTabBarIcon} />
-                            <Text style={activeTabBar === "swap" ? styles.activeTabBarText : styles.deActiveTabBarText}>Swap</Text>
-                        </View>
-                    </View>
-                </Pressable>
-                <Pressable onPress={() => handleTabPress("setting")} style={{ flex: 1 }}>
-                    <View style={styles.tabBarContentBox}>
-                        <View style={{ alignItems: "center", justifyContent: "center", gap: 1 }}>
-                            <Ionicons name="settings-outline" style={activeTabBar === "setting" ? styles.activeTabBarIcon : styles.deActiveTabBarIcon} />
-                            <Text style={activeTabBar === "setting" ? styles.activeTabBarText : styles.deActiveTabBarText}>Settings</Text>
-                        </View>
-                    </View>
-                </Pressable>
-            </View>
+            <TabBar/>
+
         </View >
     );
 }
 
 const styles = StyleSheet.create({
-    activeTabBarIcon: {
-        color: "#FEBF32",
-        fontSize: 24
-    },
-    deActiveTabBarIcon: {
-        color: "#ABAFC4",
-        fontSize: 24
-    },
-    activeTabBarText: {
-        fontFamily: "Poppins_700Bold",
-        color: "#FEBF32",
-        fontSize: 12,
-        lineHeight: 18
-    },
-    deActiveTabBarText: {
-        color: "#ABAFC4",
-        fontFamily: "Poppins_700Bold",
-        fontSize: 12,
-        lineHeight: 18
-    },
-    tabBar: {
-        position: "absolute",
-        flexDirection: "row",
-        bottom: 0
-    },
-    tabBarContentBox: {
-        paddingHorizontal: 25,
-        paddingBottom: 25,
-        paddingTop: 10,
-    },
+
     coinTitle: {
         fontSize: 16,
         lineHeight: 24,
