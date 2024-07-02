@@ -1,19 +1,25 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { View, Text, Pressable, StyleSheet } from "react-native";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 import Swap from "./Swap";
+import { MainContext } from "../../Context";
 const TabBar = () => {
 
     const [activeTabBar, setActiveTabBar] = useState("wallet");
-    const [amount, setAmount] = useState("0");
-    const [modalStep, setModalStep] = useState(0);
+    const [amount, setAmount] = useState("");
     const [swapModal, setSwapModal] = useState(false);
 
     const handleTabPress = (tab: string) => {
         setActiveTabBar(tab);
     };
+    const { swapMessage } = useContext(MainContext);
+    useEffect(()=>{
+        if(swapMessage === "Submitted"){
+            setActiveTabBar("wallet")
+        }
+    },[swapMessage])
     return (
         <View style={styles.tabBar}>
             <Pressable onPress={() => handleTabPress("wallet")} style={{ flex: 1 }}>
@@ -36,8 +42,6 @@ const TabBar = () => {
                 </View>
             </Pressable>
             <Swap
-                modalStep={modalStep}
-                setModalStep={setModalStep}
                 setSwapModal={setSwapModal}
                 swapModal={swapModal}
                 amount={amount}

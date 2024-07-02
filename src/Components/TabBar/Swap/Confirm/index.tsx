@@ -1,0 +1,175 @@
+import { BlurView } from "expo-blur";
+import React, { useContext, useEffect, useState } from "react";
+import { Modal, View, Pressable, Text, StyleSheet } from "react-native";
+import { AntDesign } from '@expo/vector-icons';
+import PrimaryButton from "../../../Buttons/Primary";
+import { MainContext } from "../../../../Context";
+import EditNetworkEdit from "../../../TokenDetail/Modals/EditNetworkFee";
+import Slippage from "../SlippageTolerance";
+
+interface ConfirmProps {
+    setConfirmModal: (confirmModal: boolean) => void;
+    confirmModal: boolean;
+    modalStep: number;
+    timer?: number;
+    setModalStep: (modalstep: number) => void
+}
+
+const Confirm: React.FC<ConfirmProps> = ({
+    setConfirmModal,
+    confirmModal,
+    timer,
+    setModalStep,
+    modalStep
+
+}) => {
+    const { receiverAccount, sentAccount, sentCoin, coinList, setAccounts, accounts, setSentAccount, setTokenFee } = useContext(MainContext);
+    const font = "Poppins_500Medium";
+    const [editFee, setEditFee] = useState(0.12);
+    const [slip, setSlip] = useState(2)
+    const [feeModal, setFeeModal] = useState(false);
+    const [slipModal, setSlipModal] = useState(false)
+    const onchangeFee = (fee: number) => {
+        setEditFee(fee);
+    }
+    const onchangeSlip = (slip: number) => {
+        setSlip(slip);
+    }
+
+    return (
+        <Modal
+            visible={confirmModal}
+            animationType="slide"
+            transparent={true}
+        >
+            <BlurView intensity={80} style={{ flex: 1 }}>
+                <View style={styles.centeredView}>
+                    <View style={{ backgroundColor: "#ABAFC4", height: 4, width: 40, borderRadius: 100, marginBottom: 5 }} />
+                    <View style={[styles.modalView, { position: "relative" }]}>
+                        <View style={{ paddingBottom: 70 }}>
+                            <Text style={styles.modalText}>Confirm</Text>
+                            <Pressable onPress={() => { setConfirmModal(false); setModalStep(modalStep - 1) }} style={{ position: "absolute", top: "25%", right: 0 }}>
+                                <AntDesign name="close" size={18} color="white" />
+                            </Pressable>
+                            <Pressable onPress={() => {
+                                setModalStep(modalStep - 1)
+                            }} style={{ position: "absolute", top: "25%", left: 0 }}>
+                                <AntDesign name="left" size={18} color="white" />
+                            </Pressable>
+                        </View>
+                        <View style={{ borderWidth: 1, paddingTop: 16, borderColor: "#2a2d3c", marginBottom: 133 }}>
+                            <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingBottom: 16, paddingHorizontal: 16 }}>
+                                <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+                                    <Text style={styles.contentText}>Slippage tolerance</Text>
+                                    <Pressable onPress={() => setSlipModal(true)}>
+                                        <Text style={[styles.contentText, { color: "#FEBF32" }]}>Edit</Text>
+                                    </Pressable>
+                                </View>
+                                <Slippage
+                                    setModalVisible={setSlipModal}
+                                    modalVisible={slipModal}
+                                    onchangeSlip={onchangeSlip}
+                                />
+                                <Text style={styles.contentText}>{slip}%</Text>
+                            </View>
+                            <View style={{ borderTopWidth: 1, borderTopColor: "#2a2d3c", flexDirection: "column", padding: 16, gap: 4 }}>
+                                <View style={{ justifyContent: "space-between", alignItems: "center", flexDirection: "row" }}>
+                                    <Text style={styles.contentText}>Rate</Text>
+                                    <Text style={styles.contentText}>16 BNB</Text>
+
+                                </View>
+                                <Text style={[styles.contentText, { textAlign: "right" }]}>= 2.517246 ETH</Text>
+
+                            </View>
+                            <View style={{ borderTopWidth: 1, borderTopColor: "#2a2d3c", flexDirection: "column", padding: 16, gap: 4 }}>
+                                <View style={{ justifyContent: "space-between", alignItems: "center", flexDirection: "row" }}>
+                                    <Text style={styles.contentText}>Inverse Rate</Text>
+                                    <Text style={styles.contentText}>1 BNB</Text>
+
+                                </View>
+                                <Text style={[styles.contentText, { textAlign: "right" }]}>= 0.15671168 ETH</Text>
+
+                            </View>
+                            <View style={{ borderTopWidth: 1, borderTopColor: "#2a2d3c", flexDirection: "column", padding: 16, gap: 4 }}>
+                                <View style={{ justifyContent: "space-between", alignItems: "center", flexDirection: "row" }}>
+                                    <Text style={styles.contentText}>USD Price</Text>
+                                    <Text style={styles.contentText}>1 BNB</Text>
+
+                                </View>
+                                <Text style={[styles.contentText, { textAlign: "right" }]}>= $284.53</Text>
+
+                            </View>
+                            <View style={{ borderTopWidth: 1, borderTopColor: "#2a2d3c", justifyContent: "space-between", flexDirection: "row", padding: 16, gap: 4, }}>
+                                <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+                                    <Text style={styles.contentText}>Estimated Fee</Text>
+                                    <Pressable onPress={() => setFeeModal(true)}>
+                                        <Text style={[styles.contentText, { color: "#FEBF32" }]}>Edit</Text>
+                                    </Pressable>
+                                </View>
+                                <Text style={styles.contentText}>{editFee} BNB</Text>
+                            </View>
+                            <EditNetworkEdit
+                                modalVisible={feeModal}
+                                setModalVisible={setFeeModal}
+                                onchangeFee={onchangeFee}
+                            />
+                        </View>
+                        <PrimaryButton text="Swap" onPress={() => {
+                            setModalStep(3)
+                            setConfirmModal(false)
+                        }
+                        } />
+
+                    </View>
+                </View>
+            </BlurView>
+        </Modal>
+    )
+}
+
+const styles = StyleSheet.create({
+    iconContainer: {
+        backgroundColor: "#222531",
+        overflow: "hidden",
+        width: 40,
+        height: 40,
+        borderRadius: 50,
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    modalView: {
+        width: "100%",
+        backgroundColor: "#17171A",
+        paddingBottom: 40,
+        paddingHorizontal: 24,
+    },
+    modalText: {
+        fontSize: 16,
+        lineHeight: 24,
+        color: "white",
+        fontFamily: "Poppins_500Medium",
+        textAlign: "center",
+        paddingTop: 16,
+        paddingBottom: 24
+    },
+    blur: {
+        position: "absolute",
+        top: 0,
+        right: 0,
+        bottom: 0,
+        left: 0,
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    centeredView: {
+        flex: 1,
+        justifyContent: "flex-end",
+        alignItems: "center",
+        backgroundColor: 'rgba(0,0,0,0.1)',
+    },
+    contentText: {
+        fontSize: 14, lineHeight: 24, fontFamily: "Poppins_500Medium", color: "white"
+    }
+});
+
+export default Confirm;

@@ -16,6 +16,8 @@ import Receive from "./Receive";
 import BuyModal from "./Buy";
 import AddTokenModal from "./AddToken";
 import TabBar from "../../Components/TabBar";
+import { BlurView } from "expo-blur";
+import { Feather } from '@expo/vector-icons';
 
 const Homescreen: React.FC = () => {
     const [activeTab, setActiveTab] = useState('Token');
@@ -141,10 +143,21 @@ const Homescreen: React.FC = () => {
 
     }, [])
 
+
     const coinBalance = (coin: CoinListItem) => {
         return sentAccount?.balance.find((balance) => balance.coinName === coin.currency)?.balance.toFixed(2)
     }
-    const { coinList } = useContext(MainContext)
+    const { coinList, swapMessage, setSwapMessage } = useContext(MainContext)
+    useEffect(() => {
+        if (swapMessage === "Submitted") {
+            setTimeout(() => {
+                setSwapMessage("Confirmed")
+            }, 2000);
+        }
+        setTimeout(() => {
+            setSwapMessage("")
+        }, 2000);
+    }, [swapMessage])
     return (
         <View style={styles.container}>
             <HBomeShape style={{ position: "absolute", right: 0, top: "18%", transform: [{ scale: 1.5 }] }} />
@@ -225,6 +238,8 @@ const Homescreen: React.FC = () => {
                                 )
                             }
                         </View>
+
+
                     </ScrollView>
                 )}
                 {activeTab === 'Collectibles' && (
@@ -282,6 +297,8 @@ const Homescreen: React.FC = () => {
                         </Pressable>
 
                 }
+
+
                 <AddCollectibles
                     collectiblesModal={collectiblesModal}
                     setCollectiblesModal={setCollectiblesModal}
@@ -291,7 +308,45 @@ const Homescreen: React.FC = () => {
                     setAddTokenModal={setAddTokenModal}
                 />
             </View>
-            <TabBar/>
+            <View style={{ alignItems: "center", width: "100%" }}>
+                <>
+
+                    {
+                        swapMessage === "Submitted" ?
+                            <View style={{ position: "absolute", bottom: 10, zIndex: 1, width: "100%", paddingHorizontal: 16, borderRadius: 8, overflow: "hidden" }}>
+                                <BlurView intensity={0} style={{ flex: 1, padding: 16, borderRadius: 8, backgroundColor: "#292618" }}>
+                                    <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+                                        <Feather name="clock" size={40} color="#FEBF32" />
+                                        <View style={{ gap: 4 }}>
+                                            <Text style={{ fontSize: 16, lineHeight: 24, fontFamily: "Poppins_500Medium", color: "white" }}>Swap Coin </Text>
+                                            <Text style={{ color: "#ABAFC4", fontFamily: "Poppins_500Medium", fontSize: 12, lineHeight: 18 }}>Waiting for confirmation</Text>
+                                        </View>
+                                    </View>
+                                </BlurView>
+                            </View> : null}
+                    {
+
+                        swapMessage === "Confirmed" ?
+                            <View style={{ position: "absolute", bottom: 10, zIndex: 1, width: "100%", paddingHorizontal: 16, borderRadius: 8, overflow: "hidden" }}>
+                                <BlurView intensity={0} style={{ flex: 1, padding: 16, borderRadius: 8, backgroundColor: "#1e2720" }}>
+                                    <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+                                        <AntDesign name="checkcircleo" size={40} color="#76E268" />
+                                        <View style={{ gap: 4 }}>
+                                            <Text style={{ fontSize: 16, lineHeight: 24, fontFamily: "Poppins_500Medium", color: "white" }}>Swap #0 Complete!</Text>
+                                            <Text style={{ color: "#ABAFC4", fontFamily: "Poppins_500Medium", fontSize: 12, lineHeight: 18 }}>Tap to view this transaction</Text>
+                                        </View>
+                                    </View>
+                                </BlurView>
+                            </View> : null
+                    }
+                    {
+                        swapMessage === "" ? null : null
+                    }
+
+
+                </>
+            </View>
+            <TabBar />
 
         </View >
     );

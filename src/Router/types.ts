@@ -43,6 +43,8 @@ export type AppContextInterface = {
     setSentCoin: (sentCoin: SentCoin) => void;
     tokenFee?: number;
     setTokenFee: (tokenFee: number) => void;
+    swapMessage: string;
+    setSwapMessage: (swapMessage: string) => void;
 }
 
 export type Transaction = {
