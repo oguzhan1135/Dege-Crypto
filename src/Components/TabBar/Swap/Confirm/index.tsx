@@ -13,6 +13,10 @@ interface ConfirmProps {
     modalStep: number;
     timer?: number;
     setModalStep: (modalstep: number) => void
+    fromCoin: string;
+    toCoin: string;
+    fromAmount: number;
+    toAmount: number;
 }
 
 const Confirm: React.FC<ConfirmProps> = ({
@@ -20,10 +24,15 @@ const Confirm: React.FC<ConfirmProps> = ({
     confirmModal,
     timer,
     setModalStep,
-    modalStep
+    modalStep,
+    fromAmount,
+    toAmount,
+    fromCoin,
+    toCoin
 
 }) => {
-    const { receiverAccount, sentAccount, sentCoin, coinList, setAccounts, accounts, setSentAccount, setTokenFee } = useContext(MainContext);
+
+    const { coinList, accounts, sentAccount, setSentAccount, setAccounts } = useContext(MainContext)
     const font = "Poppins_500Medium";
     const [editFee, setEditFee] = useState(0.12);
     const [slip, setSlip] = useState(2)
@@ -36,6 +45,41 @@ const Confirm: React.FC<ConfirmProps> = ({
         setSlip(slip);
     }
 
+    useEffect(() => {
+        setEditFee(0.13)
+    }, [])
+
+    const swapOperations = () => {
+        let fromSwapBalance = fromAmount + editFee;
+        const updatedAccounts = [...accounts];
+        const findAccountIndex = sentAccount?.id;
+    
+        const fromCoinBalance = updatedAccounts[findAccountIndex - 1].balance.find(balance => balance.coinName === fromCoin);
+        const toCoinBalance = updatedAccounts[findAccountIndex - 1].balance.find(balance => balance.coinName === toCoin);
+    
+        if (fromCoinBalance) {
+            fromCoinBalance.balance -= fromSwapBalance;
+        }
+        if (toCoinBalance) {
+            toCoinBalance.balance += toAmount;
+        }
+    
+        setAccounts(updatedAccounts);
+    
+        let updateSentAccount = { ...sentAccount };
+        const sentAccountFromCoinBalance = updateSentAccount?.balance.find(balance => balance.coinName === fromCoin);
+        const sentAccountToCoinBalance = updateSentAccount?.balance.find(balance => balance.coinName === toCoin);
+    
+        if (sentAccountFromCoinBalance) {
+            sentAccountFromCoinBalance.balance -= fromSwapBalance;
+        }
+        if (sentAccountToCoinBalance) {
+            sentAccountToCoinBalance.balance += toAmount;
+        }
+    
+        setSentAccount(updateSentAccount);
+    };
+    
     return (
         <Modal
             visible={confirmModal}
@@ -75,28 +119,28 @@ const Confirm: React.FC<ConfirmProps> = ({
                             <View style={{ borderTopWidth: 1, borderTopColor: "#2a2d3c", flexDirection: "column", padding: 16, gap: 4 }}>
                                 <View style={{ justifyContent: "space-between", alignItems: "center", flexDirection: "row" }}>
                                     <Text style={styles.contentText}>Rate</Text>
-                                    <Text style={styles.contentText}>16 BNB</Text>
+                                    <Text style={styles.contentText}>{fromAmount} {fromCoin}</Text>
 
                                 </View>
-                                <Text style={[styles.contentText, { textAlign: "right" }]}>= 2.517246 ETH</Text>
+                                <Text style={[styles.contentText, { textAlign: "right" }]}>= {toAmount} {toCoin}</Text>
 
                             </View>
                             <View style={{ borderTopWidth: 1, borderTopColor: "#2a2d3c", flexDirection: "column", padding: 16, gap: 4 }}>
                                 <View style={{ justifyContent: "space-between", alignItems: "center", flexDirection: "row" }}>
                                     <Text style={styles.contentText}>Inverse Rate</Text>
-                                    <Text style={styles.contentText}>1 BNB</Text>
+                                    <Text style={styles.contentText}>1 {fromCoin}</Text>
 
                                 </View>
-                                <Text style={[styles.contentText, { textAlign: "right" }]}>= 0.15671168 ETH</Text>
+                                <Text style={[styles.contentText, { textAlign: "right" }]}>= {toAmount / fromAmount} {toCoin}</Text>
 
                             </View>
                             <View style={{ borderTopWidth: 1, borderTopColor: "#2a2d3c", flexDirection: "column", padding: 16, gap: 4 }}>
                                 <View style={{ justifyContent: "space-between", alignItems: "center", flexDirection: "row" }}>
                                     <Text style={styles.contentText}>USD Price</Text>
-                                    <Text style={styles.contentText}>1 BNB</Text>
+                                    <Text style={styles.contentText}>1 {fromCoin}</Text>
 
                                 </View>
-                                <Text style={[styles.contentText, { textAlign: "right" }]}>= $284.53</Text>
+                                <Text style={[styles.contentText, { textAlign: "right" }]}>= ${coinList.find((coin) => coin.currency === fromCoin)?.rate}</Text>
 
                             </View>
                             <View style={{ borderTopWidth: 1, borderTopColor: "#2a2d3c", justifyContent: "space-between", flexDirection: "row", padding: 16, gap: 4, }}>
@@ -117,6 +161,7 @@ const Confirm: React.FC<ConfirmProps> = ({
                         <PrimaryButton text="Swap" onPress={() => {
                             setModalStep(3)
                             setConfirmModal(false)
+                            swapOperations()
                         }
                         } />
 

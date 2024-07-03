@@ -61,7 +61,7 @@ const Swap: React.FC<SwapProps> = ({
             setTimeout(() => {
                 setSwapMessage("Confirmed")
             }, 2000);
-           
+
         }
     }, [modalStep])
 
@@ -203,6 +203,10 @@ const Swap: React.FC<SwapProps> = ({
                                     confirmModal={confirmModal}
                                     setModalStep={setModalStep}
                                     modalStep={modalStep}
+                                    fromAmount={parseFloat(amount)}
+                                    toAmount={parseFloat(swapBalance.toFixed(2))}
+                                    fromCoin={fromCoin.coin}
+                                    toCoin={toCoin.coin}
                                 />
                             </> :
                             null
