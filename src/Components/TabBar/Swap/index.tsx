@@ -56,6 +56,7 @@ const Swap: React.FC<SwapProps> = ({
     useEffect(() => {
         if (modalStep === 3) {
             setSwapModal(false)
+            setAmount("")
             setModalStep(1)
             setSwapMessage("Submitted");
             setTimeout(() => {
@@ -190,6 +191,7 @@ const Swap: React.FC<SwapProps> = ({
                                         }
 
                                         }
+                                        disabled={parseFloat(amount) > sentAccount?.balance.find((balance) => balance.coinName === fromCoin.coin)?.balance || parseFloat(amount) <= 0  || amount === "" ? true:false}
                                     />
                                 </View>
 

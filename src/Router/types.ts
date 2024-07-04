@@ -13,6 +13,8 @@ export type OnboardingStackParamList = {
     CreateNewWallet: undefined;
     Homescreen: undefined;
     TokenDetail: TokenDetailParams;
+    Setting: undefined;
+    Preferences: undefined;
 };
 
 export interface CommonParams {

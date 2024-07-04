@@ -10,7 +10,7 @@ import Network from "./Network";
 import Account from "./Account";
 import { useAppNavigation } from "../../Router/useAppNavigation";
 import { MainContext } from "../../Context";
-import { CoinListItem } from "../../Router/types";
+import { CoinListItem, Recent } from "../../Router/types";
 import AddCollectibles from "./AddCollectibles";
 import Receive from "./Receive";
 import BuyModal from "./Buy";
@@ -18,15 +18,27 @@ import AddTokenModal from "./AddToken";
 import TabBar from "../../Components/TabBar";
 import { BlurView } from "expo-blur";
 import { Feather } from '@expo/vector-icons';
+import Confirm from "../../Components/TokenDetail/Modals/Confirm";
+import SentToV1 from "../../Components/TokenDetail/Modals/SentToV1";
+import Amount from "../../Components/TokenDetail/Modals/Amount";
 
 const Homescreen: React.FC = () => {
     const [activeTab, setActiveTab] = useState('Token');
     const navigation = useAppNavigation()
-    const { sentAccount, setSentAccount } = useContext(MainContext)
+    const { sentAccount, setSentAccount, recent } = useContext(MainContext)
     const [collectiblesModal, setCollectiblesModal] = useState(false);
     const [receiveModal, setReceiveModal] = useState<boolean>(false)
     const [buyModal, setBuyModal] = useState(false);
     const [addTokenModal, setAddTokenModal] = useState(false);
+    const [modalStep, setModalStep] = useState(1);
+    const [amount, setAmount] = useState("0.2405");
+    const [sentModalVisible, setSentModalVisible] = useState(false);
+    const [paymentTo, setPaymentTo] = useState<Recent>({ id: 1, adress: "", avatar: <User1 />, name: "" });
+    const [message, setMessage] = useState("")
+    const [modalVisible, setModalVisible] = useState(false);
+    const [coin, setCoin] = useState<CoinListItem>();
+    const [timer, setTimer] = useState<number>();
+
 
     useEffect(() => {
         setSentAccount(
@@ -178,10 +190,12 @@ const Homescreen: React.FC = () => {
                 </View>
             </View>
             <View style={styles.buttonGroup}>
-                <View style={styles.button}>
+                <Pressable onPress={() => setSentModalVisible(true)} style={styles.button}>
                     <AntDesign name="arrowup" size={24} color="#FEBF32" />
                     <Text style={{ color: "#FEBF32", fontFamily: "Poppins_500Medium", fontSize: 14, lineHeight: 24 }}>Sent</Text>
-                </View>
+                </Pressable>
+
+
                 <Pressable style={styles.button} onPress={() => setReceiveModal(true)}>
                     <AntDesign name="arrowdown" size={24} color="#FEBF32" />
                     <Text style={{ color: "#FEBF32", fontFamily: "Poppins_500Medium", fontSize: 14, lineHeight: 24 }}>Receive</Text>
@@ -213,28 +227,101 @@ const Homescreen: React.FC = () => {
                         <View style={{ gap: 8 }}>
                             {
                                 coinList.map((coin) =>
-                                    <Pressable key={coin.currency} onPress={() => {
-                                        navigation.navigate("Onboarding", { screen: "TokenDetail", params: { currency: coin.currency, balance: coinBalance(coin), rate: coin.rate } });
-                                    }} style={styles.coin}>
-                                        <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", gap: 10 }}>
-                                            <View style={styles.iconContainer}>
-                                            </View>
-                                            <View style={{ flexDirection: "column", gap: 2, justifyContent: "flex-start" }}>
-                                                <Text style={styles.coinTitle}>{coin.coinName}</Text>
-                                                <View style={{ flexDirection: "row", gap: 8, alignItems: "center" }}>
-                                                    <Text style={{ fontFamily: "Poppins_500Medium", color: "#ABAFC4" }}>${coin.rate}</Text>
-                                                    {
-                                                        coin.onTheRise ?
-                                                            <Text style={{ fontFamily: "Poppins_500Medium", color: '#76E268' }}>+ {coin.percent}%</Text> :
-                                                            <Text style={{ fontFamily: "Poppins_500Medium", color: '#EA3943' }}>- {coin.percent}%</Text>
-                                                    }
+                                    <>
+                                        <Pressable key={coin.currency} onPress={() => {
+                                            navigation.navigate("Onboarding", { screen: "TokenDetail", params: { currency: coin.currency, balance: coinBalance(coin), rate: coin.rate } });
+                                        }} style={styles.coin}>
+                                            <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", gap: 10 }}>
+                                                <View style={styles.iconContainer}>
+                                                </View>
+                                                <View style={{ flexDirection: "column", gap: 2, justifyContent: "flex-start" }}>
+                                                    <Text style={styles.coinTitle}>{coin.coinName}</Text>
+                                                    <View style={{ flexDirection: "row", gap: 8, alignItems: "center" }}>
+                                                        <Text style={{ fontFamily: "Poppins_500Medium", color: "#ABAFC4" }}>${coin.rate}</Text>
+                                                        {
+                                                            coin.onTheRise ?
+                                                                <Text style={{ fontFamily: "Poppins_500Medium", color: '#76E268' }}>+ {coin.percent}%</Text> :
+                                                                <Text style={{ fontFamily: "Poppins_500Medium", color: '#EA3943' }}>- {coin.percent}%</Text>
+                                                        }
+                                                    </View>
                                                 </View>
                                             </View>
-                                        </View>
-                                        <View style={{ justifyContent: "flex-start", alignItems: "flex-start" }}>
-                                            <Text style={styles.coinTitle}>{coinBalance(coin)} {coin.currency}</Text>
-                                        </View>
-                                    </Pressable>
+                                            <View style={{ justifyContent: "flex-start", alignItems: "flex-start" }}>
+                                                <Text style={styles.coinTitle}>{coinBalance(coin)} {coin.currency}</Text>
+                                            </View>
+                                        </Pressable>
+                                        <>
+                                            {
+                                                modalStep === 1 ?
+                                                    <SentToV1
+                                                        setModalStep={setModalStep}
+                                                        modalStep={modalStep}
+                                                        paymentTo={paymentTo}
+                                                        sentModalVisible={sentModalVisible}
+                                                        setSentModalVisible={setSentModalVisible}
+                                                        currency={coin.currency}
+                                                        recent={recent}
+                                                        setPaymentTo={setPaymentTo}
+                                                    />
+                                                    : modalStep === 2 ?
+                                                        <Amount
+                                                            setAmount={setAmount}
+                                                            amount={amount}
+                                                            setModalStep={setModalStep}
+                                                            setSentModalVisible={setModalVisible}
+                                                            modalStep={modalStep}
+                                                            sentModalVisible={sentModalVisible}
+                                                            coin={coin}
+                                                            setCoin={setCoin}
+
+                                                        /> : modalStep === 3 ?
+                                                            <Confirm
+                                                                setModalStep={setModalStep}
+                                                                modalStep={modalStep}
+                                                                setSentModalVisible={setSentModalVisible}
+                                                                sentModalVisible={sentModalVisible}
+                                                                timer={timer}
+                                                            />
+                                                            : modalStep === 4 ?
+                                                                <>
+
+                                                                    {
+                                                                        message === "Submitted" ?
+                                                                            <View style={{ position: "absolute", bottom: 90, zIndex: 1, width: "100%", paddingHorizontal: 16, borderRadius: 8, overflow: "hidden" }}>
+                                                                                <BlurView intensity={0} style={{ flex: 1, padding: 16, borderRadius: 8, backgroundColor: "#292618" }}>
+                                                                                    <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+                                                                                        <Feather name="clock" size={40} color="#FEBF32" />
+                                                                                        <View style={{ gap: 4 }}>
+                                                                                            <Text style={{ fontSize: 16, lineHeight: 24, fontFamily: "Poppins_500Medium", color: "white" }}>Transaction Submitted</Text>
+                                                                                            <Text style={{ color: "#ABAFC4", fontFamily: "Poppins_500Medium", fontSize: 12, lineHeight: 18 }}>Waiting for confirmation</Text>
+                                                                                        </View>
+                                                                                    </View>
+                                                                                </BlurView>
+                                                                            </View> : null}
+                                                                    {
+
+                                                                        message === "Confirmed" ?
+                                                                            <View style={{ position: "absolute", bottom: 90, zIndex: 1, width: "100%", paddingHorizontal: 16, borderRadius: 8, overflow: "hidden" }}>
+                                                                                <BlurView intensity={0} style={{ flex: 1, padding: 16, borderRadius: 8, backgroundColor: "#1e2720" }}>
+                                                                                    <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+                                                                                        <AntDesign name="checkcircleo" size={40} color="#76E268" />
+                                                                                        <View style={{ gap: 4 }}>
+                                                                                            <Text style={{ fontSize: 16, lineHeight: 24, fontFamily: "Poppins_500Medium", color: "white" }}>Transaction #0 Complete!</Text>
+                                                                                            <Text style={{ color: "#ABAFC4", fontFamily: "Poppins_500Medium", fontSize: 12, lineHeight: 18 }}>Tap to view this transaction</Text>
+                                                                                        </View>
+                                                                                    </View>
+                                                                                </BlurView>
+                                                                            </View> : null
+                                                                    }
+
+
+                                                                </>
+
+                                                                : null
+                                            }
+                                        </>
+                                    </>
+
                                 )
                             }
                         </View>

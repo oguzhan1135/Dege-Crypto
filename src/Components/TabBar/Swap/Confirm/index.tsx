@@ -53,33 +53,43 @@ const Confirm: React.FC<ConfirmProps> = ({
         let fromSwapBalance = fromAmount + editFee;
         const updatedAccounts = [...accounts];
         const findAccountIndex = sentAccount?.id;
-    
+
+        if (findAccountIndex === undefined || findAccountIndex < 1 || findAccountIndex > updatedAccounts.length) {
+            console.error("Invalid findAccountIndex");
+            return;
+        }
+
         const fromCoinBalance = updatedAccounts[findAccountIndex - 1].balance.find(balance => balance.coinName === fromCoin);
         const toCoinBalance = updatedAccounts[findAccountIndex - 1].balance.find(balance => balance.coinName === toCoin);
-    
+
         if (fromCoinBalance) {
             fromCoinBalance.balance -= fromSwapBalance;
         }
         if (toCoinBalance) {
             toCoinBalance.balance += toAmount;
         }
-    
+
         setAccounts(updatedAccounts);
-    
+
         let updateSentAccount = { ...sentAccount };
+        if (!updateSentAccount || !updateSentAccount.balance) {
+            console.error("Balance is undefined in updateSentAccount");
+            return;
+        }
         const sentAccountFromCoinBalance = updateSentAccount?.balance.find(balance => balance.coinName === fromCoin);
         const sentAccountToCoinBalance = updateSentAccount?.balance.find(balance => balance.coinName === toCoin);
-    
+
         if (sentAccountFromCoinBalance) {
             sentAccountFromCoinBalance.balance -= fromSwapBalance;
         }
         if (sentAccountToCoinBalance) {
             sentAccountToCoinBalance.balance += toAmount;
         }
-    
+
         setSentAccount(updateSentAccount);
     };
-    
+
+
     return (
         <Modal
             visible={confirmModal}

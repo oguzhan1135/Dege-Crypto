@@ -46,7 +46,7 @@ const QrCodeModal: React.FC<QrCodeProps> = ({
                 <View style={styles.centeredView}>
                     <View style={{ backgroundColor: "#ABAFC4", height: 4, width: 40, borderRadius: 100, marginBottom: 5 }} />
                     <View style={[styles.modalView, { position: "relative", gap: 24, alignItems: "center" }]}>
-                        <Text style={{ color: "white", fontSize: 16, lineHeight: 24, fontFamily: "Poppins_500Medium" }}>Receive</Text>
+                        <Text style={{ color: "white", fontSize: 16, lineHeight: 24, fontFamily: "Poppins_500Medium" }}>Sent Link</Text>
                         <QrCode />
                         <Text style={{ color: "#ABAFC4", fontFamily: "Poppins_500Medium", fontSize: 14, lineHeight: 24 }}>Payment Request QR Code</Text>
                         <Text style={{ color: "#ABAFC4", fontFamily: "Poppins_500Medium", fontSize: 14, lineHeight: 24 }}>Modal will close after {second} seconds</Text>

@@ -14,6 +14,8 @@ import TransactionView from './Modals/TransactionView';
 import { OnboardingStackParamList, CoinListItem, Transaction, Recent } from '../../Router/types';
 import { BlurView } from 'expo-blur';
 import { Feather } from '@expo/vector-icons';
+import Receive from '../../Screens/Homescreen/Receive';
+import TabBar from '../TabBar';
 
 type TokenDetailProps = NativeStackScreenProps<OnboardingStackParamList, 'TokenDetail'>;
 
@@ -33,9 +35,9 @@ const TokenDetail: React.FC<TokenDetailProps> = ({ route }) => {
     const { accounts, recent, sentAccount, tokenFee } = useContext(MainContext);
     const [message, setMessage] = useState("")
     const [timer, setTimer] = useState<number>();
-    const handleTabPress = (tab: string) => {
-        setActiveTab(tab);
-    };
+    const [receiveModal, setReceiveModal] = useState<boolean>(false)
+
+
 
     useEffect(() => {
         if (sentAccount?.transaction.length === sentAccount?.transaction.length || 0 + 1) {
@@ -103,12 +105,12 @@ const TokenDetail: React.FC<TokenDetailProps> = ({ route }) => {
                 </Pressable>
 
                 <View style={styles.navigationContainer}>
-                    <Text style={styles.navbarText}>{coin?.currency}</Text>
+                    <Text style={styles.navbarText}>{currency}</Text>
                 </View>
             </View>
 
             <View style={styles.aset}>
-                <GradiantText text={`${sentAccount?.balance.find((balance) => balance.coinName === currency)?.balance.toFixed(4)} ${currency}`} row={1} lineHeight={56} fontSize={40} width={300} />
+                <GradiantText text={`${parseFloat(sentAccount?.balance.find((balance) => balance.coinName === currency)?.balance.toFixed(4))} ${currency}`} row={1} lineHeight={56} fontSize={40} width={300} />
                 <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
                     <Text style={{ color: "white", fontSize: 14, lineHeight: 24, fontFamily: "Poppins_500Medium" }}>${rate * sentAccount?.balance.find((balance) => balance.coinName === currency)?.balance}</Text>
                 </View>
@@ -118,10 +120,14 @@ const TokenDetail: React.FC<TokenDetailProps> = ({ route }) => {
                     <AntDesign name="arrowup" size={24} color="#FEBF32" />
                     <Text style={{ color: "#FEBF32", fontFamily: "Poppins_500Medium", fontSize: 14, lineHeight: 24 }}>Sent</Text>
                 </Pressable>
-                <View style={styles.button}>
+                <Pressable style={styles.button} onPress={() => setReceiveModal(true)}>
                     <AntDesign name="arrowdown" size={24} color="#FEBF32" />
                     <Text style={{ color: "#FEBF32", fontFamily: "Poppins_500Medium", fontSize: 14, lineHeight: 24 }}>Receive</Text>
-                </View>
+                </Pressable>
+                <Receive
+                    receiveModal={receiveModal}
+                    setReceiveModal={setReceiveModal}
+                />
             </View>
             {
                 modalStep === 1 ?
@@ -217,9 +223,9 @@ const TokenDetail: React.FC<TokenDetailProps> = ({ route }) => {
                                                     <Text style={{ fontFamily: "Poppins_700Bold", fontSize: 14, lineHeight: 24, color: "#FEBF32" }}>Submitted</Text>
                                         }
                                     </View>
-                                    <View style={{ flexDirection: "column", alignItems: "flex-start", gap: 4 }}>
+                                    <View style={{ flexDirection: "column", alignItems: "flex-end", gap: 4 }}>
                                         <Text style={{ fontFamily: "Poppins_700Bold", fontSize: 16, lineHeight: 24, color: "white" }}>{transaction.amount} {currency}</Text>
-                                        <Text style={{ color: "#ABAFC4", fontSize: 12, lineHeight: 18, fontFamily: "Poppins_500Medium" }}>${(rate * transaction.amount).toFixed(5)}</Text>
+                                        <Text style={{ color: "#ABAFC4", fontSize: 12, lineHeight: 18, fontFamily: "Poppins_500Medium" }}>${parseFloat((rate * transaction.amount).toFixed(5))}</Text>
                                     </View>
                                 </View>
                             </View>
@@ -235,32 +241,7 @@ const TokenDetail: React.FC<TokenDetailProps> = ({ route }) => {
                     fee={tokenFee}
                 />
             </ScrollView>
-            <View style={styles.tabBar}>
-                <Pressable onPress={() => handleTabPress("wallet")} style={{ flex: 1 }}>
-                    <View style={styles.tabBarContentBox}>
-                        <View style={{ alignItems: "center", justifyContent: "center", gap: 1 }}>
-                            <Entypo name="wallet" style={activeTab === "wallet" ? styles.activeTabBarIcon : styles.deActiveTabBarIcon} />
-                            <Text style={activeTab === "wallet" ? styles.activeTabBarText : styles.deActiveTabBarText}>Wallet</Text>
-                        </View>
-                    </View>
-                </Pressable>
-                <Pressable onPress={() => handleTabPress("swap")} style={{ flex: 1 }}>
-                    <View style={styles.tabBarContentBox}>
-                        <View style={{ alignItems: "center", justifyContent: "center", gap: 1 }}>
-                            <MaterialCommunityIcons name="swap-horizontal-circle-outline" style={activeTab === "swap" ? styles.activeTabBarIcon : styles.deActiveTabBarIcon} />
-                            <Text style={activeTab === "swap" ? styles.activeTabBarText : styles.deActiveTabBarText}>Swap</Text>
-                        </View>
-                    </View>
-                </Pressable>
-                <Pressable onPress={() => handleTabPress("setting")} style={{ flex: 1 }}>
-                    <View style={styles.tabBarContentBox}>
-                        <View style={{ alignItems: "center", justifyContent: "center", gap: 1 }}>
-                            <Ionicons name="settings-outline" style={activeTab === "setting" ? styles.activeTabBarIcon : styles.deActiveTabBarIcon} />
-                            <Text style={activeTab === "setting" ? styles.activeTabBarText : styles.deActiveTabBarText}>Settings</Text>
-                        </View>
-                    </View>
-                </Pressable>
-            </View>
+            <TabBar />
         </View >
     );
 }

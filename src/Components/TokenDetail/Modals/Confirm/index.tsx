@@ -127,7 +127,7 @@ const Confirm: React.FC<ConfirmProps> = ({
                             </View>
                         </View>
 
-                        <View style={{ gap: 16 }}>
+                        <View style={{ gap: 16,paddingBottom:48 }}>
                             <View>
                                 <Text style={{ fontSize: 16, lineHeight: 24, color: "white", fontFamily: "Poppins_500Medium" }}>From</Text>
                                 <View style={{ alignItems: "center", flexDirection: "row", gap: 8, padding: 16 }}>

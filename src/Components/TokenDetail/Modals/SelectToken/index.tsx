@@ -70,9 +70,9 @@ const SelectToken: React.FC<SelectTokenProps> = (
                                                 <Text style={{ color: "white", fontSize: 16, lineHeight: 24, fontFamily: "Poppins_500Medium" }}>{coin.coinName}</Text>
                                             </View>
                                             <View style={{ gap: 4, }}>
-                                                <Text style={{ color: "white", fontSize: 16, lineHeight: 24, fontFamily: "Poppins_500Medium" }}>{sentAccount?.balance[coin.id - 1].balance} {sentAccount?.balance[coin.id - 1].coinName}</Text>
+                                                <Text style={{ color: "white", fontSize: 16, lineHeight: 24, fontFamily: "Poppins_500Medium" }}>{parseFloat(sentAccount?.balance[coin.id - 1].balance.toFixed(2))} {sentAccount?.balance[coin.id - 1].coinName}</Text>
                                                 <Text style={{ color: "#ABAFC4", fontFamily: "Poppins_500Medium", marginLeft: "auto" }}>
-                                                    ${sentAccount?.balance && sentAccount.balance[coin.id - 1] ? (sentAccount.balance[coin.id - 1].balance * coin.rate).toFixed(2) : '0.00'}
+                                                    ${sentAccount?.balance && sentAccount.balance[coin.id - 1] ? parseFloat((sentAccount.balance[coin.id - 1].balance * coin.rate).toFixed(2)) : '0.00'}
                                                 </Text>
                                             </View>
                                         </View>

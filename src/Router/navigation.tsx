@@ -8,6 +8,8 @@ import CreateNewWallet from "../Screens/CreateNewWallet";
 import Homescreen from "../Screens/Homescreen";
 import TokenDetail from "../Components/TokenDetail";
 import { RootStackParamList, OnboardingStackParamList } from './types';
+import Setting from "../Screens/Setting";
+import Preferences from "../Screens/Setting/Prefences";
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 const OnboardingStack = createNativeStackNavigator<OnboardingStackParamList>();
@@ -24,6 +26,8 @@ const OnboardingNavigator = () => {
             <OnboardingStack.Screen name="CreateNewWallet" component={CreateNewWallet} />
             <OnboardingStack.Screen name="Homescreen" component={Homescreen} />
             <OnboardingStack.Screen name="TokenDetail" component={TokenDetail} />
+            <OnboardingStack.Screen name="Setting" component={Setting} />
+            <OnboardingStack.Screen name="Preferences" component={Preferences} />
         </OnboardingStack.Navigator>
     )
 }

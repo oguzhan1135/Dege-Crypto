@@ -34,12 +34,12 @@ const Slippage: React.FC<SlippageProp> = ({ onchangeSlip, modalVisible, setModal
                                 Your swap will automatically cancel if slippage exceeds your “max slippage” setting.
                             </Text>
                             <View style={{ flexDirection: "row", alignItems: "center", gap: 16 }}>
-                                <View style={styles.inActivePrice}>
-                                    <Text style={styles.inActiveText}>1%</Text>
-                                </View>
-                                <View style={styles.activePrice}>
-                                    <Text style={styles.activeText}>2%</Text>
-                                </View>
+                                <Pressable onPress={() => setSlip(1)} style={slip === 1 ? styles.activePrice : styles.inActivePrice}>
+                                    <Text style={slip === 1 ? styles.activeText : styles.inActiveText}>1%</Text>
+                                </Pressable>
+                                <Pressable onPress={() => setSlip(2)} style={slip === 2 ? styles.activePrice : styles.inActivePrice}>
+                                    <Text style={slip === 2 ? styles.activeText : styles.inActiveText}>2%</Text>
+                                </Pressable>
                                 <View style={{ borderRadius: 8, paddingHorizontal: 16, paddingVertical: 8, borderWidth: 1, borderColor: "#2a2d3c", flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
                                     <TextInput
                                         placeholder="Custom"
