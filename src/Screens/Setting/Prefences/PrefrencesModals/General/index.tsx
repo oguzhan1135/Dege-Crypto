@@ -1,8 +1,11 @@
 import { BlurView } from "expo-blur";
-import React from "react";
+import React, { useState } from "react";
 import { Modal, View, Pressable, Text, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { AntDesign } from '@expo/vector-icons';
+import BaseCurrency from "./BaseCurrency";
+import CurrentLanguage from "./CurrentLanguage";
+import SearchEngine from "./SearchEngine";
 
 interface GeneralProps {
     setGeneralModal: (generalModal: boolean) => void;
@@ -45,6 +48,22 @@ const General: React.FC<GeneralProps> = ({
 
     const navigation = useNavigation();
     const [selected, setSelected] = React.useState('Native');
+    const [baseCurrencyModal, setBaseCurrencyModal] = useState(false);
+    const [currentLanguageModal, setCurrentLanguageModal] = useState(false);
+    const [searchEngineModal, setSearchEngineModal] = useState(false);
+    const [currency, setCurrency] = useState("USD - United State Dollar")
+    const [language, setLanguage] = useState("English")
+    const [searchEngine, setSearchEngine] = useState("DuckDuckGo")
+
+    const onChangeCurrency = (currency: string) => {
+        setCurrency(currency)
+    }
+    const onChangeLanguage = (language: string) => {
+        setLanguage(language)
+    }
+    const onChangeSearchEngine = (searchEngine: string) => {
+        setSearchEngine(searchEngine)
+    }
 
     return (
         <Modal
@@ -69,66 +88,82 @@ const General: React.FC<GeneralProps> = ({
                         </View>
                         <ScrollView style={{ maxHeight: 700 }}>
                             <View style={{ gap: 40 }}>
-                            <View style={{ gap: 8 }}>
-                                <Text style={styles.contentTitle}>Currency Conversion</Text>
-                                <Text style={styles.contentText}>Display fiat values in using o specific currency throughout the application</Text>
-                                <View style={{ marginTop: 16, borderWidth: 1, borderRadius: 8, paddingHorizontal: 16, paddingVertical: 12, flexDirection: "row", alignItems: "center", justifyContent: "space-between", borderColor: "#2a2d3c" }}>
-                                    <Text style={{ fontSize: 14, lineHeight: 24, fontFamily: "Poppins_500Medium", color: "white" }}>USD - United State Dollar</Text>
-                                    <AntDesign name='down' size={14} color={"white"} />
+                                <View style={{ gap: 8 }}>
+                                    <Text style={styles.contentTitle}>Currency Conversion</Text>
+                                    <Text style={styles.contentText}>Display fiat values in using o specific currency throughout the application</Text>
+                                    <Pressable onPress={() => setBaseCurrencyModal(true)} style={{ marginTop: 16, borderWidth: 1, borderRadius: 8, paddingHorizontal: 16, paddingVertical: 12, flexDirection: "row", alignItems: "center", justifyContent: "space-between", borderColor: "#2a2d3c" }}>
+                                        <Text style={{ fontSize: 14, lineHeight: 24, fontFamily: "Poppins_500Medium", color: "white" }}>{currency}</Text>
+                                        <AntDesign name='down' size={14} color={"white"} />
+                                    </Pressable>
+                                    <BaseCurrency
+                                        setBaseCurrencyModal={setBaseCurrencyModal}
+                                        baseCurrencyModal={baseCurrencyModal}
+                                        onChangeCurrency={onChangeCurrency}
+                                    />
                                 </View>
-                            </View>
-                            <View style={{ gap: 8 }}>
-                                <Text style={styles.contentTitle}>Privacy Currency</Text>
-                                <Text style={styles.contentText}>
-                                    Select Native to prioritize displaying values in the native currency of the chain (e.g. ETH). Select Fiat to prioritize displaying values in your selected fiat currency
-                                </Text>
-                                <View style={{ marginTop: 16, flexDirection: "row", alignItems: "center" }}>
-                                    <View style={{ marginTop: 16, flexDirection: 'row', alignItems: 'center' }}>
-                                        <Pressable
-                                            style={{ flexDirection: 'row', alignItems: 'center', marginRight: 20 }}
-                                            onPress={() => setSelected('Native')}
-                                        >
-                                            <RadioButton selected={selected === 'Native'} />
-                                            <Text style={{ marginLeft: 8, fontSize: 14, lineHeight: 24, fontFamily: "Poppins_500Medium", color: "white" }}>Native</Text>
-                                        </Pressable>
+                                <View style={{ gap: 8 }}>
+                                    <Text style={styles.contentTitle}>Privacy Currency</Text>
+                                    <Text style={styles.contentText}>
+                                        Select Native to prioritize displaying values in the native currency of the chain (e.g. ETH). Select Fiat to prioritize displaying values in your selected fiat currency
+                                    </Text>
+                                    <View style={{ marginTop: 16, flexDirection: "row", alignItems: "center" }}>
+                                        <View style={{ marginTop: 16, flexDirection: 'row', alignItems: 'center' }}>
+                                            <Pressable
+                                                style={{ flexDirection: 'row', alignItems: 'center', marginRight: 20 }}
+                                                onPress={() => setSelected('Native')}
+                                            >
+                                                <RadioButton selected={selected === 'Native'} />
+                                                <Text style={{ marginLeft: 8, fontSize: 14, lineHeight: 24, fontFamily: "Poppins_500Medium", color: "white" }}>Native</Text>
+                                            </Pressable>
 
-                                        <Pressable
-                                            style={{ flexDirection: 'row', alignItems: 'center' }}
-                                            onPress={() => setSelected('Fiat')}
-                                        >
-                                            <RadioButton selected={selected === 'Fiat'} />
-                                            <Text style={{ marginLeft: 8, fontSize: 14, lineHeight: 24, fontFamily: "Poppins_500Medium", color: "white" }}>Fiat</Text>
-                                        </Pressable>
+                                            <Pressable
+                                                style={{ flexDirection: 'row', alignItems: 'center' }}
+                                                onPress={() => setSelected('Fiat')}
+                                            >
+                                                <RadioButton selected={selected === 'Fiat'} />
+                                                <Text style={{ marginLeft: 8, fontSize: 14, lineHeight: 24, fontFamily: "Poppins_500Medium", color: "white" }}>Fiat</Text>
+                                            </Pressable>
+                                        </View>
+                                    </View>
+                                </View>
+
+                                <View style={{ gap: 8 }}>
+                                    <Text style={styles.contentTitle}>Current Language</Text>
+                                    <Text style={styles.contentText}>Translate the application to a different supported language</Text>
+                                    <Pressable onPress={() => setCurrentLanguageModal(true)} style={{ marginTop: 16, borderWidth: 1, borderRadius: 8, paddingHorizontal: 16, paddingVertical: 12, flexDirection: "row", alignItems: "center", justifyContent: "space-between", borderColor: "#2a2d3c" }}>
+                                        <Text style={{ fontSize: 14, lineHeight: 24, fontFamily: "Poppins_500Medium", color: "white" }}>{language}</Text>
+                                        <AntDesign name='down' size={14} color={"white"} />
+                                    </Pressable>
+                                    <CurrentLanguage
+                                        currentLanguageModal={currentLanguageModal}
+                                        setCurrentLanguageModal={setCurrentLanguageModal}
+                                        onChangeLanguage={onChangeLanguage}
+                                    />
+                                </View>
+
+                                <View style={{ gap: 8 }}>
+                                    <Text style={styles.contentTitle}>Search Engine</Text>
+                                    <Text style={styles.contentText}>Display fiat values in using o specific currency throughout the application</Text>
+                                    <Pressable onPress={() => setSearchEngineModal(true)} style={{ marginTop: 16, borderWidth: 1, borderRadius: 8, paddingHorizontal: 16, paddingVertical: 12, flexDirection: "row", alignItems: "center", justifyContent: "space-between", borderColor: "#2a2d3c" }}>
+                                        <Text style={{ fontSize: 14, lineHeight: 24, fontFamily: "Poppins_500Medium", color: "white" }}>{searchEngine}</Text>
+                                        <AntDesign name='down' size={14} color={"white"} />
+                                    </Pressable>
+                                    <SearchEngine
+                                        searchEngineModal={searchEngineModal}
+                                        onChangeSearchEngine={onChangeSearchEngine}
+                                        setSearchEngineModal={setSearchEngineModal}
+                                    />
+                                </View>
+                                <View style={{ gap: 8, paddingBottom: 66 }}>
+                                    <Text style={styles.contentTitle}>Account Identicon</Text>
+                                    <Text style={styles.contentText}>You can customize your account</Text>
+                                    <View style={{ marginTop: 16, borderWidth: 1, borderRadius: 8, paddingHorizontal: 16, paddingVertical: 12, flexDirection: "row", alignItems: "center", justifyContent: "space-between", borderColor: "#2a2d3c" }}>
+                                        <Text style={{ fontSize: 14, lineHeight: 24, fontFamily: "Poppins_500Medium", color: "white" }}>Custom Account</Text>
+                                        <AntDesign name='down' size={14} color={"white"} />
                                     </View>
                                 </View>
                             </View>
 
-                            <View style={{ gap: 8 }}>
-                                <Text style={styles.contentTitle}>Current Language</Text>
-                                <Text style={styles.contentText}>Translate the application to a different supported language</Text>
-                                <View style={{ marginTop: 16, borderWidth: 1, borderRadius: 8, paddingHorizontal: 16, paddingVertical: 12, flexDirection: "row", alignItems: "center", justifyContent: "space-between", borderColor: "#2a2d3c" }}>
-                                    <Text style={{ fontSize: 14, lineHeight: 24, fontFamily: "Poppins_500Medium", color: "white" }}>English</Text>
-                                    <AntDesign name='down' size={14} color={"white"} />
-                                </View>
-                            </View>
-                            <View style={{ gap: 8 }}>
-                                <Text style={styles.contentTitle}>Search Engine</Text>
-                                <Text style={styles.contentText}>Display fiat values in using o specific currency throughout the application</Text>
-                                <View style={{ marginTop: 16, borderWidth: 1, borderRadius: 8, paddingHorizontal: 16, paddingVertical: 12, flexDirection: "row", alignItems: "center", justifyContent: "space-between", borderColor: "#2a2d3c" }}>
-                                    <Text style={{ fontSize: 14, lineHeight: 24, fontFamily: "Poppins_500Medium", color: "white" }}>USD - United State Dollar</Text>
-                                    <AntDesign name='down' size={14} color={"white"} />
-                                </View>
-                            </View>
-                            <View style={{ gap: 8, paddingBottom: 66 }}>
-                                <Text style={styles.contentTitle}>Account Identicon</Text>
-                                <Text style={styles.contentText}>You can customize your account</Text>
-                                <View style={{ marginTop: 16, borderWidth: 1, borderRadius: 8, paddingHorizontal: 16, paddingVertical: 12, flexDirection: "row", alignItems: "center", justifyContent: "space-between", borderColor: "#2a2d3c" }}>
-                                    <Text style={{ fontSize: 14, lineHeight: 24, fontFamily: "Poppins_500Medium", color: "white" }}>Custom Account</Text>
-                                    <AntDesign name='down' size={14} color={"white"} />
-                                </View>
-                            </View>
-                            </View>
-                           
 
                         </ScrollView>
                     </View>
