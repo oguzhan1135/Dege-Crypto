@@ -9,10 +9,13 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
 import TabBar from '../../../Components/TabBar';
 import General from './PrefrencesModals/General';
+import Security from './PrefrencesModals/Security & Privacy';
 const Preferences = () => {
 
     const navigation = useAppNavigation();
     const [generalModal, setGeneralModal] = useState(false)
+    const [securityModal, setSecurityModal] = useState(false)
+
 
     return (
         <>
@@ -39,13 +42,17 @@ const Preferences = () => {
                         generalModal={generalModal}
                     />
 
-                    <Pressable style={styles.listItem}>
+                    <Pressable onPress={() => setSecurityModal(true)} style={styles.listItem}>
                         <View style={{ flexDirection: "column", gap: 4 }}>
                             <Text style={styles.title}>Security & Privacy</Text>
                             <Text style={styles.text}>Privacy settings, private key and wallet seed phrase</Text>
                         </View>
                         <Entypo name="chevron-right" size={18} color="white" />
                     </Pressable>
+                    <Security
+                        securityModal={securityModal}
+                        setSecurityModal={setSecurityModal}
+                    />
 
                     <Pressable style={styles.listItem}>
                         <View style={{ flexDirection: "column", gap: 4 }}>

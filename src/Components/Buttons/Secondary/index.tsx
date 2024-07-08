@@ -12,12 +12,17 @@ const styles = StyleSheet.create({
         height: "auto",
         padding: 12
     },
-    buttonText: {
+    activeButtonText: {
         color: "#FEBF32",
         fontSize: 16,
         lineHeight: 24,
         fontFamily: "Poppins_700Bold",
-
+    },
+    deActiveButtonText: {
+        color: "#4C516B",
+        fontSize: 16,
+        lineHeight: 24,
+        fontFamily: "Poppins_700Bold",
     }
 })
 
@@ -29,7 +34,7 @@ interface ButtonProp {
     icon?: any;
 }
 
-const SecondaryButton: React.FC<ButtonProp> = ({ page, text, onPress, icon }) => {
+const SecondaryButton: React.FC<ButtonProp> = ({ page, text, onPress, icon, disabled }) => {
     const navigation = useAppNavigation();
     const handlePress = () => {
         if (onPress && page) {
@@ -44,11 +49,10 @@ const SecondaryButton: React.FC<ButtonProp> = ({ page, text, onPress, icon }) =>
     return (
         <Pressable
             onPress={handlePress}
-
             style={({ pressed }) => [
                 styles.defaultButtonStyle,
                 {
-                    backgroundColor: pressed ? '#44485F' : '#2a2d3c',
+                    backgroundColor: pressed && disabled === false ? '#44485F' : '#2a2d3c',
 
                 }
             ]}
@@ -58,11 +62,16 @@ const SecondaryButton: React.FC<ButtonProp> = ({ page, text, onPress, icon }) =>
                     <>
                         <View style={{ flexDirection: "row", gap: 8, alignItems: "center", justifyContent: "center" }}>
                             {icon}
-                            <Text style={styles.buttonText}>{text}</Text>
+                            <Text style={styles.activeButtonText}>{text}</Text>
                         </View>
                     </> :
-                    <Text style={styles.buttonText}>{text}</Text>
-
+                    <>
+                        {
+                            disabled === true ?
+                                <Text style={styles.deActiveButtonText}>{text}</Text> :
+                                <Text style={styles.activeButtonText}>{text}</Text>
+                        }
+                    </>
             }
 
         </Pressable>
