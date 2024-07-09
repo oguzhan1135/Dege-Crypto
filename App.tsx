@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import AppLoading from 'expo-app-loading';
 import * as Font from 'expo-font';
 import { useFonts, Poppins_500Medium, Poppins_700Bold } from '@expo-google-fonts/poppins';
 import { RootNavigator } from './src/Router/navigation';
 import { MainProvider } from './src/Context';
-import { MaterialIcons } from '@expo/vector-icons';
 
 export default function App() {
   const [fontsLoaded, setFontsLoaded] = useState(false);
@@ -32,7 +30,7 @@ export default function App() {
   }, [googleFontsLoaded]);
 
   if (!fontsLoaded) {
-    return <AppLoading />;
+    return null
   }
 
   return (

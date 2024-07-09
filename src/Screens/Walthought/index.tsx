@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         margin: 3,
     },
-   
+
 })
 
 function Walthought() {
@@ -76,7 +76,6 @@ function Walthought() {
             </Swiper>
              <View style={{ paddingLeft: 24, paddingRight: 24 }}>
                 <SecondaryButton page='WalletSetUp' text='Get Start'/>
-                {/* <PrimaryButton text='Anasayfa' page='Homescreen'/> */}
             </View>
         </View>
     );

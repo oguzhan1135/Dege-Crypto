@@ -5,14 +5,15 @@ import { Entypo } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 import Swap from "./Swap";
 import { MainContext } from "../../Context";
-import { useNavigation, useNavigationState } from "@react-navigation/native";
+import { useNavigationState } from "@react-navigation/native";
+import { useAppNavigation } from "../../Router/useAppNavigation";
 
 const TabBar = () => {
     const [amount, setAmount] = useState("");
     const [swapModal, setSwapModal] = useState(false);
 
     const { swapMessage } = useContext(MainContext);
-    const navigation = useNavigation();
+    const navigation = useAppNavigation();
     const routes = useNavigationState(state => state.routes);
     const currentRouteName = routes[routes.length - 1]?.name;
 

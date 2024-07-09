@@ -12,60 +12,11 @@ import { Accounts } from "../../../Router/types";
 
 const Account = () => {
     const font = "Poppins_500Medium";
-    const { accounts, setAccounts, setSentAccount } = useContext(MainContext);
+    const { accounts, setAccounts, setSentAccount, sentAccount } = useContext(MainContext);
 
 
     const [modalVisible, setModalVisible] = useState(false);
-    let [user, setUser] = useState<Accounts>({
-        id: 1,
-        name: "Account 1",
-        avatar: <User1 style={{
-            width: 32,
-            height: 32,
-            transform: [{ scale: 1.5 }]
-        }} />,
-        balance: [
-            {
-                coinName: "BNB",
-                balance: 19.2371
-            },
-            {
-                coinName: "USDC",
-                balance: 92.3
-            },
-            {
-                coinName: "Synthetix",
-                balance: 42.74
-            },
-            {
-                coinName: "ETH",
-                balance: 9.2362
-            }
-        ],
-        adress: "0x4Dc6...DxR9",
-        transaction: [
-            {
-                type: "Received",
-                amount: 0.04,
-                date: "Mar 3 at 10:04am"
-            },
-            {
-                type: "Sent",
-                amount: 2.35,
-                date: "Mar 4 at 11:04am"
-            },
-            {
-                type: "Received",
-                amount: 1.876,
-                date: "Mar 3 at 10:04am"
-            },
-            {
-                type: "Received",
-                amount: 0.04,
-                date: "Mar 3 at 10:04am"
-            },
-        ]
-    });
+    let [user, setUser] = useState<Accounts>(sentAccount);
     useEffect(() => {
         setSentAccount(user)
     }, [user])
@@ -79,7 +30,8 @@ const Account = () => {
             balance: [],
             avatar: <NewAccountuser />,
             transaction: [],
-            adress: `DegeCryptoUserAdress${accounts.length + 1}`
+            adress: `DegeCryptoUserAdress${accounts.length + 1}`,
+            password: 'Example123'
         };
 
         setAccounts([...accounts, newUser]);

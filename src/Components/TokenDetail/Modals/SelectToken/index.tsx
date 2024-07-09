@@ -1,11 +1,7 @@
 import { BlurView } from "expo-blur";
 import React, { useContext, useEffect, useState } from "react";
 import { Modal, View, Pressable, Text, StyleSheet } from "react-native";
-import Account from "../../Account";
-import { CoinListItem, Recent } from "../../../../Router/types";
 import { AntDesign } from '@expo/vector-icons';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import PrimaryButton from "../../../Buttons/Primary";
 import { MainContext } from "../../../../Context";
 export interface Data {
     coin: string;
@@ -54,8 +50,8 @@ const SelectToken: React.FC<SelectTokenProps> = (
                         </View>
                         <View style={{ gap: 8 }}>
                             {
-                                coinList.map((coin) =>
-                                    <Pressable onPress={() => {
+                                coinList.map((coin,index) =>
+                                    <Pressable key={index} onPress={() => {
                                         setCoin({ coin: coin.currency, index: coin.id })
                                         setCoinSelect(false)
                                         setSelectedCoin(coin.currency)

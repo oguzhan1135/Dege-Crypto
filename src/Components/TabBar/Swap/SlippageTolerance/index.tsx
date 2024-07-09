@@ -1,20 +1,20 @@
 import { BlurView } from "expo-blur";
 import React, { useContext, useEffect, useState } from "react";
 import { Modal, View, Pressable, Text, StyleSheet, TextInput } from "react-native";
-import { AntDesign } from '@expo/vector-icons';
-import { MainContext } from "../../../../Context";
 import PrimaryButton from "../../../Buttons/Primary";
+
 interface SlippageProp {
     onchangeSlip: (slip: number) => void;
     setModalVisible: (modalVisible: boolean) => void;
     modalVisible: boolean;
 }
-const Slippage: React.FC<SlippageProp> = ({ onchangeSlip, modalVisible, setModalVisible }) => {
 
-    const [slip, setSlip] = useState(2)
+const Slippage: React.FC<SlippageProp> = ({ onchangeSlip, modalVisible, setModalVisible }) => {
+    const [slip, setSlip] = useState(2);
+
     useEffect(() => {
-        onchangeSlip(slip)
-    }, [slip])
+        onchangeSlip(slip);
+    }, [slip]);
 
     return (
         <Modal
@@ -45,28 +45,23 @@ const Slippage: React.FC<SlippageProp> = ({ onchangeSlip, modalVisible, setModal
                                         placeholder="Custom"
                                         placeholderTextColor={"#ABB0C4"}
                                         style={{ color: "white", fontFamily: "Poppins_500Medium", fontSize: 14, lineHeight: 24, width: 100 }}
-                                        maxLength={1}
+                                        maxLength={3}
                                         keyboardType="numeric"
-                                        value={slip}
-                                        onChangeText={setSlip}
-
+                                        value={slip.toString()}
+                                        onChangeText={(value) => setSlip(Number(value))}
                                     />
                                     <Text style={{ color: "white", fontFamily: "Poppins_500Medium", fontSize: 14, lineHeight: 24 }}>%</Text>
                                 </View>
-
                             </View>
                             <PrimaryButton text="Save" onPress={() => { setModalVisible(false) }} />
-
                         </View>
-
-
-
                     </View>
                 </View>
             </BlurView>
-        </Modal >
+        </Modal>
     )
 }
+
 const styles = StyleSheet.create({
     activePrice: {
         paddingVertical: 8,
@@ -97,8 +92,6 @@ const styles = StyleSheet.create({
         backgroundColor: "#17171A",
         paddingBottom: 40,
         paddingHorizontal: 24,
-
-
     },
     modalText: {
         fontSize: 16,
@@ -123,5 +116,6 @@ const styles = StyleSheet.create({
         alignItems: "center",
         backgroundColor: 'rgb(0,0,0,10)',
     }
-})
+});
+
 export default Slippage;

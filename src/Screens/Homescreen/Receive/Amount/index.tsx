@@ -2,7 +2,7 @@ import { BlurView } from "expo-blur";
 import React, { useContext, useState } from "react";
 import { Modal, View, Pressable, Text, StyleSheet, TextInput, KeyboardAvoidingView, Platform } from "react-native";
 import { AntDesign } from '@expo/vector-icons';
-import { FontAwesome6 } from '@expo/vector-icons';
+import { FontAwesome5 } from '@expo/vector-icons';
 import PrimaryButton from "../../../../Components/Buttons/Primary/index";
 import GradiantText from "../../../..//Components/GradiantText";
 import { MainContext } from "../../../../Context";
@@ -30,7 +30,13 @@ const Amount: React.FC<AmountProps> = ({
     };
 
     const [amount, setAmount] = useState('0');
-    let calculatedAmount = ((parseFloat(amount)) * (coinList.find((coin) => coin.currency === getCoin.coin)?.rate || 0)).toFixed(2);
+    const calculatedAmount = () => {
+        let calculatedAmount = ((parseFloat(amount)) * (coinList.find((coin) => coin.currency === getCoin.coin)?.rate || 0)).toFixed(2);
+        if (parseFloat(calculatedAmount) < 0 || !parseFloat(calculatedAmount)) {
+            calculatedAmount = "0"
+        }
+        return calculatedAmount;
+    };
 
     return (
         <Modal
@@ -79,8 +85,8 @@ const Amount: React.FC<AmountProps> = ({
                             </View>
                             <View style={{ alignItems: "center", paddingTop: 36, paddingBottom: 24 }}>
                                 <View style={{ backgroundColor: "#2A2D3C", borderRadius: 100, flexDirection: "row", alignItems: "center", paddingVertical: 8, paddingHorizontal: 16, gap: 10 }}>
-                                    <Text style={{ color: "white", fontSize: 14, lineHeight: 24, fontFamily: "Poppins_500Medium" }}>$ {calculatedAmount}</Text>
-                                    <FontAwesome6 name="money-bill-transfer" size={18} color="white" />
+                                    <Text style={{ color: "white", fontSize: 14, lineHeight: 24, fontFamily: "Poppins_500Medium" }}>$ {calculatedAmount()}</Text>
+                                    <FontAwesome5 name="money-bill-wave" size={18} color="white" />
                                 </View>
                             </View>
 
@@ -89,6 +95,7 @@ const Amount: React.FC<AmountProps> = ({
                                 onPress={() => {
                                     setModalStep(modalStep + 1);
                                 }}
+                                disabled={parseFloat(calculatedAmount()) === 0 || amount === "0" ? true : false}
                             />
                         </View>
                     </View>

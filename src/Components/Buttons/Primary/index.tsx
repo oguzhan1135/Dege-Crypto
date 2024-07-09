@@ -5,16 +5,30 @@ import { OnboardingStackParamList } from '../../../Router/navigation';
 import { CommonParams } from '../../../Router/types';
 
 const styles = StyleSheet.create({
-    defaultButtonStyle: {
+    activeButtonStyle: {
         borderRadius: 8,
         alignItems: "center",
         justifyContent: "center",
-        backgroundColor: '#2a2d3c',
+        backgroundColor: '#FEBF32',
         height: "auto",
         padding: 12
     },
-    buttonText: {
+    deActiveButtonStyle: {
+        borderRadius: 8,
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: '#222531',
+        height: "auto",
+        padding: 12
+    },
+    activeButtonText: {
         color: "black",
+        fontSize: 16,
+        lineHeight: 24,
+        fontFamily: "Poppins_700Bold",
+    },
+    deActiveButtonText: {
+        color: "#4C516B",
         fontSize: 16,
         lineHeight: 24,
         fontFamily: "Poppins_700Bold",
@@ -57,14 +71,12 @@ const PrimaryButton: React.FC<ButtonProp> = ({ page, text, onPress, disabled = f
         <Pressable
             onPress={handlePress}
             style={({ pressed }) => [
-                styles.defaultButtonStyle,
-                {
-                    backgroundColor: pressed ? '#FEE083' : '#FEBF32',
-                }
+                disabled === false ? styles.activeButtonStyle : styles.deActiveButtonStyle,
+              
             ]}
             disabled={disabled}
         >
-            <Text style={styles.buttonText}>{text}</Text>
+            <Text style={disabled === false ? styles.activeButtonText : styles.deActiveButtonText}>{text}</Text>
         </Pressable>
     );
 }

@@ -8,7 +8,6 @@ import SelectToken, { Data } from "../../TokenDetail/Modals/SelectToken";
 import { Ionicons } from '@expo/vector-icons';
 import GradiantText from "../../GradiantText";
 import Confirm from "./Confirm";
-import { Feather } from '@expo/vector-icons';
 
 interface SwapProps {
     setSwapModal: (swapModal: boolean) => void;
@@ -27,7 +26,7 @@ const Swap: React.FC<SwapProps> = ({
     const [coinSelectTo, setCoinSelectTo] = useState(false);
     const [fromCoin, setFromCoin] = useState({ coin: "BNB", index: 1 });
     const [toCoin, setToCoin] = useState({ coin: "BNB", index: 1 });
-    const { sentAccount, coinList, setSentCoin } = useContext(MainContext);
+    const { sentAccount, coinList } = useContext(MainContext);
     const [paddingBottom, setPaddingBottom] = useState(200);
     const [confirmModal, setConfirmModal] = useState(false)
     const [modalStep, setModalStep] = useState(1);
@@ -191,7 +190,7 @@ const Swap: React.FC<SwapProps> = ({
                                         }
 
                                         }
-                                        disabled={parseFloat(amount) > sentAccount?.balance.find((balance) => balance.coinName === fromCoin.coin)?.balance || parseFloat(amount) <= 0  || amount === "" ? true:false}
+                                        disabled={parseFloat(amount) > sentAccount?.balance.find((balance) => balance.coinName === fromCoin.coin)?.balance || parseFloat(amount) <= 0 || amount === "" ? true : false}
                                     />
                                 </View>
 

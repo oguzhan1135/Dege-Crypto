@@ -20,9 +20,8 @@ import TabBar from '../TabBar';
 type TokenDetailProps = NativeStackScreenProps<OnboardingStackParamList, 'TokenDetail'>;
 
 const TokenDetail: React.FC<TokenDetailProps> = ({ route }) => {
-    const { balance, currency, rate } = route.params;
+    const { currency, rate } = route.params;
     const [coin, setCoin] = useState<CoinListItem>();
-    const [activeTab, setActiveTab] = useState("wallet");
     const [modalVisible, setModalVisible] = useState(false);
     const navigation = useAppNavigation();
     const [selectedTransaction, setSelectedTransaction] = useState<Transaction>();
@@ -30,7 +29,6 @@ const TokenDetail: React.FC<TokenDetailProps> = ({ route }) => {
     const [paymentTo, setPaymentTo] = useState<Recent>({ id: 1, adress: "", avatar: <User1 />, name: "" });
     const [modalStep, setModalStep] = useState(1);
     const [amount, setAmount] = useState("0.2405");
-    const [sentAmount, setSentAmount] = useState(0);
     const [details, setDetails] = useState<Transaction[]>([]);
     const { accounts, recent, sentAccount, tokenFee } = useContext(MainContext);
     const [message, setMessage] = useState("")

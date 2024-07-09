@@ -9,18 +9,16 @@ import { AccountProp, Accounts } from "../../../Router/types";
 
 const Account: React.FC<AccountProp> = ({ currency }) => {
     const font = "Poppins_500Medium";
-    const { accounts, setAccounts, sentAccount, setSentAccount } = useContext(MainContext);
+    const { accounts, sentAccount, setSentAccount } = useContext(MainContext);
 
 
     const [modalVisible, setModalVisible] = useState(false);
     let [user, setUser] = useState<Accounts>(sentAccount)
-    const [modalStep, setModalStep] = useState("Account");
-    const [newAccount, setNewAccount] = useState("");
     useEffect(() => {
         setSentAccount(user)
     }, [user])
 
-    
+
     return (
         <Pressable onPress={() => setModalVisible(!modalVisible)} style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", padding: 16 }}>
             <View style={{ alignItems: "center", flexDirection: "row", gap: 8 }}>

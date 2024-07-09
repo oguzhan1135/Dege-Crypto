@@ -40,122 +40,6 @@ const Homescreen: React.FC = () => {
     const [timer, setTimer] = useState<number>();
 
 
-    useEffect(() => {
-        setSentAccount(
-            {
-                id: 1,
-                name: "Account 1",
-                avatar: <User1 style={{
-                    width: 32,
-                    height: 32,
-                    transform: [{ scale: 1.5 }]
-                }} />,
-                balance: [
-                    {
-                        coinName: "BNB",
-                        balance: 19.2371
-                    },
-                    {
-                        coinName: "USDC",
-                        balance: 92.3
-                    },
-                    {
-                        coinName: "SNX",
-                        balance: 42.74
-                    },
-                    {
-                        coinName: "ETH",
-                        balance: 9.2362
-                    }
-                ],
-                adress: "0x4Dc6...DxR9",
-                transaction: [
-                    {
-                        id: 1,
-                        type: "Received",
-                        amount: 0.04,
-                        date: "Mar 3 at 10:04am",
-                        networkFee: 0.12,
-                        paymenToAdress: "0x3Dc6...DxE9",
-                        currency: "BNB",
-                        status: "Confirmed"
-                    },
-                    {
-                        id: 2,
-                        type: "Received",
-                        amount: 1.88,
-                        date: "Aug 14 at 10:04am",
-                        networkFee: 0.13,
-                        paymenToAdress: "0x3Dc6...DxE9",
-                        currency: "BNB",
-                        status: "Confirmed"
-                    },
-                    {
-                        id: 3,
-                        type: "Sent",
-                        amount: 2.35,
-                        date: "Sep 4 at 11:04am",
-                        networkFee: 0.08,
-                        paymenToAdress: "0x3Dc6...DxE12",
-                        currency: "BNB",
-                        status: "Cancelled"
-                    },
-                    {
-                        id: 4,
-                        type: "Received",
-                        amount: 1.876,
-                        date: "Aug 3 at 10:04am",
-                        networkFee: 0.12,
-                        paymenToAdress: "0x3Dc6...DxL9",
-                        currency: "USDC",
-                        status: "Confirmed"
-                    },
-                    {
-                        id: 5,
-                        type: "Received",
-                        amount: 410,
-                        date: "Feb 3 at 10:04am",
-                        networkFee: 0.12,
-                        paymenToAdress: "0x3Dc6...DxL9",
-                        currency: "USDC",
-                        status: "Confirmed"
-                    },
-                    {
-                        id: 6,
-                        type: "Received",
-                        amount: 100,
-                        date: "Aug 30 at 10:04am",
-                        networkFee: 0.12,
-                        paymenToAdress: "0x3Dc6...DxL9",
-                        currency: "USDC",
-                        status: "Cancelled"
-                    },
-                    {
-                        id: 7,
-                        type: "Received",
-                        amount: 3,
-                        date: "Feb 12 at 10:04am",
-                        networkFee: 0.13,
-                        paymenToAdress: "0x3Dc6...DxE14",
-                        currency: "SNX",
-                        status: "Confirmed"
-                    },
-                    {
-                        id: 8,
-                        type: "Received",
-                        amount: 10,
-                        date: "Jan 21 at 10:04am",
-                        networkFee: 0.13,
-                        paymenToAdress: "0x3Dc6...DxE14",
-                        currency: "SNX",
-                        status: "Cancelled"
-                    },
-                ]
-            })
-
-    }, [])
-
-
     const coinBalance = (coin: CoinListItem) => {
         return sentAccount?.balance.find((balance) => balance.coinName === coin.currency)?.balance.toFixed(2)
     }
@@ -226,9 +110,9 @@ const Homescreen: React.FC = () => {
                     <ScrollView style={{ maxHeight: 320, overflow: "scroll" }}>
                         <View style={{ gap: 8 }}>
                             {
-                                coinList.map((coin) =>
-                                    <>
-                                        <Pressable key={coin.currency} onPress={() => {
+                                coinList.map((coin, index) =>
+                                    <View key={index}>
+                                        <Pressable onPress={() => {
                                             navigation.navigate("Onboarding", { screen: "TokenDetail", params: { currency: coin.currency, balance: coinBalance(coin), rate: coin.rate } });
                                         }} style={styles.coin}>
                                             <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", gap: 10 }}>
@@ -320,7 +204,7 @@ const Homescreen: React.FC = () => {
                                                                 : null
                                             }
                                         </>
-                                    </>
+                                    </View>
 
                                 )
                             }

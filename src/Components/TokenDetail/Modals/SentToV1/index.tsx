@@ -2,7 +2,7 @@ import { BlurView } from "expo-blur";
 import React, { useContext } from "react";
 import { Modal, View, Pressable, TextInput, Text, StyleSheet } from "react-native";
 import Account from "../../Account";
-import { Accounts, Recent } from "../../../../Router/types";
+import {  Recent } from "../../../../Router/types";
 import { AntDesign } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import User1 from "../../../../../assets/images/User-1.svg"
@@ -96,8 +96,8 @@ const SentToV1: React.FC<SenToProps> = (
                                     <View style={{ paddingBottom: 80 }}>
                                         <Text style={{ fontSize: 16, lineHeight: 24, color: "white", fontFamily: "Poppins_500Medium" }}>Recent</Text>
                                         {
-                                            recent.map((recent) =>
-                                                <Pressable onPress={() => {
+                                            recent.map((recent,index) =>
+                                                <Pressable key={index} onPress={() => {
                                                     setPaymentTo({ id: 1, adress: recent.adress, avatar: recent.avatar, name: recent.name })
                                                     setReceiverAccount({ id: 1, adress: recent.adress, avatar: recent.avatar, name: recent.name })
                                                 }

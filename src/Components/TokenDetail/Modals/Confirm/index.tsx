@@ -187,11 +187,11 @@ const Confirm: React.FC<ConfirmProps> = ({
                                     <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 16, paddingTop: 8 }}>
                                         <Text style={{ fontSize: 16, lineHeight: 24, fontFamily: "Poppins_500Medium", color: "white" }}>Total Amount</Text>
                                         <Text style={{ fontSize: 16, lineHeight: 24, fontFamily: "Poppins_500Medium", color: "white" }}>
-                                            {totalAmount} {sentCoin?.currency}
+                                            {parseFloat(totalAmount.toFixed(4))} {sentCoin?.currency}
                                         </Text>
                                     </View>
                                     <Text style={{ marginLeft: "auto", color: "#ABAFC4", fontSize: 12, lineHeight: 18, fontFamily: "Poppins_500Medium", paddingHorizontal: 16 }}>
-                                        ${totalInUSD}
+                                        ${parseFloat(totalInUSD).toFixed(2)}
                                     </Text>
                                 </View>
                             </View>

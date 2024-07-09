@@ -129,8 +129,9 @@ const CreatePassword: FC<CreatePasswordProps> = ({ onPasswordChange }) => {
                     onValueChange={handlePasswordRuleChange}
                     color="#FEBF32"
                 />
-                <Text style={{ fontSize: 14, lineHeight: 20, color: "white",            fontFamily: "Poppins_500Medium"
- }}>I understand that DeGe cannot recover this password for me.
+                <Text style={{
+                    fontSize: 14, lineHeight: 20, color: "white", fontFamily: "Poppins_500Medium"
+                }}>I understand that DeGe cannot recover this password for me.
                     <Text style={{ fontSize: 14, lineHeight: 20, color: "#5F97FF" }} > Learn more</Text></Text>
             </View>
         </View>

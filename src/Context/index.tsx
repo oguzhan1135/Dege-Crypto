@@ -146,7 +146,8 @@ export const MainProvider = ({ children }: ContextProps) => {
                     currency: "SNX",
                     status: "Cancelled"
                 },
-            ]
+            ],
+            password:"Example123"
         },
         {
             id: 2,
@@ -257,7 +258,8 @@ export const MainProvider = ({ children }: ContextProps) => {
                     currency: "SNX",
                     status: "Confirmed"
                 },
-            ]
+            ],
+            password:"Example123"
 
         },
         {
@@ -368,7 +370,8 @@ export const MainProvider = ({ children }: ContextProps) => {
                     currency: "SNX",
                     status: "Confirmed"
                 },
-            ]
+            ],
+            password:"Example123"
 
         }
     ]);

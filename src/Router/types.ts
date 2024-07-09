@@ -76,6 +76,7 @@ export interface Accounts {
     balance: Balance[];
     adress: string;
     transaction: Transaction[];
+    password: string;
 }
 interface Balance {
     coinName: string;

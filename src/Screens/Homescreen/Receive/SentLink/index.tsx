@@ -102,8 +102,8 @@ const SentLink: React.FC<SentLinkProps> = ({
                                 setTimeout(() => {
                                     setReceiveModalVisible(false);
                                     shareLink();
-                                    setModalStep(1)
-                                }, 2500);
+                                    setModalStep(0)
+                                }, 250);
                             }}
                         />
                     </View>

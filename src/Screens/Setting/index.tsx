@@ -88,13 +88,13 @@ const Setting = () => {
                         <Entypo name="chevron-right" size={24} color="white" />
                     </View>
 
-                    <View style={[styles.listItem, { paddingTop: 100 }]}>
+                    <Pressable onPress={() => navigation.navigate("Onboarding", { screen: "Walthought" })} style={[styles.listItem, { paddingTop: 100 }]}>
                         <View style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
                             <MaterialIcons name="logout" size={24} color="white" />
                             <Text style={styles.text}>Logout</Text>
                         </View>
                         <Entypo name="chevron-right" size={24} color="white" />
-                    </View>
+                    </Pressable>
                 </View>
             </View >
             <TabBar />

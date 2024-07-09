@@ -120,7 +120,7 @@ const Amount: React.FC<AmountProps> = ({
                             </View>
                         </View>
                         <View style={{ alignItems: "center", paddingBottom: 80 }}>
-                            <Text style={{ fontFamily: "Poppins_500Medium", fontSize: 14, lineHeight: 24, color: "white" }}>Balance: {sentAccount?.balance.find((balance) => balance.coinName === getCoin.coin)?.balance} {getCoin.coin}</Text>
+                            <Text style={{ fontFamily: "Poppins_500Medium", fontSize: 14, lineHeight: 24, color: "white" }}>Balance: {parseFloat(sentAccount?.balance.find((balance) => balance.coinName === getCoin.coin)?.balance.toFixed(4))} {getCoin.coin}</Text>
                         </View>
 
                         <View style={{ alignItems: "center" }}>
