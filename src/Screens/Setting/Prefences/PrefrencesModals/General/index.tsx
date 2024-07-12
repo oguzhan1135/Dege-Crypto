@@ -1,11 +1,11 @@
 import { BlurView } from "expo-blur";
 import React, { useState } from "react";
 import { Modal, View, Pressable, Text, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
-import { useNavigation } from "@react-navigation/native";
 import { AntDesign } from '@expo/vector-icons';
 import BaseCurrency from "./BaseCurrency";
 import CurrentLanguage from "./CurrentLanguage";
 import SearchEngine from "./SearchEngine";
+import { useAppNavigation } from "../../../../../Router/useAppNavigation";
 
 interface GeneralProps {
     setGeneralModal: (generalModal: boolean) => void;
@@ -46,7 +46,7 @@ const General: React.FC<GeneralProps> = ({
     generalModal,
 }) => {
 
-    const navigation = useNavigation();
+    const navigation = useAppNavigation();
     const [selected, setSelected] = React.useState('Native');
     const [baseCurrencyModal, setBaseCurrencyModal] = useState(false);
     const [currentLanguageModal, setCurrentLanguageModal] = useState(false);
@@ -81,7 +81,7 @@ const General: React.FC<GeneralProps> = ({
                                 <AntDesign name="close" size={18} color="white" />
                             </Pressable>
                             <Pressable onPress={() => {
-                                navigation.navigate("Onboarding", { screen: "Preferences" })
+                                setGeneralModal(false)
                             }} style={{ position: "absolute", top: "25%", left: 0 }}>
                                 <AntDesign name="left" size={18} color="white" />
                             </Pressable>

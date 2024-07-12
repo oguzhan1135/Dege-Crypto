@@ -34,7 +34,15 @@ export const MainProvider = ({ children }: ContextProps) => {
             rate: 20.83,
             onTheRise: false,
             percent: 1.3,
-        }
+        },
+        {
+            id: 4,
+            coinName: "Etherium",
+            currency: "ETH",
+            rate: 1825,
+            onTheRise: true,
+            percent: 0.7,
+        },
     ]);
 
     const [accounts, setAccounts] = useState<Accounts[]>([
@@ -147,7 +155,7 @@ export const MainProvider = ({ children }: ContextProps) => {
                     status: "Cancelled"
                 },
             ],
-            password:"Example123"
+            password: "Example123"
         },
         {
             id: 2,
@@ -259,7 +267,7 @@ export const MainProvider = ({ children }: ContextProps) => {
                     status: "Confirmed"
                 },
             ],
-            password:"Example123"
+            password: "Example123"
 
         },
         {
@@ -371,7 +379,7 @@ export const MainProvider = ({ children }: ContextProps) => {
                     status: "Confirmed"
                 },
             ],
-            password:"Example123"
+            password: "Example123"
 
         }
     ]);
@@ -412,8 +420,11 @@ export const MainProvider = ({ children }: ContextProps) => {
         },
     ])
     const [swapMessage, setSwapMessage] = useState<string>("");
+    const [sentMessage, setSentMessage] = useState<string>("");
     const data: AppContextInterface = {
-        coinList, setCoinList, accounts, setAccounts, recent, setRecent, sentAccount, setSentAccount, receiverAccount, setReceiverAccount, sentCoin, setSentCoin, tokenFee, setTokenFee,swapMessage,setSwapMessage
+        coinList, setCoinList, accounts, setAccounts, recent, setRecent, sentAccount, setSentAccount,
+        receiverAccount, setReceiverAccount, sentCoin, setSentCoin, tokenFee, setTokenFee, swapMessage,
+        setSwapMessage, sentMessage, setSentMessage
     }
 
     return (

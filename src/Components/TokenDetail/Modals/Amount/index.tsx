@@ -1,6 +1,6 @@
 import { BlurView } from "expo-blur";
 import React, { useContext, useEffect, useState } from "react";
-import { Modal, View, Pressable, Text, StyleSheet, TextInput } from "react-native";
+import { Modal, View, Pressable, Text, StyleSheet, TextInput, TouchableWithoutFeedback, Keyboard } from "react-native";
 import { AntDesign } from '@expo/vector-icons';
 import { FontAwesome6 } from '@expo/vector-icons';
 import PrimaryButton from "../../../Buttons/Primary";
@@ -10,7 +10,7 @@ import SelectToken, { Data } from "../SelectToken";
 import { CoinListItem } from "../../../../Router/types";
 
 interface AmountProps {
-    setSentModalVisible: (modalVisible: boolean) => void;
+    setSentModalVisible: (sentmodalVisible: boolean) => void;
     sentModalVisible: boolean;
     setAmount: (amount: string) => void;
     amount: string;
@@ -32,7 +32,7 @@ const Amount: React.FC<AmountProps> = ({
 }) => {
     const [coinSelect, setCoinSelect] = useState(false);
     const [getCoin, setGetCoin] = useState({ coin: "BNB", index: 1 });
-    const { sentAccount, coinList, setSentCoin} = useContext(MainContext);
+    const { sentAccount, coinList, setSentCoin } = useContext(MainContext);
     const [message, setMessage] = useState("");
 
     const onchangeCoin = (coinData: Data) => {
@@ -100,19 +100,21 @@ const Amount: React.FC<AmountProps> = ({
                             </Pressable>
                             <SelectToken coinSelect={coinSelect} setCoinSelect={setCoinSelect} onchangeCoin={onchangeCoin} />
                         </View>
-                        <View style={{ position: 'relative', alignItems: 'center', justifyContent: 'center', paddingBottom: 40 }}>
-                            <TextInput
-                                value={amount}
-                                onChangeText={setAmount}
-                                keyboardType='numeric'
-                                style={styles.textInput}
-                                maxLength={10}
-                                selectionColor={"white"}
-                            />
-                            <View style={styles.overlayText}>
-                                <GradiantText text={amount} fontSize={40} lineHeight={56} width={300} row={1} />
+                        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                            <View style={{ position: 'relative', alignItems: 'center', justifyContent: 'center', paddingBottom: 40 }}>
+                                <TextInput
+                                    value={amount}
+                                    onChangeText={setAmount}
+                                    keyboardType='numeric'
+                                    style={styles.textInput}
+                                    maxLength={10}
+                                    selectionColor={"white"}
+                                />
+                                <View style={styles.overlayText}>
+                                    <GradiantText text={amount} fontSize={40} lineHeight={56} width={300} row={1} />
+                                </View>
                             </View>
-                        </View>
+                        </TouchableWithoutFeedback>
                         <View style={{ alignItems: "center", paddingTop: 36, paddingBottom: 24 }}>
                             <View style={{ backgroundColor: "#2A2D3C", borderRadius: 100, flexDirection: "row", alignItems: "center", paddingVertical: 8, paddingHorizontal: 16, gap: 10 }}>
                                 <Text style={{ color: "white", fontSize: 14, lineHeight: 24, fontFamily: "Poppins_500Medium" }}>$ {calculatedAmount}</Text>
@@ -120,8 +122,17 @@ const Amount: React.FC<AmountProps> = ({
                             </View>
                         </View>
                         <View style={{ alignItems: "center", paddingBottom: 80 }}>
-                            <Text style={{ fontFamily: "Poppins_500Medium", fontSize: 14, lineHeight: 24, color: "white" }}>Balance: {parseFloat(sentAccount?.balance.find((balance) => balance.coinName === getCoin.coin)?.balance.toFixed(4))} {getCoin.coin}</Text>
+                            <Text style={{ fontFamily: "Poppins_500Medium", fontSize: 14, lineHeight: 24, color: "white" }}>
+                                Balance: {
+                                    (() => {
+                                        if (!sentAccount || !sentAccount.balance) return "0.0000";
+                                        const foundBalance = sentAccount.balance.find((balance) => balance.coinName === getCoin.coin);
+                                        return foundBalance ? parseFloat(foundBalance.balance.toFixed(4)) : "0.0000";
+                                    })()
+                                } {getCoin.coin}
+                            </Text>
                         </View>
+
 
                         <View style={{ alignItems: "center" }}>
                             {message !== "" && (
@@ -150,13 +161,14 @@ const Amount: React.FC<AmountProps> = ({
 
 const styles = StyleSheet.create({
     textInput: {
-        fontSize: 42,
+        fontSize: 40,
         lineHeight: 56,
         color: 'transparent',
         textAlign: 'center',
         position: 'absolute',
         width: '100%',
         height: 56,
+        zIndex: 100
     },
     overlayText: {
         position: 'absolute',

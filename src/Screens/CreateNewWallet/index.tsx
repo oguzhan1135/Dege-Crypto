@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { View, StyleSheet, Text, Pressable, TouchableOpacity } from 'react-native';
 import SuccessContent from './TabSteps/ConfirmSeed';
 import AntDesign from '@expo/vector-icons/AntDesign';
@@ -9,9 +9,12 @@ import SecureWallet from './TabSteps/SecureWallet';
 import { useAppNavigation } from '../../Router/useAppNavigation';
 import SecureYourWallet from './TabSteps/SecureWallet/Tabs/SecureYourWallet';
 import WriteYourSeed from './TabSteps/SecureWallet/Tabs/WriteDownYourSeed';
+import { MainContext } from '../../Context';
+import User1 from "../../../assets/images/User-1.svg"
 
 function CreateNewWallet() {
     const navigation = useAppNavigation();
+    const { setSentAccount } = useContext(MainContext)
     const [passwordData, setPasswordData] = useState<PasswordData>({
         password: '',
         confirmPassword: '',
@@ -22,6 +25,8 @@ function CreateNewWallet() {
     const [smallStep, setSmallStep] = useState(1);
     const [caseNumber, setCaseNumber] = useState(currentStep);
     const [stepContent, setStepContent] = useState<JSX.Element | null>(null);
+    const [view, setView] = useState(false)
+    const [confirm, setConfirm] = useState(false)
 
     const renderTab = (step: number) => {
         const isActive = currentStep === 3 ? (smallStep >= 2 ? step <= 3 : step <= currentStep) : step <= currentStep;
@@ -32,6 +37,14 @@ function CreateNewWallet() {
         );
     };
 
+    const onchangeView = (view: boolean) => {
+        setView(view)
+    }
+
+    const onChangeConfirm = (confirm: boolean) => {
+        setConfirm(confirm)
+    }
+
     const renderStepContent = () => {
         switch (caseNumber) {
             case 1:
@@ -41,9 +54,9 @@ function CreateNewWallet() {
             case 3:
                 return <SecureYourWallet />;
             case 4:
-                return <WriteYourSeed />;
+                return <WriteYourSeed onchangeView={onchangeView} />;
             case 5:
-                return <ConfirmSeed />;
+                return <ConfirmSeed onChangeConfirm={onChangeConfirm} />;
             default:
                 return null;
         }
@@ -92,6 +105,117 @@ function CreateNewWallet() {
     };
 
     const handleSuccess = () => {
+        setSentAccount( {
+            id: 1,
+            name: "Account 1",
+            avatar: <User1 style={{
+                width: 32,
+                height: 32,
+                transform: [{ scale: 1.5 }]
+            }} />,
+            balance: [
+                {
+                    coinName: "BNB",
+                    balance: 19.2371
+                },
+                {
+                    coinName: "USDC",
+                    balance: 92.3
+                },
+                {
+                    coinName: "SNX",
+                    balance: 42.74
+                },
+                {
+                    coinName: "ETH",
+                    balance: 9.2362
+                }
+            ],
+            adress: "0x4Dc6...DxR9",
+            transaction: [
+                {
+                    id: 1,
+                    type: "Received",
+                    amount: 0.04,
+                    date: "Mar 3 at 10:04am",
+                    networkFee: 0.12,
+                    paymenToAdress: "0x3Dc6...DxE9",
+                    currency: "BNB",
+                    status: "Confirmed"
+                },
+                {
+                    id: 2,
+                    type: "Received",
+                    amount: 1.88,
+                    date: "Aug 14 at 10:04am",
+                    networkFee: 0.13,
+                    paymenToAdress: "0x3Dc6...DxE9",
+                    currency: "BNB",
+                    status: "Confirmed"
+                },
+                {
+                    id: 3,
+                    type: "Sent",
+                    amount: 2.35,
+                    date: "Sep 4 at 11:04am",
+                    networkFee: 0.08,
+                    paymenToAdress: "0x3Dc6...DxE12",
+                    currency: "BNB",
+                    status: "Cancelled"
+                },
+                {
+                    id: 4,
+                    type: "Received",
+                    amount: 1.876,
+                    date: "Aug 3 at 10:04am",
+                    networkFee: 0.12,
+                    paymenToAdress: "0x3Dc6...DxL9",
+                    currency: "USDC",
+                    status: "Confirmed"
+                },
+                {
+                    id: 5,
+                    type: "Received",
+                    amount: 410,
+                    date: "Feb 3 at 10:04am",
+                    networkFee: 0.12,
+                    paymenToAdress: "0x3Dc6...DxL9",
+                    currency: "USDC",
+                    status: "Confirmed"
+                },
+                {
+                    id: 6,
+                    type: "Received",
+                    amount: 100,
+                    date: "Aug 30 at 10:04am",
+                    networkFee: 0.12,
+                    paymenToAdress: "0x3Dc6...DxL9",
+                    currency: "USDC",
+                    status: "Cancelled"
+                },
+                {
+                    id: 7,
+                    type: "Received",
+                    amount: 3,
+                    date: "Feb 12 at 10:04am",
+                    networkFee: 0.13,
+                    paymenToAdress: "0x3Dc6...DxE14",
+                    currency: "SNX",
+                    status: "Confirmed"
+                },
+                {
+                    id: 8,
+                    type: "Received",
+                    amount: 10,
+                    date: "Jan 21 at 10:04am",
+                    networkFee: 0.13,
+                    paymenToAdress: "0x3Dc6...DxE14",
+                    currency: "SNX",
+                    status: "Cancelled"
+                },
+            ],
+            password: "Example123"
+        })
         navigation.navigate("Onboarding", {
             screen: 'Homescreen',
         });
@@ -129,14 +253,34 @@ function CreateNewWallet() {
                 {stepContent}
             </View>
             <View style={styles.buttonContainer}>
-                <PrimaryButton
-                    text={currentStep < 2 ? 'Create Password' : 'Next'}
-                    onPress={() => {
-                        setCaseNumber(caseNumber + 1);
-                        handleConfirmButtonPress();
-                    }}
-                    disabled={currentStep === 1 && (passwordData.password === '' || passwordData.confirmPassword === '' || passwordData.passwordRule === false)}
-                />
+                {
+                    currentStep < 2 ?
+                        <PrimaryButton
+                            text='Create Password'
+                            onPress={() => {
+                                setCaseNumber(caseNumber + 1);
+                                handleConfirmButtonPress();
+                            }}
+                            disabled={currentStep === 1 && (
+                                passwordData.password === '' ||
+                                passwordData.confirmPassword === '' ||
+                                passwordData.passwordRule === false ||
+                                passwordData.confirmPassword !== passwordData.password
+
+                            )}
+                        /> :
+                        <PrimaryButton
+                            text='Next'
+                            onPress={() => {
+                                setCaseNumber(caseNumber + 1);
+                                handleConfirmButtonPress();
+                            }}
+                            disabled={(caseNumber === 4 && view === false) || (caseNumber === 5 && confirm === false)
+                            }
+                        />
+
+                }
+
             </View>
         </View>
     );
