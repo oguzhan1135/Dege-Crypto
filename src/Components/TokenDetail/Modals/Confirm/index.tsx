@@ -6,7 +6,6 @@ import PrimaryButton from "../../../Buttons/Primary";
 import GradiantText from "../../../GradiantText";
 import { MainContext } from "../../../../Context";
 import EditNetworkEdit from "../EditNetworkFee";
-import { Transaction } from "../../../../Router/types";
 
 interface ConfirmProps {
     setSentModalVisible: (modalVisible: boolean) => void;
@@ -24,7 +23,7 @@ const Confirm: React.FC<ConfirmProps> = ({
     timer
 
 }) => {
-    const { receiverAccount, sentAccount, sentCoin, coinList, setAccounts, accounts, setSentAccount, setTokenFee, setSentMessage } = useContext(MainContext);
+    const { receiverAccount, sentAccount, sentCoin, coinList, setAccounts, accounts, setSentAccount, setTokenFee } = useContext(MainContext);
     const font = "Poppins_500Medium";
     const [modalVisible, setModalVisible] = useState(false);
     const [editFee, setEditFee] = useState<number>(0.12);
@@ -36,9 +35,9 @@ const Confirm: React.FC<ConfirmProps> = ({
         setTokenFee(editFee)
     }, [editFee])
 
-    useEffect(() => {
+    useEffect(()=>{
         setEditFee(0.12)
-    }, [])
+    },[])
 
 
     const totalAmount = (sentCoin?.amount || 0) + (editFee || 0);
@@ -46,57 +45,37 @@ const Confirm: React.FC<ConfirmProps> = ({
 
     const sentOperation = () => {
         const findAccountIndex = accounts.findIndex((account) => account.adress === sentAccount?.adress);
-    
+
         const currentDate = new Date();
         const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-        let hour = currentDate.getHours() + 3;  
-        let minute = currentDate.getMinutes();
-        let day = currentDate.getDate();
+        const hour = currentDate.getHours() + 3;
+        const minute = currentDate.getMinutes();
+        const day = currentDate.getDate();
         const month = months[currentDate.getMonth()];
-    
-        if (minute >= 60) {
-            hour += 1;
-            minute -= 60;
-        }
-        if (hour >= 24) {
-            hour -= 24;
-            day += 1;
-        }
-        const formattedhour = hour < 10 ? `0${hour}` : hour;
+        const formattedDate = `${month} ${day} at ${hour}:${minute}`;
+        const amount = sentCoin?.amount && sentCoin.amount;
 
-        const formattedMinute = minute < 10 ? `0${minute}` : minute;
-    
-        const formattedDate = `${month} ${day} at ${formattedhour}:${formattedMinute}`;
-        const amount = sentCoin?.amount;
-    
-        if (amount === undefined || sentCoin?.currency === undefined || receiverAccount?.adress === undefined) {
-            console.error("Amount, currency or address not found");
-            return;
-        }
-    
-        const newTransaction: Transaction = {
+        const newTransaction = {
             id: Math.floor(Math.random() * 90000) + 10000,
             type: "Sent",
             amount: amount,
             date: formattedDate,
             status: "Submitted",
-            currency: sentCoin.currency,
+            currency: sentCoin?.currency,
             networkFee: editFee,
-            paymenToAdress: receiverAccount.adress,
+            paymenToAdress: receiverAccount?.adress
         };
-    
+
         const updatedAccounts = [...accounts];
         updatedAccounts[findAccountIndex].transaction.push(newTransaction);
-    
-        const beforeBalance = updatedAccounts[findAccountIndex].balance.find((balance) => balance.coinName === sentCoin.currency);
-        if (beforeBalance === undefined) {
-            console.error("Balance not found");
-            return;
+
+        let beforeBalance = updatedAccounts[findAccountIndex].balance.find((balance) => balance.coinName === sentCoin?.currency);
+        let afterBalance = beforeBalance?.balance - (editFee + amount);
+
+        if (beforeBalance) {
+            beforeBalance.balance = afterBalance;
         }
-    
-        const afterBalance = beforeBalance.balance - (editFee + amount);
-        beforeBalance.balance = afterBalance;
-    
+
         setAccounts(updatedAccounts);
         setSentAccount({
             id: updatedAccounts[findAccountIndex].id,
@@ -104,26 +83,21 @@ const Confirm: React.FC<ConfirmProps> = ({
             avatar: updatedAccounts[findAccountIndex].avatar,
             adress: updatedAccounts[findAccountIndex].adress,
             transaction: updatedAccounts[findAccountIndex].transaction,
-            balance: updatedAccounts[findAccountIndex].balance,
-            password: updatedAccounts[findAccountIndex].password
+            balance: updatedAccounts[findAccountIndex].balance
         });
-    
-        setTimeout(() => {
-            setSentModalVisible(false);
-            setSentMessage("Submitted");
-            setModalStep(1);
-        }, 0);
-    
+        setSentModalVisible(false);
+        setModalStep(modalStep + 1);
+        setSentAccount(updatedAccounts[findAccountIndex]);
         setTimeout(() => {
             const updatedTransactionIndex = updatedAccounts[findAccountIndex].transaction.findIndex((transaction) => transaction.id === newTransaction.id);
-    
+
             if (updatedTransactionIndex !== -1) {
                 updatedAccounts[findAccountIndex].transaction[updatedTransactionIndex].status = "Confirmed";
                 setAccounts([...updatedAccounts]);
             }
         }, timer);
     };
-    
+
 
 
     return (
@@ -146,14 +120,14 @@ const Confirm: React.FC<ConfirmProps> = ({
                             </Pressable>
                         </View>
 
-                        <View style={{ alignItems: "center", gap: 16, width: "100%" }}>
+                        <View style={{ alignItems: "center", gap: 16 }}>
                             <Text style={{ color: "white", fontSize: 14, lineHeight: 24, fontFamily: "Poppins_500Medium" }}>Amount</Text>
-                            <View style={{ paddingBottom: 24 }}>
-                                <GradiantText text={`${sentCoin?.amount} ${sentCoin?.currency}`} fontSize={40} lineHeight={56} width={350} row={1} />
+                            <View style={{ alignItems: "center", paddingBottom: 24 }}>
+                                <GradiantText text={`${sentCoin?.amount} ${sentCoin?.currency}`} fontSize={40} lineHeight={56} width={300} row={1} />
                             </View>
                         </View>
 
-                        <View style={{ gap: 16, paddingBottom: 48 }}>
+                        <View style={{ gap: 16,paddingBottom:48 }}>
                             <View>
                                 <Text style={{ fontSize: 16, lineHeight: 24, color: "white", fontFamily: "Poppins_500Medium" }}>From</Text>
                                 <View style={{ alignItems: "center", flexDirection: "row", gap: 8, padding: 16 }}>
@@ -165,7 +139,7 @@ const Confirm: React.FC<ConfirmProps> = ({
                                             {sentAccount?.name}
                                         </Text>
                                         <Text style={{ fontSize: 12, lineHeight: 18, fontFamily: font, color: "#ABAFC4" }}>
-                                            Balance: {sentCoin ? parseFloat(sentCoin?.balance.toFixed(2)) : 0} {sentCoin?.currency}
+                                            Balance: {sentCoin?.balance} {sentCoin?.currency}
                                         </Text>
                                     </View>
                                 </View>

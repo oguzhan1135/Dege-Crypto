@@ -26,7 +26,7 @@ const Swap: React.FC<SwapProps> = ({
     const [coinSelectTo, setCoinSelectTo] = useState(false);
     const [fromCoin, setFromCoin] = useState({ coin: "BNB", index: 1 });
     const [toCoin, setToCoin] = useState({ coin: "BNB", index: 1 });
-    const { sentAccount, coinList, swapMessage, setSwapMessage } = useContext(MainContext);
+    const { sentAccount, coinList } = useContext(MainContext);
     const [paddingBottom, setPaddingBottom] = useState(200);
     const [confirmModal, setConfirmModal] = useState(false)
     const [modalStep, setModalStep] = useState(1);
@@ -51,6 +51,7 @@ const Swap: React.FC<SwapProps> = ({
         };
     }, []);
 
+    const { swapMessage, setSwapMessage } = useContext(MainContext)
     useEffect(() => {
         if (modalStep === 3) {
             setSwapModal(false)
@@ -60,13 +61,14 @@ const Swap: React.FC<SwapProps> = ({
             setTimeout(() => {
                 setSwapMessage("Confirmed")
             }, 2000);
+
         }
     }, [modalStep])
+
 
     const onchangeFromCoin = (coinData: Data) => {
         setFromCoin(coinData);
     };
-
     const onchangeToCoin = (coinData: Data) => {
         setToCoin(coinData);
     };
@@ -83,21 +85,12 @@ const Swap: React.FC<SwapProps> = ({
         } else {
             setAmount(maxAmount);
         }
+
     };
 
     const coinBalance = sentAccount?.balance && sentAccount.balance[fromCoin.index - 1]?.balance;
 
-    const swapBalance = (() => {
-        const foundCoin = coinList.find((coin) => coin.currency === toCoin.coin);
-        const rate = foundCoin?.rate;
-
-        if (rate === undefined) {
-            console.error(`Rate not found for currency ${toCoin.coin}`);
-            return 0;
-        }
-
-        return parseFloat(calculatedAmount) / rate;
-    })();
+    let swapBalance = (parseFloat(calculatedAmount) / (coinList.find((coin) => coin.currency === toCoin.coin)?.rate))
 
     return (
         <Modal
@@ -110,29 +103,34 @@ const Swap: React.FC<SwapProps> = ({
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                     <View style={styles.centeredView}>
                         <View style={{ backgroundColor: "#ABAFC4", height: 4, width: 40, borderRadius: 100, marginBottom: 5 }} />
-                        <View style={[styles.modalView, { position: "relative" }]}>
-                            <View style={{ paddingBottom: 40 }}>
-                                <Text style={styles.modalText}>Swap</Text>
-                                <Pressable onPress={() => setSwapModal(false)} style={{ position: "absolute", top: "25%", right: 0 }}>
-                                    <AntDesign name="close" size={18} color="white" />
-                                </Pressable>
-                            </View>
-                            <View style={{ gap: 16, paddingBottom }}>
-                                <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-                                    <Text style={{ color: "white", fontFamily: "Poppins_500Medium", fontSize: 16, lineHeight: 24 }}>From</Text>
-                                    <Pressable onPress={() => useMax()}>
-                                        <Text style={{ color: "#FEBF32", fontSize: 14, lineHeight: 24, fontFamily: "Poppins_500Medium" }}>Use Max</Text>
+
+
+                        <>
+                            <View style={[styles.modalView, { position: "relative" }]}>
+                                <View style={{ paddingBottom: 40 }}>
+                                    <Text style={styles.modalText}>Swap</Text>
+                                    <Pressable onPress={() => setSwapModal(false)} style={{ position: "absolute", top: "25%", right: 0 }}>
+                                        <AntDesign name="close" size={18} color="white" />
                                     </Pressable>
                                 </View>
-                                <SelectToken coinSelect={coinSelectFrom} setCoinSelect={setCoinSelectFrom} onchangeCoin={onchangeFromCoin} />
-                                <View style={{ borderWidth: 1, borderColor: "#2a2d3c", borderRadius: 8, flexDirection: "row", alignItems: "center" }}>
-                                    <Pressable onPress={() => setCoinSelectFrom(true)} style={{ paddingVertical: 30, paddingRight: 24, paddingLeft: 16, flexDirection: "row", alignItems: "center", justifyContent: "space-between", borderRightWidth: 1, borderColor: "#2a2d3c", gap: 30 }}>
-                                        <Text style={{ color: "white", fontSize: 14, lineHeight: 24, fontFamily: "Poppins_500Medium" }}>{fromCoin.coin}</Text>
-                                        <AntDesign name='down' size={16} color={"white"} />
-                                    </Pressable>
-                                    <View style={{ paddingLeft: 16 }}>
-                                        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                                            <View style={{ position: "relative",width:250 }}>
+                                <View style={{ gap: 16, paddingBottom }}>
+
+                                    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                                        <Text style={{ color: "white", fontFamily: "Poppins_500Medium", fontSize: 16, lineHeight: 24 }}>From</Text>
+                                        <Pressable style={{}} onPress={() => useMax()}>
+                                            <Text style={{ color: "#FEBF32", fontSize: 14, lineHeight: 24, fontFamily: "Poppins_500Medium" }}>Use Max</Text>
+                                        </Pressable>
+                                    </View>
+
+                                    <SelectToken coinSelect={coinSelectFrom} setCoinSelect={setCoinSelectFrom} onchangeCoin={onchangeFromCoin} />
+
+                                    <View style={{ borderWidth: 1, borderColor: "#2a2d3c", borderRadius: 8, flexDirection: "row", alignItems: "center" }}>
+                                        <Pressable onPress={() => setCoinSelectFrom(true)} style={{ paddingVertical: 30, paddingRight: 24, paddingLeft: 16, flexDirection: "row", alignItems: "center", justifyContent: "space-between", borderRightWidth: 1, borderColor: "#2a2d3c", gap: 30 }}>
+                                            <Text style={{ color: "white", fontSize: 14, lineHeight: 24, fontFamily: "Poppins_500Medium" }}>{fromCoin.coin}</Text>
+                                            <AntDesign name='down' size={16} color={"white"} />
+                                        </Pressable>
+                                        <View style={{ paddingLeft: 16 }}>
+                                            <View style={{ position: "relative" }}>
                                                 {amount !== "" ?
                                                     <>
                                                         <TextInput
@@ -148,65 +146,75 @@ const Swap: React.FC<SwapProps> = ({
                                                         </View>
                                                     </>
                                                     :
-                                                <>
-                                                 <TextInput
-                                                        style={{ fontSize: 40, lineHeight: 56, color: "#ABAFC4" }}
-                                                        value={amount}
-                                                        onChangeText={setAmount}
-                                                        keyboardType='numeric'
-                                                        maxLength={10}
-                                                        selectionColor={"white"}
-                                                    />
-                                                    <Text style={{ position: "absolute", fontSize: 40, lineHeight: 56, color: "#ABAFC4" }}>0</Text>
-                                                </>
-                                                   
+                                                    <>
+                                                        <TextInput
+                                                            style={{ fontSize: 40, lineHeight: 56, color: "#ABAFC4" }}
+                                                            value={amount}
+                                                            onChangeText={setAmount}
+                                                            keyboardType='numeric'
+                                                            maxLength={10}
+                                                            selectionColor={"white"}
+                                                        />
+                                                        <Text style={{ position: "absolute", fontSize: 40, lineHeight: 56, color: "#ABAFC4" }}>0</Text>
+                                                    </>
                                                 }
                                                 <Text style={{ fontSize: 14, lineHeight: 24, color: "white", paddingBottom: 4 }}>${calculatedAmount}</Text>
                                             </View>
-                                        </TouchableWithoutFeedback>
+                                        </View>
+                                    </View>
+                                    <View style={{ alignItems: "center", justifyContent: "center" }}>
+                                        <View style={{ borderRadius: 8, backgroundColor: "#2A2D3C", paddingVertical: 12, paddingHorizontal: 16 }}>
+                                            <Ionicons name="swap-vertical" size={24} color="#FEBF32" />
+                                        </View>
+                                    </View>
 
+                                    <Text style={{ color: "white", fontFamily: "Poppins_500Medium", fontSize: 16, lineHeight: 24 }}>To</Text>
+                                    <View style={{ borderWidth: 1, borderColor: "#2a2d3c", borderRadius: 8, flexDirection: "row", alignItems: "center" }}>
+                                        <Pressable onPress={() => setCoinSelectTo(true)} style={{ paddingVertical: 30, paddingRight: 24, paddingLeft: 16, flexDirection: "row", alignItems: "center", justifyContent: "space-between", borderRightWidth: 1, borderColor: "#2a2d3c", gap: 30 }}>
+                                            <Text style={{ color: "white", fontSize: 14, lineHeight: 24, fontFamily: "Poppins_500Medium" }}>{toCoin.coin}</Text>
+                                            <AntDesign name='down' size={16} color={"white"} />
+                                        </Pressable>
+                                        <View style={{ paddingLeft: 16 }}>
+                                            <Text style={{ fontSize: 40, lineHeight: 56, color: "#ABAFC4" }}>{swapBalance.toFixed(2)}</Text>
+                                        </View>
                                     </View>
+                                    <SelectToken coinSelect={coinSelectTo} setCoinSelect={setCoinSelectTo} onchangeCoin={onchangeToCoin} />
+
                                 </View>
-                                <View style={{ alignItems: "center", justifyContent: "center" }}>
-                                    <View style={{ borderRadius: 8, backgroundColor: "#2A2D3C", paddingVertical: 12, paddingHorizontal: 16 }}>
-                                        <Ionicons name="swap-vertical" size={24} color="#FEBF32" />
-                                    </View>
+                                <View style={{ paddingVertical: 16 }}>
+                                    <PrimaryButton
+                                        text="Swap"
+                                        onPress={() => {
+                                            setConfirmModal(true)
+                                            setModalStep(modalStep + 1)
+                                        }
+
+                                        }
+                                        disabled={parseFloat(amount) > sentAccount?.balance.find((balance) => balance.coinName === fromCoin.coin)?.balance || parseFloat(amount) <= 0 || amount === "" ? true : false}
+                                    />
                                 </View>
-                                <Text style={{ color: "white", fontFamily: "Poppins_500Medium", fontSize: 16, lineHeight: 24 }}>To</Text>
-                                <View style={{ borderWidth: 1, borderColor: "#2a2d3c", borderRadius: 8, flexDirection: "row", alignItems: "center" }}>
-                                    <Pressable onPress={() => setCoinSelectTo(true)} style={{ paddingVertical: 30, paddingRight: 24, paddingLeft: 16, flexDirection: "row", alignItems: "center", justifyContent: "space-between", borderRightWidth: 1, borderColor: "#2a2d3c", gap: 30 }}>
-                                        <Text style={{ color: "white", fontSize: 14, lineHeight: 24, fontFamily: "Poppins_500Medium" }}>{toCoin.coin}</Text>
-                                        <AntDesign name='down' size={16} color={"white"} />
-                                    </Pressable>
-                                    <View style={{ paddingLeft: 16 }}>
-                                        <Text style={{ fontSize: 40, lineHeight: 56, color: "#ABAFC4" }}>{swapBalance.toFixed(2)}</Text>
-                                    </View>
-                                </View>
-                                <SelectToken coinSelect={coinSelectTo} setCoinSelect={setCoinSelectTo} onchangeCoin={onchangeToCoin} />
+
                             </View>
-                            <View style={{ paddingVertical: 16 }}>
-                                <PrimaryButton
-                                    text="Swap"
-                                    onPress={() => {
-                                        setConfirmModal(true)
-                                        setModalStep(modalStep + 1)
-                                    }}
-                                    disabled={parseFloat(amount) > sentAccount?.balance.find((balance) => balance.coinName === fromCoin.coin)?.balance || parseFloat(amount) <= 0 || amount === "" ? true : false}
+                        </>
+
+                        {modalStep === 2 ?
+                            <>
+                                <Confirm
+                                    setConfirmModal={setConfirmModal}
+                                    confirmModal={confirmModal}
+                                    setModalStep={setModalStep}
+                                    modalStep={modalStep}
+                                    fromAmount={parseFloat(amount)}
+                                    toAmount={parseFloat(swapBalance.toFixed(2))}
+                                    fromCoin={fromCoin.coin}
+                                    toCoin={toCoin.coin}
                                 />
-                            </View>
-                        </View>
-                        {modalStep === 2 &&
-                            <Confirm
-                                setConfirmModal={setConfirmModal}
-                                confirmModal={confirmModal}
-                                setModalStep={setModalStep}
-                                modalStep={modalStep}
-                                fromAmount={parseFloat(amount)}
-                                toAmount={parseFloat(swapBalance.toFixed(2))}
-                                fromCoin={fromCoin.coin}
-                                toCoin={toCoin.coin}
-                            />
+                            </> :
+                            null
+
                         }
+
+
                     </View>
                 </TouchableWithoutFeedback>
             </BlurView>

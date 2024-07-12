@@ -31,14 +31,6 @@ const SelectToken: React.FC<SelectTokenProps> = (
     useEffect(() => {
         onchangeCoin({ coin: coin.coin, index: coin.index })
     }, [coin])
-
-    const userBalances = sentAccount?.balance || [];
-
-    const userCoins = userBalances.map(balanceItem => {
-        const coin = coinList.find(coin => coin.currency === balanceItem.coinName);
-        return coin ? { ...coin, balance: balanceItem.balance } : null;
-    }).filter(coin => coin !== null);
-
     return (
         <Modal
             style={styles.blur}
@@ -58,7 +50,7 @@ const SelectToken: React.FC<SelectTokenProps> = (
                         </View>
                         <View style={{ gap: 8 }}>
                             {
-                                userCoins.map((coin, index) =>
+                                coinList.map((coin,index) =>
                                     <Pressable key={index} onPress={() => {
                                         setCoin({ coin: coin.currency, index: coin.id })
                                         setCoinSelect(false)
@@ -74,11 +66,7 @@ const SelectToken: React.FC<SelectTokenProps> = (
                                                 <Text style={{ color: "white", fontSize: 16, lineHeight: 24, fontFamily: "Poppins_500Medium" }}>{coin.coinName}</Text>
                                             </View>
                                             <View style={{ gap: 4, }}>
-                                                <Text style={{ color: "white", fontSize: 16, lineHeight: 24, fontFamily: "Poppins_500Medium" }}>
-                                                    {sentAccount && sentAccount.balance && coin.id && coin.id > 0 && sentAccount.balance[coin.id - 1]
-                                                        ? `${parseFloat(sentAccount.balance[coin.id - 1].balance.toFixed(4))} ${sentAccount.balance[coin.id - 1].coinName}`
-                                                        : "0.0000"}
-                                                </Text>
+                                                <Text style={{ color: "white", fontSize: 16, lineHeight: 24, fontFamily: "Poppins_500Medium" }}>{parseFloat(sentAccount?.balance[coin.id - 1].balance.toFixed(2))} {sentAccount?.balance[coin.id - 1].coinName}</Text>
                                                 <Text style={{ color: "#ABAFC4", fontFamily: "Poppins_500Medium", marginLeft: "auto" }}>
                                                     ${sentAccount?.balance && sentAccount.balance[coin.id - 1] ? parseFloat((sentAccount.balance[coin.id - 1].balance * coin.rate).toFixed(2)) : '0.00'}
                                                 </Text>

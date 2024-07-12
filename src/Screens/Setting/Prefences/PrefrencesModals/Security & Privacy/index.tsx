@@ -1,12 +1,12 @@
 import { BlurView } from "expo-blur";
 import React, { useState } from "react";
 import { Modal, View, Pressable, Text, StyleSheet, TouchableOpacity, ScrollView, Switch } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 import { AntDesign } from '@expo/vector-icons';
 import PrimaryButton from "../../../../../Components/Buttons/Primary";
 import SecondaryButton from "../../../../../Components/Buttons/Secondary";
 import RevalSeed from "./SecurityModals/RevalSeedPhrase";
 import AutoLock from "./SecurityModals/AutoLock";
-import { useAppNavigation } from "../../../../../Router/useAppNavigation";
 
 
 interface SecurityProps {
@@ -21,7 +21,7 @@ const Security: React.FC<SecurityProps> = ({
     securityModal,
 }) => {
 
-    const navigation = useAppNavigation();
+    const navigation = useNavigation();
     const [faceId, setFaceId] = useState(true)
     const [privacy, setPrivacy] = useState(true)
     const [metaMetrics, setMetaMetrics] = useState(false)
@@ -52,7 +52,7 @@ const Security: React.FC<SecurityProps> = ({
                                 <AntDesign name="close" size={18} color="white" />
                             </Pressable>
                             <Pressable onPress={() => {
-                               setSecurityModal(false);
+                                navigation.navigate("Onboarding", { screen: "Preferences" })
                             }} style={{ position: "absolute", top: "25%", left: 0 }}>
                                 <AntDesign name="left" size={18} color="white" />
                             </Pressable>
@@ -121,7 +121,7 @@ const Security: React.FC<SecurityProps> = ({
                                         <Text style={{
                                             fontSize: 16, lineHeight: 24, fontWeight: "bold", color: "white", fontFamily: "Poppins_500Medium"
                                         }}>Sign in with Face ID?</Text>
-                                       <Switch
+                                        <Switch
                                             trackColor={{ false: '#D3D3D3', true: '#FFD700' }}
                                             thumbColor={faceId ? '#f4f3f4' : '#f4f3f4'}
                                             ios_backgroundColor="#3e3e3e"
@@ -214,10 +214,6 @@ const Security: React.FC<SecurityProps> = ({
 }
 
 const styles = StyleSheet.create({
-    switch: {
-        transform: [{ scaleX: 1.5 }, { scaleY: 1.5 }],
-        borderRadius: 20,
-    },
     faceIdContainer: {
         justifyContent: "space-between",
         flexDirection: "row",

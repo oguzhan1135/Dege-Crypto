@@ -69,12 +69,12 @@ const SecureWallet: FC<SecureProp> = ({ onChangeStep }) => {
                                                 <Pressable onPress={() => {
                                                     setModalVisible(false);
                                                     setStep(step + 1)
-                                                    onChangeStep(step + 1.5)
+                                                    onChangeStep(step + 1)
                                                 }}>
                                                     <Text style={{ fontSize: 16, fontFamily: font, lineHeight: 24, fontWeight: "bold", color: "#FEBF32", paddingHorizontal: 30 }}>Secure Now</Text>
                                                 </Pressable>
                                                 <View style={{ width: "48%" }}>
-                                                    <PrimaryButton text="Skip" onPress={() => setModalStep(modalStep + 1)} disabled={!skipCheck} />
+                                                    <PrimaryButton text="Skip" onPress={() => setModalStep(modalStep + 1)} />
 
                                                 </View>
                                             </View>

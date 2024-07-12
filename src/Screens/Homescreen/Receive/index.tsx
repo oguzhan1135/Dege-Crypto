@@ -43,15 +43,8 @@ const Receive: React.FC<ReceiveProp> = ({ receiveModal, setReceiveModal }) => {
                 <View style={styles.centeredView}>
                     <View style={{ backgroundColor: "#ABAFC4", height: 4, width: 40, borderRadius: 100, marginBottom: 5 }} />
                     <View style={[styles.modalView]}>
-                        <View style={{ paddingBottom: 30 }}>
-                            <Text style={{textAlign:"center", color:"white",fontSize:16, lineHeight:24, fontFamily:"Poppins_500Medium"}}>Receive</Text>
-                            <Pressable onPress={() => setReceiveModal(false)} style={{ position: "absolute", top: "25%", right: 0 }}>
-                                <AntDesign name="close" size={18} color="white" />
-                            </Pressable>
-                            
-                        </View>
                         <View style={{ alignItems: "center" }}>
-
+                            <Text style={{ color: "white", fontSize: 16, lineHeight: 24, fontFamily: "Poppins_500Medium", paddingBottom: 40 }}>Receive</Text>
                             <QrCode style={{ marginBottom: 24 }} />
                             <Text style={{ color: "#ABAFC4", fontSize: 14, lineHeight: 24, fontFamily: "Poppins_500Medium", paddingBottom: 24 }}>Scan address to Receive payment</Text>
                             <View style={{ flexDirection: "row", alignItems: "center", gap: 8, paddingBottom: 40 }}>

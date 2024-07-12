@@ -6,7 +6,6 @@ import PrimaryButton from "../../../Buttons/Primary";
 import { MainContext } from "../../../../Context";
 import EditNetworkEdit from "../../../TokenDetail/Modals/EditNetworkFee";
 import Slippage from "../SlippageTolerance";
-import { Accounts } from "../../../../Router/types";
 
 interface ConfirmProps {
     setConfirmModal: (confirmModal: boolean) => void;
@@ -60,25 +59,35 @@ const Confirm: React.FC<ConfirmProps> = ({
             return;
         }
 
-        const accountIndex = findAccountIndex - 1;
-        const fromCoinBalance = sentAccount?.balance.find(balance => balance.coinName === fromCoin);
-        const toCoinBalance = sentAccount?.balance.find(balance => balance.coinName === toCoin);
+        const fromCoinBalance = updatedAccounts[findAccountIndex - 1].balance.find(balance => balance.coinName === fromCoin);
+        const toCoinBalance = updatedAccounts[findAccountIndex - 1].balance.find(balance => balance.coinName === toCoin);
 
         if (fromCoinBalance) {
             fromCoinBalance.balance -= fromSwapBalance;
-        } else {
-            console.error(`fromCoinBalance not found for ${fromCoin}`);
-            return;
         }
-
         if (toCoinBalance) {
             toCoinBalance.balance += toAmount;
-        } else {
-            console.error(`toCoinBalance not found for ${toCoin}`);
+        }
+
+        setAccounts(updatedAccounts);
+
+        let updateSentAccount = { ...sentAccount };
+        if (!updateSentAccount || !updateSentAccount.balance) {
+            console.error("Balance is undefined in updateSentAccount");
             return;
         }
-    };
+        const sentAccountFromCoinBalance = updateSentAccount?.balance.find(balance => balance.coinName === fromCoin);
+        const sentAccountToCoinBalance = updateSentAccount?.balance.find(balance => balance.coinName === toCoin);
 
+        if (sentAccountFromCoinBalance) {
+            sentAccountFromCoinBalance.balance -= fromSwapBalance;
+        }
+        if (sentAccountToCoinBalance) {
+            sentAccountToCoinBalance.balance += toAmount;
+        }
+
+        setSentAccount(updateSentAccount);
+    };
 
 
     return (
@@ -132,7 +141,7 @@ const Confirm: React.FC<ConfirmProps> = ({
                                     <Text style={styles.contentText}>1 {fromCoin}</Text>
 
                                 </View>
-                                <Text style={[styles.contentText, { textAlign: "right" }]}>= {parseFloat((toAmount / fromAmount).toFixed(4))} {toCoin}</Text>
+                                <Text style={[styles.contentText, { textAlign: "right" }]}>= {toAmount / fromAmount} {toCoin}</Text>
 
                             </View>
                             <View style={{ borderTopWidth: 1, borderTopColor: "#2a2d3c", flexDirection: "column", padding: 16, gap: 4 }}>
@@ -174,7 +183,15 @@ const Confirm: React.FC<ConfirmProps> = ({
 }
 
 const styles = StyleSheet.create({
-
+    iconContainer: {
+        backgroundColor: "#222531",
+        overflow: "hidden",
+        width: 40,
+        height: 40,
+        borderRadius: 50,
+        justifyContent: "center",
+        alignItems: "center",
+    },
     modalView: {
         width: "100%",
         backgroundColor: "#17171A",

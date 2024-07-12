@@ -16,159 +16,18 @@ const Account = () => {
 
 
     const [modalVisible, setModalVisible] = useState(false);
-    let [user, setUser] = useState<Accounts>();
+    let [user, setUser] = useState<Accounts>(sentAccount);
     useEffect(() => {
-        if (sentAccount) {
-            setUser(sentAccount)
-        } else {
-            setUser(
-                {
-                    id: 1,
-                    name: "Account 1",
-                    avatar: <User1 style={{
-                        width: 32,
-                        height: 32,
-                        transform: [{ scale: 1.5 }]
-                    }} />,
-                    balance: [
-                        {
-                            coinName: "BNB",
-                            balance: 19.2371
-                        },
-                        {
-                            coinName: "USDC",
-                            balance: 92.3
-                        },
-                        {
-                            coinName: "SNX",
-                            balance: 42.74
-                        },
-                        {
-                            coinName: "ETH",
-                            balance: 9.2362
-                        }
-                    ],
-                    adress: "0x4Dc6...DxR9",
-                    transaction: [
-                        {
-                            id: 1,
-                            type: "Received",
-                            amount: 0.04,
-                            date: "Mar 3 at 10:04am",
-                            networkFee: 0.12,
-                            paymenToAdress: "0x3Dc6...DxE9",
-                            currency: "BNB",
-                            status: "Confirmed"
-                        },
-                        {
-                            id: 2,
-                            type: "Received",
-                            amount: 1.88,
-                            date: "Aug 14 at 10:04am",
-                            networkFee: 0.13,
-                            paymenToAdress: "0x3Dc6...DxE9",
-                            currency: "BNB",
-                            status: "Confirmed"
-                        },
-                        {
-                            id: 3,
-                            type: "Sent",
-                            amount: 2.35,
-                            date: "Sep 4 at 11:04am",
-                            networkFee: 0.08,
-                            paymenToAdress: "0x3Dc6...DxE12",
-                            currency: "BNB",
-                            status: "Cancelled"
-                        },
-                        {
-                            id: 4,
-                            type: "Received",
-                            amount: 1.876,
-                            date: "Aug 3 at 10:04am",
-                            networkFee: 0.12,
-                            paymenToAdress: "0x3Dc6...DxL9",
-                            currency: "USDC",
-                            status: "Confirmed"
-                        },
-                        {
-                            id: 5,
-                            type: "Received",
-                            amount: 410,
-                            date: "Feb 3 at 10:04am",
-                            networkFee: 0.12,
-                            paymenToAdress: "0x3Dc6...DxL9",
-                            currency: "USDC",
-                            status: "Confirmed"
-                        },
-                        {
-                            id: 6,
-                            type: "Received",
-                            amount: 100,
-                            date: "Aug 30 at 10:04am",
-                            networkFee: 0.12,
-                            paymenToAdress: "0x3Dc6...DxL9",
-                            currency: "USDC",
-                            status: "Cancelled"
-                        },
-                        {
-                            id: 7,
-                            type: "Received",
-                            amount: 3,
-                            date: "Feb 12 at 10:04am",
-                            networkFee: 0.13,
-                            paymenToAdress: "0x3Dc6...DxE14",
-                            currency: "SNX",
-                            status: "Confirmed"
-                        },
-                        {
-                            id: 8,
-                            type: "Received",
-                            amount: 10,
-                            date: "Jan 21 at 10:04am",
-                            networkFee: 0.13,
-                            paymenToAdress: "0x3Dc6...DxE14",
-                            currency: "SNX",
-                            status: "Cancelled"
-                        },
-                    ],
-                    password: "Example123"
-                }
-            )
-            if (user) {
-                setSentAccount(user)
-            }
-
-        }
-    }, [])
+        setSentAccount(user)
+    }, [user])
     const [modalStep, setModalStep] = useState("Account");
     const [newAccount, setNewAccount] = useState("");
-    const generateRandomFloat = () => {
-        const randomFloat = Math.random() * (100 - 1) + 1;
-        return parseFloat(randomFloat.toFixed(2));
-    };
-    
+
     const handleChangeNewUser = () => {
         let newUser: Accounts = {
             id: accounts.length + 1,
             name: newAccount,
-            balance: [
-                {
-                    coinName: "BNB",
-                    balance: generateRandomFloat()
-                },
-                {
-                    coinName: "USDC",
-                    balance: generateRandomFloat()
-                },
-                {
-                    coinName: "SNX",
-                    balance: generateRandomFloat()
-                },
-                {
-                    coinName: "ETH",
-                    balance: generateRandomFloat()
-                }
-            ],
+            balance: [],
             avatar: <NewAccountuser />,
             transaction: [],
             adress: `DegeCryptoUserAdress${accounts.length + 1}`,
@@ -178,7 +37,6 @@ const Account = () => {
         setAccounts([...accounts, newUser]);
         setNewAccount("");
         setModalStep("Account");
-        setSentAccount(newUser)
         setModalVisible(false);
     };
 
@@ -190,7 +48,7 @@ const Account = () => {
         <View>
             <Pressable onPress={() => setModalVisible(!modalVisible)} style={{ paddingVertical: 4, paddingRight: 8, position: "relative" }}>
                 <View style={styles.iconContainer}>
-                    {user?.avatar}
+                    {user.avatar}
                 </View>
                 <SwapShape style={{ position: "absolute", bottom: 4, right: 0 }} />
             </Pressable>
@@ -204,21 +62,14 @@ const Account = () => {
                 <BlurView intensity={80} style={{ flex: 1 }}>
                     <View style={styles.centeredView}>
                         <View style={{ backgroundColor: "#ABAFC4", height: 4, width: 40, borderRadius: 100, marginBottom: 5 }} />
-                        <View style={[styles.modalView, { position: "relative" }]}>
+                        <View style={styles.modalView}>
                             {modalStep === "Account" ?
                                 <>
-                                    <View style={{ paddingBottom: 0 }}>
-                                        <Text style={styles.modalText}>Account</Text>
-                                        <Pressable onPress={() => setModalVisible(false)} style={{ position: "absolute", top: "25%", right: 0 }}>
-                                            <AntDesign name="close" size={18} color="white" />
-                                        </Pressable>
-
-                                    </View>
+                                    <Text style={styles.modalText}>Account</Text>
                                     <View style={{ paddingBottom: 24 }}>
                                         {accounts.map((account) =>
                                             <Pressable key={account.id} onPress={() => {
                                                 setUser(account);
-                                                setSentAccount(account)
                                                 setModalVisible(false);
                                             }} style={styles.account}>
                                                 <View style={{ gap: 8, flexDirection: "row", alignItems: "center" }}>
@@ -303,7 +154,7 @@ const Account = () => {
                                             <View style={styles.buttonContainer}>
                                                 <Pressable onPress={() => {
                                                     setModalVisible(false);
-                                                    setModalStep("Account")
+
                                                 }}>
                                                     <Text style={{ fontSize: 16, fontFamily: font, lineHeight: 24, fontWeight: "bold", color: "#FEBF32", paddingHorizontal: 30 }}>Scan a QR code</Text>
                                                 </Pressable>

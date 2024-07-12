@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import * as Font from 'expo-font';
-import { useFonts, Poppins_500Medium, Poppins_700Bold, Poppins_400Regular } from '@expo-google-fonts/poppins';
+import { useFonts, Poppins_500Medium, Poppins_700Bold } from '@expo-google-fonts/poppins';
 import { RootNavigator } from './src/Router/navigation';
 import { MainProvider } from './src/Context';
 
@@ -12,7 +12,6 @@ export default function App() {
     await Font.loadAsync({
       Poppins_500Medium,
       Poppins_700Bold,
-      Poppins_400Regular,
       'MaterialIcons': require('react-native-vector-icons/Fonts/MaterialIcons.ttf'),
       'MaterialCommunityIcons': require('react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf'),
     });

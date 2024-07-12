@@ -4,7 +4,6 @@ import { Modal, View, Text, StyleSheet, Pressable, TextInput, KeyboardAvoidingVi
 import { AntDesign } from '@expo/vector-icons';
 import PrimaryButton from "../../../Components/Buttons/Primary";
 import { MainContext } from "../../../Context";
-import { CoinListItem } from "../../../Router/types";
 
 interface AddTokenProps {
     setAddTokenModal: (buyModal: boolean) => void;
@@ -22,7 +21,7 @@ const AddTokenModal: React.FC<AddTokenProps> = ({
     const [selectToken, setSelectToken] = useState("");
     const [paddingBottom, setPaddingBottom] = useState(270);
     const [nextStep, setNextStep] = useState(false)
-    const { coinList, setCoinList, sentAccount, setSentAccount, setAccounts, accounts } = useContext(MainContext);
+    const { coinList, setCoinList, sentAccount, setSentAccount } = useContext(MainContext);
     const [tokens, setTokens] = useState([
         {
             id: 30,
@@ -72,27 +71,22 @@ const AddTokenModal: React.FC<AddTokenProps> = ({
         t.coinName.toLowerCase().includes(tokenAddress.toLowerCase()) ||
         t.currency.toLowerCase().includes(tokenAddress.toLowerCase())
     );
-    const userBalances = sentAccount?.balance || [];
 
-    const userCoins = userBalances.map(balanceItem => {
-        const coin = coinList.find(coin => coin.currency === balanceItem.coinName);
-        return coin ? { ...coin, balance: balanceItem.balance } : null;
-    }).filter(coin => coin !== null);
     const addToken = () => {
         let selectedToken = tokens.find((token) => token.currency === selectToken);
-
+    
         if (selectedToken) {
             const newToken = {
-                id: userCoins.length + 1,
+                id: coinList.length + 1,
                 coinName: selectedToken.coinName,
                 currency: selectedToken.currency,
                 rate: selectedToken.rate,
                 onTheRise: selectedToken.onTheRise,
                 percent: selectedToken.percent,
             };
-
+    
             setCoinList([...coinList, newToken]);
-
+    
             if (sentAccount) {
                 setSentAccount({
                     ...sentAccount,
@@ -105,28 +99,24 @@ const AddTokenModal: React.FC<AddTokenProps> = ({
                     ]
                 });
             }
-            console.log(sentAccount)
-
+    
             setTokens(tokens.filter((token) => token.currency !== selectToken));
             setSelectToken("");
             setTokenAddress("");
         }
     };
-
+    
     const customAddToken = () => {
-        const newToken: CoinListItem = {
+        const newToken = {
             id: coinList.length + 1,
             coinName: tokenAddress,
             currency: tokenSymbol,
-            rate: parseFloat(tokenPrecision),
+            rate: tokenPrecision,
             onTheRise: true,
             percent: 1,
         };
-        if (coinList) {
-            setCoinList([...coinList, newToken]);
-        }
-
-
+        setCoinList([...coinList, newToken]);
+    
         if (sentAccount) {
             setSentAccount({
                 ...sentAccount,
@@ -140,7 +130,7 @@ const AddTokenModal: React.FC<AddTokenProps> = ({
             });
         }
     }
-
+    
 
     return (
         <Modal
@@ -242,7 +232,7 @@ const AddTokenModal: React.FC<AddTokenProps> = ({
                                                         <View style={{ gap: 24, paddingBottom }}>
                                                             <View style={{ paddingVertical: 20, paddingHorizontal: 16, borderWidth: 1, borderColor: "#2a2d3c", borderRadius: 8 }}>
                                                                 <TextInput
-                                                                    placeholder="Token Name"
+                                                                    placeholder="Token Address"
                                                                     placeholderTextColor="#ABAFC4"
                                                                     style={{ color: "white", textAlignVertical: "center" }}
                                                                     value={tokenAddress}
@@ -264,13 +254,13 @@ const AddTokenModal: React.FC<AddTokenProps> = ({
                                                             </View>
                                                             <View style={{ paddingVertical: 20, paddingHorizontal: 16, borderWidth: 1, borderColor: "#2a2d3c", borderRadius: 8 }}>
                                                                 <TextInput
-                                                                    placeholder="Token Rate"
+                                                                    placeholder="Token of Precision"
                                                                     placeholderTextColor="#ABAFC4"
                                                                     style={{ color: "white", textAlignVertical: "center" }}
                                                                     value={tokenPrecision}
                                                                     onChangeText={setTokenPrecision}
                                                                     scrollEnabled={false}
-                                                                    keyboardType="numeric"
+                                                                    multiline
                                                                 />
                                                             </View>
                                                         </View>
