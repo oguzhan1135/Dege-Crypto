@@ -10,7 +10,6 @@ function SecureYourWallet() {
             <View style={styles.title}>
                 <View style={{}}>
                     <GradiantText text={"Secure Your Wallet"} fontSize={18} lineHeight={28} width={300} row={1} />
-
                 </View>
                 <Feather style={{ position: "absolute", right: 0 }} name="info" size={24} color="white" />
 

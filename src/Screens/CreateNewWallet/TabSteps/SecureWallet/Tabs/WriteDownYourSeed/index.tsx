@@ -5,7 +5,13 @@ import { BlurView } from 'expo-blur';
 import SecondaryButton from '../../../../../../Components/Buttons/Secondary';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 
-function WriteYourSeed() {
+
+interface WriteYourSeedprop {
+    onchangeView: (view: boolean) => void;
+}
+
+const WriteYourSeed: React.FC<WriteYourSeedprop> = ({ onchangeView }) => {
+
     const [blurred, setBlurred] = useState(true);
     const [intensity, setIntensity] = useState(10);
 
@@ -21,7 +27,8 @@ function WriteYourSeed() {
         setBlurred(!blurred);
     };
 
-    const font= "Poppins_500Medium"
+
+    const font = "Poppins_500Medium"
 
     return (
         <View style={styles.container}>
@@ -84,9 +91,9 @@ function WriteYourSeed() {
                 </BlurView>
                 <View style={blurred ? { position: "absolute", top: "50%", left: "50%", transform: [{ translateX: -130 }, { translateY: -60 }] } : { display: "none" }}>
                     <View style={{ justifyContent: "center", alignItems: "center", gap: 12 }}>
-                        <Text style={{ fontSize: 14, lineHeight: 24, color: "white",fontFamily:"Poppins_500Medium" }}>Tap to reveal your seed phrase</Text>
-                        <Text style={{ fontSize: 12, lineHeight: 18, color: "#ABAFC4", paddingBottom: 28 ,fontFamily:"Poppins_500Medium"}}>Make sure no one is watching your screen.</Text>
-                        <SecondaryButton text='View' icon={<FontAwesome5 name="eye" size={24} color="#FEBF32" />} onPress={() => toggleBlur()} disabled={false} />
+                        <Text style={{ fontSize: 14, lineHeight: 24, color: "white", fontFamily: "Poppins_500Medium" }}>Tap to reveal your seed phrase</Text>
+                        <Text style={{ fontSize: 12, lineHeight: 18, color: "#ABAFC4", paddingBottom: 28, fontFamily: "Poppins_500Medium" }}>Make sure no one is watching your screen.</Text>
+                        <SecondaryButton text='View' icon={<FontAwesome5 name="eye" size={24} color="#FEBF32" />} onPress={() => { toggleBlur(); onchangeView(blurred) }} disabled={false} />
                     </View>
                 </View>
             </View>
@@ -115,7 +122,7 @@ const styles = StyleSheet.create({
         fontSize: 14,
         lineHeight: 24,
         paddingBottom: 44,
-        fontFamily:"Poppins_500Medium"
+        fontFamily: "Poppins_500Medium"
     },
     seedPhrase: {
         borderRadius: 8,
@@ -140,7 +147,7 @@ const styles = StyleSheet.create({
         fontSize: 14,
         lineHeight: 24,
         color: "white",
-        fontFamily:"Poppins_500Medium"
+        fontFamily: "Poppins_500Medium"
     },
     boxContainer: {
         flexDirection: "column",

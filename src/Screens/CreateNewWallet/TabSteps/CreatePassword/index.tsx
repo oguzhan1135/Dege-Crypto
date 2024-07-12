@@ -28,16 +28,10 @@ const CreatePassword: FC<CreatePasswordProps> = ({ onPasswordChange }) => {
     const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(true)
 
     const checkPasswordStrength = (password: string): boolean => {
-        const minLength = 6;
-        const uppercaseRegex = /[A-Z]/;
-        const lowercaseRegex = /[a-z]/;
-        const symbolRegex = /[!@#$%^&*(),.?":{}|<>]/;
+        const minLength = 8;
         const hasMinLength = password.length >= minLength;
-        const hasUppercase = uppercaseRegex.test(password);
-        const hasLowercase = lowercaseRegex.test(password);
-        const hasSymbol = symbolRegex.test(password);
 
-        return hasMinLength && hasUppercase && hasLowercase && hasSymbol;
+        return hasMinLength;
     };
     const toggleSwitch = (value: boolean) => {
         setData(prevState => ({ ...prevState, faceId: value }));

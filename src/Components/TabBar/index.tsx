@@ -19,7 +19,7 @@ const TabBar = () => {
 
     useEffect(() => {
         if (swapMessage === "Submitted") {
-            navigation.navigate("Onboarding", {screen: "Homescreen"});
+            navigation.navigate("Onboarding", { screen: "Homescreen" });
         }
     }, [swapMessage]);
 
@@ -38,8 +38,8 @@ const TabBar = () => {
             <Pressable onPress={() => handleTabPress("wallet")} style={{ flex: 1 }}>
                 <View style={styles.tabBarContentBox}>
                     <View style={{ alignItems: "center", justifyContent: "center", gap: 1 }}>
-                        <Entypo name="wallet" style={currentRouteName === "Homescreen"  ? styles.activeTabBarIcon : styles.deActiveTabBarIcon} />
-                        <Text style={currentRouteName === "Homescreen" ? styles.activeTabBarText : styles.deActiveTabBarText}>Wallet</Text>
+                        <Entypo name="wallet" style={currentRouteName === "Homescreen" || currentRouteName === "TokenDetail" ? styles.activeTabBarIcon : styles.deActiveTabBarIcon} />
+                        <Text style={currentRouteName === "Homescreen" || currentRouteName === "TokenDetail" ? styles.activeTabBarText : styles.deActiveTabBarText}>Wallet</Text>
                     </View>
                 </View>
             </Pressable>
@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
     tabBar: {
         position: "absolute",
         flexDirection: "row",
-        alignItems:"center",
+        alignItems: "center",
         bottom: 0,
     },
     tabBarContentBox: {

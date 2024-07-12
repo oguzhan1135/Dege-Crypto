@@ -47,6 +47,8 @@ export type AppContextInterface = {
     setTokenFee: (tokenFee: number) => void;
     swapMessage: string;
     setSwapMessage: (swapMessage: string) => void;
+    sentMessage: string;
+    setSentMessage: (sentmessage: string) => void;
 }
 
 export type Transaction = {
