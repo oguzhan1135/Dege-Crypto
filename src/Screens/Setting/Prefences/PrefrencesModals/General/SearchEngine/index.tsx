@@ -39,7 +39,7 @@ const SearchEngine: React.FC<SearchEngineProps> = ({
                                 <AntDesign name="close" size={18} color="white" />
                             </Pressable>
                         </View>
-                        <View style={{ gap: 16, paddingBottom: 24 }}>
+                        <View style={{ gap: 16, paddingBottom: 66 }}>
 
                             {
                                 searchEngine.map((searchEngine, index) =>

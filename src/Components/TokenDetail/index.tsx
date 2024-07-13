@@ -38,14 +38,12 @@ const TokenDetail: React.FC<TokenDetailProps> = ({ route }) => {
 
 
     useEffect(() => {
-        if (sentAccount?.transaction.length === sentAccount?.transaction.length || 0 + 1) {
-            const upgradeDetails = sentAccount?.transaction.filter((account) => account.currency === currency);
-            if (upgradeDetails) {
-                setDetails(upgradeDetails);
-            }
-
+        const upgradeDetails = sentAccount?.transaction.filter((account) => account.currency === currency);
+        if (upgradeDetails) {
+            setDetails(upgradeDetails);
         }
-    }, [accounts, sentAccount, currency]);
+
+    }, [ sentAccount]);
     useEffect(() => {
         if (sentMessage === "Submitted") {
             setTimeout(() => {
@@ -113,7 +111,7 @@ const TokenDetail: React.FC<TokenDetailProps> = ({ route }) => {
                         }
                     ]}
                 >
-                    <AntDesign name="left" size={20} color="white" />
+                    <AntDesign name="left" size={24} color="white" style={{paddingLeft:10}} />
                 </Pressable>
 
                 <View style={styles.navigationContainer}>
@@ -184,7 +182,7 @@ const TokenDetail: React.FC<TokenDetailProps> = ({ route }) => {
             }
             {
                 sentMessage === "Submitted" ?
-                    <View style={{ position: "absolute", bottom: 0, zIndex: 1, width: "100%", paddingHorizontal: 16, borderRadius: 8, overflow: "hidden" }}>
+                    <View style={{ position: "absolute", bottom: 90, zIndex: 1, width: "100%", paddingHorizontal: 16, borderRadius: 8, overflow: "hidden" }}>
                         <BlurView intensity={0} style={{ flex: 1, padding: 16, borderRadius: 8, backgroundColor: "#292618" }}>
                             <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
                                 <Feather name="clock" size={40} color="#FEBF32" />
@@ -198,7 +196,7 @@ const TokenDetail: React.FC<TokenDetailProps> = ({ route }) => {
             {
 
                 sentMessage === "Confirmed" ?
-                    <View style={{ position: "absolute", bottom: 0, zIndex: 1, width: "100%", paddingHorizontal: 16, borderRadius: 8, overflow: "hidden" }}>
+                    <View style={{ position: "absolute", bottom: 90, zIndex: 1, width: "100%", paddingHorizontal: 16, borderRadius: 8, overflow: "hidden" }}>
                         <BlurView intensity={0} style={{ flex: 1, padding: 16, borderRadius: 8, backgroundColor: "#1e2720" }}>
                             <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
                                 <AntDesign name="checkcircleo" size={40} color="#76E268" />
@@ -343,9 +341,10 @@ const styles = StyleSheet.create({
     },
     navigationArrow: {
         position: "absolute",
-        top: "60%",
+        top: "30%",
         borderRadius: 50,
-        padding: 5
+        padding: 10,
+        backgroundColor:"red"
     },
     tabBar: {
         position: "absolute",

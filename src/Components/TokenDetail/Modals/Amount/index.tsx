@@ -78,29 +78,29 @@ const Amount: React.FC<AmountProps> = ({
             transparent={true}
         >
             <BlurView intensity={80} style={{ flex: 1 }}>
-                <View style={styles.centeredView}>
-                    <View style={{ backgroundColor: "#ABAFC4", height: 4, width: 40, borderRadius: 100, marginBottom: 5 }} />
-                    <View style={[styles.modalView, { position: "relative" }]}>
-                        <View style={{ paddingBottom: 0 }}>
-                            <Text style={styles.modalText}>Amount</Text>
-                            <Pressable onPress={() => setSentModalVisible(false)} style={{ position: "absolute", top: "25%", right: 0 }}>
-                                <AntDesign name="close" size={18} color="white" />
-                            </Pressable>
-                            <Pressable onPress={() => setModalStep(modalStep - 1)} style={{ position: "absolute", top: "25%", left: 0 }}>
-                                <AntDesign name="left" size={18} color="white" />
-                            </Pressable>
-                        </View>
-                        <View style={{ alignItems: "center", position: "relative", paddingBottom: 60 }}>
-                            <Pressable onPress={() => setCoinSelect(true)} style={{ borderRadius: 8, paddingVertical: 12, paddingLeft: 16, paddingRight: 24, flexDirection: "row", alignItems: "center", justifyContent: "space-between", borderWidth: 2, borderColor: "#2a2d3c", gap: 30 }}>
-                                <Text style={{ color: "white", fontSize: 14, lineHeight: 24, fontFamily: "Poppins_500Medium" }}>{getCoin.coin}</Text>
-                                <AntDesign name='down' size={16} color={"white"} />
-                            </Pressable>
-                            <Pressable style={{ position: "absolute", right: 0, top: "25%" }} onPress={() => useMax()}>
-                                <Text style={{ color: "#FEBF32", fontSize: 14, lineHeight: 24, fontFamily: "Poppins_500Medium" }}>Use Max</Text>
-                            </Pressable>
-                            <SelectToken coinSelect={coinSelect} setCoinSelect={setCoinSelect} onchangeCoin={onchangeCoin} />
-                        </View>
-                        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                    <View style={styles.centeredView}>
+                        <View style={{ backgroundColor: "#ABAFC4", height: 4, width: 40, borderRadius: 100, marginBottom: 5 }} />
+                        <View style={[styles.modalView, { position: "relative" }]}>
+                            <View style={{ paddingBottom: 0 }}>
+                                <Text style={styles.modalText}>Amount</Text>
+                                <Pressable onPress={() => setSentModalVisible(false)} style={{ position: "absolute", top: "25%", right: 0 }}>
+                                    <AntDesign name="close" size={18} color="white" />
+                                </Pressable>
+                                <Pressable onPress={() => setModalStep(modalStep - 1)} style={{ position: "absolute", top: "25%", left: 0 }}>
+                                    <AntDesign name="left" size={18} color="white" />
+                                </Pressable>
+                            </View>
+                            <View style={{ alignItems: "center", position: "relative", paddingBottom: 60 }}>
+                                <Pressable onPress={() => setCoinSelect(true)} style={{ borderRadius: 8, paddingVertical: 12, paddingLeft: 16, paddingRight: 24, flexDirection: "row", alignItems: "center", justifyContent: "space-between", borderWidth: 2, borderColor: "#2a2d3c", gap: 30 }}>
+                                    <Text style={{ color: "white", fontSize: 14, lineHeight: 24, fontFamily: "Poppins_500Medium" }}>{getCoin.coin}</Text>
+                                    <AntDesign name='down' size={16} color={"white"} />
+                                </Pressable>
+                                <Pressable style={{ position: "absolute", right: 0, top: "25%" }} onPress={() => useMax()}>
+                                    <Text style={{ color: "#FEBF32", fontSize: 14, lineHeight: 24, fontFamily: "Poppins_500Medium" }}>Use Max</Text>
+                                </Pressable>
+                                <SelectToken coinSelect={coinSelect} setCoinSelect={setCoinSelect} onchangeCoin={onchangeCoin} />
+                            </View>
                             <View style={{ position: 'relative', alignItems: 'center', justifyContent: 'center', paddingBottom: 40 }}>
                                 <TextInput
                                     value={amount}
@@ -114,46 +114,43 @@ const Amount: React.FC<AmountProps> = ({
                                     <GradiantText text={amount} fontSize={40} lineHeight={56} width={300} row={1} />
                                 </View>
                             </View>
-                        </TouchableWithoutFeedback>
-                        <View style={{ alignItems: "center", paddingTop: 36, paddingBottom: 24 }}>
-                            <View style={{ backgroundColor: "#2A2D3C", borderRadius: 100, flexDirection: "row", alignItems: "center", paddingVertical: 8, paddingHorizontal: 16, gap: 10 }}>
-                                <Text style={{ color: "white", fontSize: 14, lineHeight: 24, fontFamily: "Poppins_500Medium" }}>$ {calculatedAmount}</Text>
-                                <FontAwesome6 name="money-bill-transfer" size={18} color="white" />
-                            </View>
-                        </View>
-                        <View style={{ alignItems: "center", paddingBottom: 80 }}>
-                            <Text style={{ fontFamily: "Poppins_500Medium", fontSize: 14, lineHeight: 24, color: "white" }}>
-                                Balance: {
-                                    (() => {
-                                        if (!sentAccount || !sentAccount.balance) return "0.0000";
-                                        const foundBalance = sentAccount.balance.find((balance) => balance.coinName === getCoin.coin);
-                                        return foundBalance ? parseFloat(foundBalance.balance.toFixed(4)) : "0.0000";
-                                    })()
-                                } {getCoin.coin}
-                            </Text>
-                        </View>
-
-
-                        <View style={{ alignItems: "center" }}>
-                            {message !== "" && (
-                                <View style={{ backgroundColor: "#301c1c", borderRadius: 10, padding: 10, position: "absolute", bottom: 25 }}>
-                                    <Text style={{ color: "red", fontSize: 16, lineHeight: 30, fontFamily: "Poppins_500Medium" }}>{message}</Text>
+                            <View style={{ alignItems: "center", paddingTop: 36, paddingBottom: 24 }}>
+                                <View style={{ backgroundColor: "#2A2D3C", borderRadius: 100, flexDirection: "row", alignItems: "center", paddingVertical: 8, paddingHorizontal: 16, gap: 10 }}>
+                                    <Text style={{ color: "white", fontSize: 14, lineHeight: 24, fontFamily: "Poppins_500Medium" }}>$ {calculatedAmount}</Text>
+                                    <FontAwesome6 name="money-bill-transfer" size={18} color="white" />
                                 </View>
-                            )}
+                            </View>
+                            <View style={{ alignItems: "center", paddingBottom: 80 }}>
+                                <Text style={{ fontFamily: "Poppins_500Medium", fontSize: 14, lineHeight: 24, color: "white" }}>
+                                    Balance: {
+                                        (() => {
+                                            if (!sentAccount || !sentAccount.balance) return "0.0000";
+                                            const foundBalance = sentAccount.balance.find((balance) => balance.coinName === getCoin.coin);
+                                            return foundBalance ? parseFloat(foundBalance.balance.toFixed(4)) : "0.0000";
+                                        })()
+                                    } {getCoin.coin}
+                                </Text>
+                            </View>
+                            <View style={{ alignItems: "center" }}>
+                                {message !== "" && (
+                                    <View style={{ backgroundColor: "#301c1c", borderRadius: 10, padding: 10, position: "absolute", bottom: 25 }}>
+                                        <Text style={{ color: "red", fontSize: 16, lineHeight: 30, fontFamily: "Poppins_500Medium" }}>{message}</Text>
+                                    </View>
+                                )}
+                            </View>
+                            <PrimaryButton
+                                text="Next"
+                                onPress={() => {
+                                    if (coinBalance !== undefined) {
+                                        amountControl(amount, coinBalance);
+                                    } else {
+                                        setMessage("Unable to retrieve balance.");
+                                    }
+                                }}
+                            />
                         </View>
-
-                        <PrimaryButton
-                            text="Next"
-                            onPress={() => {
-                                if (coinBalance !== undefined) {
-                                    amountControl(amount, coinBalance);
-                                } else {
-                                    setMessage("Unable to retrieve balance.");
-                                }
-                            }}
-                        />
                     </View>
-                </View>
+                </TouchableWithoutFeedback>
             </BlurView>
         </Modal>
     );

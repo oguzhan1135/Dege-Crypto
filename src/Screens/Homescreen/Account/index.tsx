@@ -180,6 +180,7 @@ const Account = () => {
         setModalStep("Account");
         setSentAccount(newUser)
         setModalVisible(false);
+        setUser(newUser)
     };
 
     const handleNewAccountChange = (text: string) => {
@@ -232,7 +233,7 @@ const Account = () => {
                                                             {account.name}
                                                         </Text>
                                                         <Text style={{ fontSize: 12, lineHeight: 18, fontFamily: font, color: "#ABAFC4" }}>
-                                                            {account.balance[3].balance} ETH
+                                                            {account.balance.find((bal)=> bal.coinName==="ETH")?.balance} ETH
                                                         </Text>
                                                     </View>
                                                 </View>

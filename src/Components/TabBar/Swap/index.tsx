@@ -52,15 +52,23 @@ const Swap: React.FC<SwapProps> = ({
     }, []);
 
     useEffect(() => {
+        if (swapMessage === "Submitted") {
+            setTimeout(() => {
+                setSwapMessage("Confirmed")
+            }, 1500);
+            setTimeout(() => {
+                setSwapMessage("")
+            }, 1500);
+        }
+
+    }, [swapMessage])
+    useEffect(() => {
         if (modalStep === 3) {
             setSwapModal(false)
             setAmount("")
             setModalStep(1)
             setSwapMessage("Submitted");
-            setTimeout(() => {
-                setSwapMessage("Confirmed")
-            }, 2000);
-        }
+                   }
     }, [modalStep])
 
     const onchangeFromCoin = (coinData: Data) => {

@@ -45,11 +45,9 @@ const Confirm: React.FC<ConfirmProps> = ({
     const totalInUSD = (totalAmount * (coinList.find((coin) => coin.currency === sentCoin?.currency)?.rate || 0)).toFixed(2);
 
     const sentOperation = () => {
-        const findAccountIndex = accounts.findIndex((account) => account.adress === sentAccount?.adress);
-    
         const currentDate = new Date();
         const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-        let hour = currentDate.getHours() + 3;  
+        let hour = currentDate.getHours();
         let minute = currentDate.getMinutes();
         let day = currentDate.getDate();
         const month = months[currentDate.getMonth()];
@@ -62,11 +60,9 @@ const Confirm: React.FC<ConfirmProps> = ({
             hour -= 24;
             day += 1;
         }
-        const formattedhour = hour < 10 ? `0${hour}` : hour;
-
+        const formattedHour = hour < 10 ? `0${hour}` : hour;
         const formattedMinute = minute < 10 ? `0${minute}` : minute;
-    
-        const formattedDate = `${month} ${day} at ${formattedhour}:${formattedMinute}`;
+        const formattedDate = `${month} ${day} at ${formattedHour}:${formattedMinute}`;
         const amount = sentCoin?.amount;
     
         if (amount === undefined || sentCoin?.currency === undefined || receiverAccount?.adress === undefined) {
@@ -75,7 +71,7 @@ const Confirm: React.FC<ConfirmProps> = ({
         }
     
         const newTransaction: Transaction = {
-            id: Math.floor(Math.random() * 90000) + 10000,
+            id: Date.now(),
             type: "Sent",
             amount: amount,
             date: formattedDate,
@@ -85,46 +81,63 @@ const Confirm: React.FC<ConfirmProps> = ({
             paymenToAdress: receiverAccount.adress,
         };
     
-        const updatedAccounts = [...accounts];
-        updatedAccounts[findAccountIndex].transaction.push(newTransaction);
+        if (sentAccount) {
+            setSentAccount((prevSentAccount) => {
+                const updatedSentAccount = {
+                    ...prevSentAccount,
+                    transaction: [...prevSentAccount.transaction, newTransaction],
+                    balance: prevSentAccount.balance.map((bal: { coinName: string; balance: number; }) => {
+                        if (bal.coinName === sentCoin.currency) {
+                            return { ...bal, balance: bal.balance - (editFee + amount) };
+                        }
+                        return bal;
+                    }),
+                };
     
-        const beforeBalance = updatedAccounts[findAccountIndex].balance.find((balance) => balance.coinName === sentCoin.currency);
-        if (beforeBalance === undefined) {
-            console.error("Balance not found");
-            return;
+                const updatedAccounts = accounts.map((account) =>
+                    account.adress === sentAccount.adress ? updatedSentAccount : account
+                );
+    
+                setAccounts(updatedAccounts);
+                return updatedSentAccount;
+            });
         }
     
-        const afterBalance = beforeBalance.balance - (editFee + amount);
-        beforeBalance.balance = afterBalance;
-    
-        setAccounts(updatedAccounts);
-        setSentAccount({
-            id: updatedAccounts[findAccountIndex].id,
-            name: updatedAccounts[findAccountIndex].name,
-            avatar: updatedAccounts[findAccountIndex].avatar,
-            adress: updatedAccounts[findAccountIndex].adress,
-            transaction: updatedAccounts[findAccountIndex].transaction,
-            balance: updatedAccounts[findAccountIndex].balance,
-            password: updatedAccounts[findAccountIndex].password
-        });
+        setSentModalVisible(false);
+        setSentMessage("Submitted");
+        setModalStep(1);
     
         setTimeout(() => {
-            setSentModalVisible(false);
-            setSentMessage("Submitted");
-            setModalStep(1);
-        }, 0);
+            setSentAccount((prevSentAccount) => {
+                const updatedTransactionIndex = prevSentAccount.transaction.findIndex((transaction) => transaction.id === newTransaction.id);
     
-        setTimeout(() => {
-            const updatedTransactionIndex = updatedAccounts[findAccountIndex].transaction.findIndex((transaction) => transaction.id === newTransaction.id);
+                if (updatedTransactionIndex !== -1) {
+                    const updatedTransaction = {
+                        ...prevSentAccount.transaction[updatedTransactionIndex],
+                        status: "Confirmed",
+                    };
+                    const updatedTransactions = [
+                        ...prevSentAccount.transaction.slice(0, updatedTransactionIndex),
+                        updatedTransaction,
+                        ...prevSentAccount.transaction.slice(updatedTransactionIndex + 1),
+                    ];
     
-            if (updatedTransactionIndex !== -1) {
-                updatedAccounts[findAccountIndex].transaction[updatedTransactionIndex].status = "Confirmed";
-                setAccounts([...updatedAccounts]);
-            }
+                    const updatedSentAccount = {
+                        ...prevSentAccount,
+                        transaction: updatedTransactions,
+                    };
+    
+                    const updatedAccounts = accounts.map((account) =>
+                        account.adress === sentAccount?.adress ? updatedSentAccount : account
+                    );
+    
+                    setAccounts(updatedAccounts);
+                    return updatedSentAccount;
+                }
+                return prevSentAccount;
+            });
         }, timer);
     };
-    
-
 
     return (
         <Modal

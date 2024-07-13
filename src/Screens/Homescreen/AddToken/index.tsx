@@ -80,7 +80,7 @@ const AddTokenModal: React.FC<AddTokenProps> = ({
     }).filter(coin => coin !== null);
     const addToken = () => {
         let selectedToken = tokens.find((token) => token.currency === selectToken);
-
+    
         if (selectedToken) {
             const newToken = {
                 id: userCoins.length + 1,
@@ -90,11 +90,11 @@ const AddTokenModal: React.FC<AddTokenProps> = ({
                 onTheRise: selectedToken.onTheRise,
                 percent: selectedToken.percent,
             };
-
+    
             setCoinList([...coinList, newToken]);
-
+    
             if (sentAccount) {
-                setSentAccount({
+                const updatedSentAccount = {
                     ...sentAccount,
                     balance: [
                         ...sentAccount.balance,
@@ -103,32 +103,47 @@ const AddTokenModal: React.FC<AddTokenProps> = ({
                             coinName: selectedToken.currency,
                         }
                     ]
-                });
+                };
+    
+                setSentAccount(updatedSentAccount);
+    
+                const updatedAccounts = accounts.map((account) =>
+                    account.adress === sentAccount.adress
+                        ? updatedSentAccount
+                        : account
+                );
+    
+                setAccounts(updatedAccounts);
             }
-            console.log(sentAccount)
-
-            setTokens(tokens.filter((token) => token.currency !== selectToken));
+    
+            if (sentAccount?.balance.find((coin) => coin.coinName === selectToken)) {
+                setTokens(tokens.filter((token) => token.currency !== selectToken));
+            } else {
+                setTokens(tokens);
+            }
+    
             setSelectToken("");
             setTokenAddress("");
         }
     };
+    
 
     const customAddToken = () => {
         const newToken: CoinListItem = {
-            id: coinList.length + 1,
+            id: userCoins.length + 1,
             coinName: tokenAddress,
             currency: tokenSymbol,
             rate: parseFloat(tokenPrecision),
             onTheRise: true,
             percent: 1,
         };
+    
         if (coinList) {
             setCoinList([...coinList, newToken]);
         }
-
-
+    
         if (sentAccount) {
-            setSentAccount({
+            const updatedSentAccount = {
                 ...sentAccount,
                 balance: [
                     ...sentAccount.balance,
@@ -137,9 +152,21 @@ const AddTokenModal: React.FC<AddTokenProps> = ({
                         coinName: tokenSymbol,
                     }
                 ]
-            });
+            };
+    
+            setSentAccount(updatedSentAccount);
+    
+            const updatedAccounts = accounts.map((account) =>
+                account.adress === sentAccount.adress
+                    ? updatedSentAccount
+                    : account
+            );
+    
+            setAccounts(updatedAccounts);
         }
-    }
+    };
+    
+    
 
 
     return (
@@ -184,7 +211,7 @@ const AddTokenModal: React.FC<AddTokenProps> = ({
                                                             <TextInput
                                                                 placeholder="Search..."
                                                                 placeholderTextColor="#ABAFC4"
-                                                                style={{ color: "white", textAlignVertical: "center" }}
+                                                                style={{ color: "white", textAlignVertical: "center",width:"80%" }}
                                                                 value={tokenAddress}
                                                                 onChangeText={setTokenAddress}
                                                                 scrollEnabled={false}

@@ -95,7 +95,7 @@ const Homescreen: React.FC = () => {
                 </View>
             </View>
             <View style={styles.buttonGroup}>
-                <Pressable onPress={() => { setSentModalVisible(true); console.log(sentModalVisible) }} style={styles.button}>
+                <Pressable onPress={() => { setSentModalVisible(true); }} style={styles.button}>
                     <AntDesign name="arrowup" size={24} color="#FEBF32" />
                     <Text style={{ color: "#FEBF32", fontFamily: "Poppins_500Medium", fontSize: 14, lineHeight: 24 }}>Sent</Text>
                 </Pressable>
@@ -128,7 +128,7 @@ const Homescreen: React.FC = () => {
                     </Pressable>
                 </View>
                 {activeTab === 'Token' && (
-                    <ScrollView style={{ maxHeight: 320, overflow: "scroll" }}>
+                    <ScrollView style={{ maxHeight: 320, overflow: "scroll",paddingBottom:-50 }}>
                         <View style={{ gap: 8 }}>
                             {
                                 userCoins.map((coin, index) =>
@@ -240,7 +240,7 @@ const Homescreen: React.FC = () => {
                 )}
                 {
                     activeTab === "Token" ?
-                        <Pressable style={{ padding: 16 }} onPress={() => setAddTokenModal(true)}>
+                        <Pressable style={{  }} onPress={() => setAddTokenModal(true)}>
                             <View style={{ flexDirection: "row", alignItems: "center", gap: 10, justifyContent: "center" }}>
                                 <Entypo name="plus" size={24} color="#FEBF32" />
                                 <Text style={{ color: "#FEBF32", fontFamily: "Poppins_500Medium", fontSize: 16, lineHeight: 24 }}>Add Tokens
