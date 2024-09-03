@@ -93,12 +93,12 @@ const Confirm: React.FC<ConfirmProps> = ({
                     <View style={[styles.modalView, { position: "relative" }]}>
                         <View style={{ paddingBottom: 70 }}>
                             <Text style={styles.modalText}>Confirm</Text>
-                            <Pressable onPress={() => { setConfirmModal(false); setModalStep(modalStep - 1) }} style={{ position: "absolute", top: "25%", right: 0 }}>
+                            <Pressable onPress={() => { setConfirmModal(false); setModalStep(modalStep - 1) }} style={{ position: "absolute", top: "25%", right: 0, padding:10, paddingTop:0 }}>
                                 <AntDesign name="close" size={18} color="white" />
                             </Pressable>
                             <Pressable onPress={() => {
                                 setModalStep(modalStep - 1)
-                            }} style={{ position: "absolute", top: "25%", left: 0 }}>
+                            }} style={{ position: "absolute", top: "25%", left: 0, padding:10, paddingTop:0 }}>
                                 <AntDesign name="left" size={18} color="white" />
                             </Pressable>
                         </View>

@@ -36,13 +36,14 @@ const styles = StyleSheet.create({
         width: "100%",
         justifyContent: "center",
         alignItems: "center",
-        position: "relative"
+        position: "relative",
     },
     navigationArrow: {
         position: "absolute",
-        top: "60%",
+        top: "45%",
         borderRadius: 50,
-        padding: 5
+        padding: 10,
+        zIndex:100
     },
     formContainer: {
         flexDirection: "column",

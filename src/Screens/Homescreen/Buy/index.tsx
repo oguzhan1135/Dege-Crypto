@@ -29,7 +29,7 @@ const BuyModal: React.FC<BuyProps> = ({
                     <View style={[styles.modalView, { position: "relative" }]}>
                         <View style={{ paddingBottom: 40 }}>
                             <Text style={styles.modalText}>Prurchase Method</Text>
-                            <Pressable onPress={() => setBuyModal(false)} style={{ position: "absolute", top: "25%", right: 0 }}>
+                            <Pressable onPress={() => setBuyModal(false)} style={{ position: "absolute", top: "25%", right: 0,padding:10, paddingTop:0 }}>
                                 <AntDesign name="close" size={18} color="white" />
                             </Pressable>
                         </View>

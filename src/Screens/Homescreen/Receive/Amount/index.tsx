@@ -55,10 +55,10 @@ const Amount: React.FC<AmountProps> = ({
                         <View style={[styles.modalView, { position: "relative" }]}>
                             <View style={{ paddingBottom: 0 }}>
                                 <Text style={styles.modalText}>Amount</Text>
-                                <Pressable onPress={() => setReceiveModalVisible(false)} style={{ position: "absolute", top: "25%", right: 0 }}>
+                                <Pressable onPress={() => setReceiveModalVisible(false)} style={{ position: "absolute", top: "12%", right: 0, padding:10 }}>
                                     <AntDesign name="close" size={18} color="white" />
                                 </Pressable>
-                                <Pressable onPress={() => setModalStep(modalStep - 1)} style={{ position: "absolute", top: "25%", left: 0 }}>
+                                <Pressable onPress={() => setModalStep(modalStep - 1)} style={{ position: "absolute", top: "12%", left: 0, padding:10 }}>
                                     <AntDesign name="left" size={18} color="white" />
                                 </Pressable>
                             </View>

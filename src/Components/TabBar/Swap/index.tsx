@@ -121,7 +121,7 @@ const Swap: React.FC<SwapProps> = ({
                         <View style={[styles.modalView, { position: "relative" }]}>
                             <View style={{ paddingBottom: 40 }}>
                                 <Text style={styles.modalText}>Swap</Text>
-                                <Pressable onPress={() => setSwapModal(false)} style={{ position: "absolute", top: "25%", right: 0 }}>
+                                <Pressable onPress={() => setSwapModal(false)} style={{ position: "absolute", top: "25%", right: 0,padding:10, paddingTop:0 }}>
                                     <AntDesign name="close" size={18} color="white" />
                                 </Pressable>
                             </View>

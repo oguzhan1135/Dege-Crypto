@@ -45,7 +45,7 @@ const Receive: React.FC<ReceiveProp> = ({ receiveModal, setReceiveModal }) => {
                     <View style={[styles.modalView]}>
                         <View style={{ paddingBottom: 30 }}>
                             <Text style={{textAlign:"center", color:"white",fontSize:16, lineHeight:24, fontFamily:"Poppins_500Medium"}}>Receive</Text>
-                            <Pressable onPress={() => setReceiveModal(false)} style={{ position: "absolute", top: "25%", right: 0 }}>
+                            <Pressable onPress={() => setReceiveModal(false)} style={{ position: "absolute", top: "0%", right: 0, padding:8,paddingTop:0 }}>
                                 <AntDesign name="close" size={18} color="white" />
                             </Pressable>
                             

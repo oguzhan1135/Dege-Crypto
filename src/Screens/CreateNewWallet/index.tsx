@@ -235,7 +235,7 @@ function CreateNewWallet() {
                 <View style={styles.navbarInnerContainer}>
                     <Pressable
                         onPress={handleBackButtonPress}
-                        style={({ pressed }) => [
+                        style={({ pressed }) => [styles.navigationArrow,
                             { backgroundColor: pressed ? '#44485F' : 'transparent' },
                         ]}
                     >
@@ -287,6 +287,11 @@ function CreateNewWallet() {
 }
 
 const styles = StyleSheet.create({
+    navigationArrow: {
+        borderRadius: 50,
+        paddingVertical:10,
+        paddingRight:8,
+    },
     contentContainer: {
         flex: 1,
         paddingLeft: 24,
@@ -313,7 +318,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        gap: 20,
+        gap: 10,
     },
     navbarIcon: {
         marginRight: 0,

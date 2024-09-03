@@ -187,7 +187,7 @@ const AddTokenModal: React.FC<AddTokenProps> = ({
                             <View style={[styles.modalView, { position: "relative" }]}>
                                 <View style={{ paddingBottom: 0 }}>
                                     <Text style={styles.modalText}>Add Asset</Text>
-                                    <Pressable onPress={() => setAddTokenModal(false)} style={{ position: "absolute", top: "25%", right: 0 }}>
+                                    <Pressable onPress={() => setAddTokenModal(false)} style={{ position: "absolute", top: "25%", right: 0, padding:10, paddingTop:0}}>
                                         <AntDesign name="close" size={18} color="white" />
                                     </Pressable>
                                 </View>

@@ -210,7 +210,7 @@ const Account = () => {
                                 <>
                                     <View style={{ paddingBottom: 0 }}>
                                         <Text style={styles.modalText}>Account</Text>
-                                        <Pressable onPress={() => setModalVisible(false)} style={{ position: "absolute", top: "25%", right: 0 }}>
+                                        <Pressable onPress={() => setModalVisible(false)} style={{ position: "absolute", top: "12%", right: 0, padding:10 }}>
                                             <AntDesign name="close" size={18} color="white" />
                                         </Pressable>
 
@@ -254,7 +254,7 @@ const Account = () => {
                                 : modalStep === "Create New Account" ?
                                     <>
                                         <View style={{ alignItems: "center", position: "relative", paddingBottom: 0 }}>
-                                            <Pressable onPress={() => setModalStep("Account")} style={{ position: "absolute", top: "30%", left: 5 }}>
+                                            <Pressable onPress={() => setModalStep("Account")} style={{ position: "absolute", top: "12%", padding:10, left:0 }}>
                                                 <AntDesign name="left" size={16} color="white" />
                                             </Pressable>
                                             <Text style={[styles.modalText, { paddingBottom: 40 }]}>Create New Account</Text>
@@ -286,9 +286,9 @@ const Account = () => {
                                     : modalStep === "Import Account" ?
                                         <>
                                             <View style={{ alignItems: "center", position: "relative", paddingBottom: 0 }}>
-                                                <Pressable onPress={() => setModalStep("Account")} style={{ position: "absolute", top: "30%", left: 5 }}>
-                                                    <AntDesign name="left" size={16} color="white" />
-                                                </Pressable>
+                                            <Pressable onPress={() => setModalStep("Account")} style={{ position: "absolute", top: "12%", padding:10, left:0 }}>
+                                                <AntDesign name="left" size={16} color="white" />
+                                            </Pressable>
                                                 <Text style={[styles.modalText, { paddingBottom: 40 }]}>Import Account</Text>
                                             </View>
                                             <View style={{ gap: 2, paddingBottom: 24 }}>

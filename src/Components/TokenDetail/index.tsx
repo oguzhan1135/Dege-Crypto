@@ -341,10 +341,10 @@ const styles = StyleSheet.create({
     },
     navigationArrow: {
         position: "absolute",
-        top: "30%",
+        top: "45%",
         borderRadius: 50,
         padding: 10,
-        backgroundColor:"red"
+        zIndex:100
     },
     tabBar: {
         position: "absolute",

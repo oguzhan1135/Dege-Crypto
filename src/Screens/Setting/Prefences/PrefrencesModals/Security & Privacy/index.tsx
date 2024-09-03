@@ -48,12 +48,12 @@ const Security: React.FC<SecurityProps> = ({
                     <View style={[styles.modalView, { position: "relative" }]}>
                         <View style={{ paddingBottom: 0 }}>
                             <Text style={styles.modalText}>Security & Privacy</Text>
-                            <Pressable onPress={() => { setSecurityModal(false); navigation.navigate("Onboarding", { screen: "Preferences" }) }} style={{ position: "absolute", top: "25%", right: 0 }}>
+                            <Pressable onPress={() => { setSecurityModal(false); navigation.navigate("Onboarding", { screen: "Preferences" }) }} style={{ position: "absolute", top: "25%", right: 0,padding:10, paddingTop:7 }}>
                                 <AntDesign name="close" size={18} color="white" />
                             </Pressable>
                             <Pressable onPress={() => {
                                setSecurityModal(false);
-                            }} style={{ position: "absolute", top: "25%", left: 0 }}>
+                            }} style={{ position: "absolute", top: "25%", left: 0, padding:10, paddingTop:5 }}>
                                 <AntDesign name="left" size={18} color="white" />
                             </Pressable>
                         </View>

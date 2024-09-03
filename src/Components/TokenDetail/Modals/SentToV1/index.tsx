@@ -46,7 +46,7 @@ const SentToV1: React.FC<SenToProps> = (
                     <View style={[styles.modalView, { position: "relative" }]}>
                         <View style={{ paddingBottom: 32 }}>
                             <Text style={styles.modalText}>Sent To</Text>
-                            <Pressable onPress={() => setSentModalVisible(false)} style={{ position: "absolute", top: "25%", right: 0 }}>
+                            <Pressable onPress={() => setSentModalVisible(false)} style={{ position: "absolute", top: "12%", right: 0, padding:10 }}>
                                 <AntDesign name="close" size={18} color="white" />
                             </Pressable>
                         </View>

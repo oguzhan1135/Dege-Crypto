@@ -22,7 +22,7 @@ const Preferences = () => {
             <View style={styles.container}>
                 <HomeShape style={{ position: "absolute", right: 0, top: "5%", transform: [{ scale: 1 }] }} />
                 <View style={{ alignItems: "center", paddingBottom: 0, position: "relative" }}>
-                    <Pressable onPress={() => navigation.navigate("Onboarding", { screen: "Setting" })} style={{ position: "absolute", left: 0 }}>
+                    <Pressable onPress={() => navigation.navigate("Onboarding", { screen: "Setting" })} style={{ position: "absolute", left: 0 , padding:10, paddingTop:0,top:"12%"}}>
                         <AntDesign name="left" size={16} color="white" />
                     </Pressable>
                     <Text style={styles.title}>Preferences</Text>
