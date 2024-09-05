@@ -76,7 +76,6 @@ function Walthought() {
             </Swiper>
              <View style={{ paddingLeft: 24, paddingRight: 24 }}>
                 <SecondaryButton page='WalletSetUp' text='Get Start'/>
-                <SecondaryButton page='Homescreen' text='Homepage'/>
             </View>
         </View>
     );

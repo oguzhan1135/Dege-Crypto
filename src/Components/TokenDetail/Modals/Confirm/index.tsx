@@ -1,7 +1,5 @@
-import { BlurView } from "expo-blur";
 import React, { useContext, useEffect, useState } from "react";
-import { Modal, View, Pressable, Text, StyleSheet } from "react-native";
-import { AntDesign } from '@expo/vector-icons';
+import { View, Pressable, Text, StyleSheet } from "react-native";
 import PrimaryButton from "../../../Buttons/Primary";
 import GradiantText from "../../../GradiantText";
 import { MainContext } from "../../../../Context";
@@ -51,7 +49,7 @@ const Confirm: React.FC<ConfirmProps> = ({
         let minute = currentDate.getMinutes();
         let day = currentDate.getDate();
         const month = months[currentDate.getMonth()];
-    
+
         if (minute >= 60) {
             hour += 1;
             minute -= 60;
@@ -64,12 +62,12 @@ const Confirm: React.FC<ConfirmProps> = ({
         const formattedMinute = minute < 10 ? `0${minute}` : minute;
         const formattedDate = `${month} ${day} at ${formattedHour}:${formattedMinute}`;
         const amount = sentCoin?.amount;
-    
+
         if (amount === undefined || sentCoin?.currency === undefined || receiverAccount?.adress === undefined) {
             console.error("Amount, currency or address not found");
             return;
         }
-    
+
         const newTransaction: Transaction = {
             id: Date.now(),
             type: "Sent",
@@ -80,7 +78,7 @@ const Confirm: React.FC<ConfirmProps> = ({
             networkFee: editFee,
             paymenToAdress: receiverAccount.adress,
         };
-    
+
         if (sentAccount) {
             setSentAccount((prevSentAccount) => {
                 const updatedSentAccount = {
@@ -93,24 +91,24 @@ const Confirm: React.FC<ConfirmProps> = ({
                         return bal;
                     }),
                 };
-    
+
                 const updatedAccounts = accounts.map((account) =>
                     account.adress === sentAccount.adress ? updatedSentAccount : account
                 );
-    
+
                 setAccounts(updatedAccounts);
                 return updatedSentAccount;
             });
         }
-    
+
         setSentModalVisible(false);
         setSentMessage("Submitted");
         setModalStep(1);
-    
+
         setTimeout(() => {
             setSentAccount((prevSentAccount) => {
                 const updatedTransactionIndex = prevSentAccount.transaction.findIndex((transaction) => transaction.id === newTransaction.id);
-    
+
                 if (updatedTransactionIndex !== -1) {
                     const updatedTransaction = {
                         ...prevSentAccount.transaction[updatedTransactionIndex],
@@ -121,16 +119,16 @@ const Confirm: React.FC<ConfirmProps> = ({
                         updatedTransaction,
                         ...prevSentAccount.transaction.slice(updatedTransactionIndex + 1),
                     ];
-    
+
                     const updatedSentAccount = {
                         ...prevSentAccount,
                         transaction: updatedTransactions,
                     };
-    
+
                     const updatedAccounts = accounts.map((account) =>
                         account.adress === sentAccount?.adress ? updatedSentAccount : account
                     );
-    
+
                     setAccounts(updatedAccounts);
                     return updatedSentAccount;
                 }
@@ -140,107 +138,90 @@ const Confirm: React.FC<ConfirmProps> = ({
     };
 
     return (
-        <Modal
-            visible={sentModalVisible}
-            animationType="slide"
-            transparent={true}
-        >
-            <BlurView intensity={80} style={{ flex: 1 }}>
-                <View style={styles.centeredView}>
-                    <View style={{ backgroundColor: "#ABAFC4", height: 4, width: 40, borderRadius: 100, marginBottom: 5 }} />
-                    <View style={[styles.modalView, { position: "relative" }]}>
-                        <View style={{ paddingBottom: 0 }}>
-                            <Text style={styles.modalText}>Confirm</Text>
-                            <Pressable onPress={() => setSentModalVisible(false)} style={{ position: "absolute", top: "12%", right: 0, padding:10 }}>
-                                <AntDesign name="close" size={18} color="white" />
-                            </Pressable>
-                            <Pressable onPress={() => setModalStep(modalStep - 1)} style={{ position: "absolute", top: "12%", left: 0, padding:10 }}>
-                                <AntDesign name="left" size={18} color="white" />
-                            </Pressable>
+        <>
+            <View style={{ alignItems: "center", gap: 16, width: "100%" }}>
+                <Text style={{ color: "white", fontSize: 14, lineHeight: 24, fontFamily: "Poppins_500Medium" }}>Amount</Text>
+                <View style={{ paddingBottom: 24 }}>
+                    <GradiantText text={`${sentCoin?.amount} ${sentCoin?.currency}`} fontSize={40} lineHeight={56} width={350} row={1} />
+                </View>
+            </View>
+
+            <View style={{ gap: 16, paddingBottom: 48 }}>
+                <View>
+                    <Text style={{ fontSize: 16, lineHeight: 24, color: "white", fontFamily: "Poppins_500Medium" }}>From</Text>
+                    <View style={{ alignItems: "center", flexDirection: "row", gap: 8, padding: 16 }}>
+                        <View style={styles.iconContainer}>
+                            {sentAccount?.avatar}
                         </View>
-
-                        <View style={{ alignItems: "center", gap: 16, width: "100%" }}>
-                            <Text style={{ color: "white", fontSize: 14, lineHeight: 24, fontFamily: "Poppins_500Medium" }}>Amount</Text>
-                            <View style={{ paddingBottom: 24 }}>
-                                <GradiantText text={`${sentCoin?.amount} ${sentCoin?.currency}`} fontSize={40} lineHeight={56} width={350} row={1} />
-                            </View>
+                        <View style={{ gap: 4 }}>
+                            <Text style={{ fontSize: 16, lineHeight: 24, fontFamily: font, color: "white" }}>
+                                {sentAccount?.name}
+                            </Text>
+                            <Text style={{ fontSize: 12, lineHeight: 18, fontFamily: font, color: "#ABAFC4" }}>
+                                Balance: {sentCoin ? parseFloat(sentCoin?.balance.toFixed(2)) : 0} {sentCoin?.currency}
+                            </Text>
                         </View>
-
-                        <View style={{ gap: 16, paddingBottom: 48 }}>
-                            <View>
-                                <Text style={{ fontSize: 16, lineHeight: 24, color: "white", fontFamily: "Poppins_500Medium" }}>From</Text>
-                                <View style={{ alignItems: "center", flexDirection: "row", gap: 8, padding: 16 }}>
-                                    <View style={styles.iconContainer}>
-                                        {sentAccount?.avatar}
-                                    </View>
-                                    <View style={{ gap: 4 }}>
-                                        <Text style={{ fontSize: 16, lineHeight: 24, fontFamily: font, color: "white" }}>
-                                            {sentAccount?.name}
-                                        </Text>
-                                        <Text style={{ fontSize: 12, lineHeight: 18, fontFamily: font, color: "#ABAFC4" }}>
-                                            Balance: {sentCoin ? parseFloat(sentCoin?.balance.toFixed(2)) : 0} {sentCoin?.currency}
-                                        </Text>
-                                    </View>
-                                </View>
-                            </View>
-                            <View style={{ gap: 8 }}>
-                                <Text style={{ fontSize: 16, lineHeight: 24, color: "white", fontFamily: "Poppins_500Medium" }}>To</Text>
-
-                                <View style={{ alignItems: "center", flexDirection: "row", padding: 16, justifyContent: "space-between", paddingBottom: 40 }}>
-                                    <View style={{ alignItems: "center", flexDirection: "row", gap: 8 }}>
-                                        <View style={styles.iconContainer}>
-                                            {receiverAccount?.avatar}
-                                        </View>
-                                        <View style={{ gap: 4 }}>
-                                            <Text style={{ fontSize: 16, lineHeight: 24, fontFamily: "Poppins_500Medium", color: "white" }}>
-                                                {receiverAccount?.name}
-                                            </Text>
-                                            <Text style={{ fontSize: 12, lineHeight: 18, fontFamily: "Poppins_500Medium", color: "#ABAFC4" }}>
-                                                {receiverAccount?.adress}
-                                            </Text>
-                                        </View>
-                                    </View>
-                                </View>
-
-                                <View style={{ paddingVertical: 16, gap: 8, borderRadius: 8, borderWidth: 1, borderColor: "#242424" }}>
-                                    <View style={{ gap: 16 }}>
-                                        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 16 }}>
-                                            <Text style={{ fontSize: 16, lineHeight: 24, fontFamily: "Poppins_500Medium", color: "white" }}>Amount</Text>
-                                            <Text style={{ fontSize: 16, lineHeight: 24, fontFamily: "Poppins_500Medium", color: "white" }}>{sentCoin?.amount} {sentCoin?.currency}</Text>
-                                        </View>
-                                        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", borderBottomWidth: 2, paddingHorizontal: 16, paddingBottom: 16, borderBottomColor: "#242424" }}>
-                                            <View style={{ flexDirection: "row", alignItems: "center", gap: 16 }}>
-                                                <Text style={{ fontSize: 16, lineHeight: 24, fontFamily: "Poppins_500Medium", color: "white" }}>Network fee</Text>
-                                                <Pressable onPress={() => setModalVisible(true)}>
-                                                    <Text style={{ fontSize: 16, lineHeight: 24, fontFamily: "Poppins_500Medium", color: "#FEBF32" }}>Edit</Text>
-                                                </Pressable>
-                                            </View>
-                                            <EditNetworkEdit
-                                                setModalVisible={setModalVisible}
-                                                modalVisible={modalVisible}
-                                                onchangeFee={onchangeFee}
-                                            />
-                                            <Text style={{ fontSize: 16, lineHeight: 24, fontFamily: "Poppins_500Medium", color: "white" }}>{editFee} {sentCoin?.currency}</Text>
-                                        </View>
-                                    </View>
-                                    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 16, paddingTop: 8 }}>
-                                        <Text style={{ fontSize: 16, lineHeight: 24, fontFamily: "Poppins_500Medium", color: "white" }}>Total Amount</Text>
-                                        <Text style={{ fontSize: 16, lineHeight: 24, fontFamily: "Poppins_500Medium", color: "white" }}>
-                                            {parseFloat(totalAmount.toFixed(4))} {sentCoin?.currency}
-                                        </Text>
-                                    </View>
-                                    <Text style={{ marginLeft: "auto", color: "#ABAFC4", fontSize: 12, lineHeight: 18, fontFamily: "Poppins_500Medium", paddingHorizontal: 16 }}>
-                                        ${parseFloat(totalInUSD).toFixed(2)}
-                                    </Text>
-                                </View>
-                            </View>
-                        </View>
-
-                        <PrimaryButton text='Send' onPress={() => sentOperation()} />
                     </View>
                 </View>
-            </BlurView>
-        </Modal>
+                <View style={{ gap: 8 }}>
+                    <Text style={{ fontSize: 16, lineHeight: 24, color: "white", fontFamily: "Poppins_500Medium" }}>To</Text>
+
+                    <View style={{ alignItems: "center", flexDirection: "row", padding: 16, justifyContent: "space-between", paddingBottom: 40 }}>
+                        <View style={{ alignItems: "center", flexDirection: "row", gap: 8 }}>
+                            <View style={styles.iconContainer}>
+                                {receiverAccount?.avatar}
+                            </View>
+                            <View style={{ gap: 4 }}>
+                                <Text style={{ fontSize: 16, lineHeight: 24, fontFamily: "Poppins_500Medium", color: "white" }}>
+                                    {receiverAccount?.name}
+                                </Text>
+                                <Text style={{ fontSize: 12, lineHeight: 18, fontFamily: "Poppins_500Medium", color: "#ABAFC4" }}>
+                                    {receiverAccount?.adress}
+                                </Text>
+                            </View>
+                        </View>
+                    </View>
+
+                    <View style={{ paddingVertical: 16, gap: 8, borderRadius: 8, borderWidth: 1, borderColor: "#242424" }}>
+                        <View style={{ gap: 16 }}>
+                            <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 16 }}>
+                                <Text style={{ fontSize: 16, lineHeight: 24, fontFamily: "Poppins_500Medium", color: "white" }}>Amount</Text>
+                                <Text style={{ fontSize: 16, lineHeight: 24, fontFamily: "Poppins_500Medium", color: "white" }}>{sentCoin?.amount} {sentCoin?.currency}</Text>
+                            </View>
+                            <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", borderBottomWidth: 2, paddingHorizontal: 16, paddingBottom: 16, borderBottomColor: "#242424" }}>
+                                <View style={{ flexDirection: "row", alignItems: "center", gap: 16 }}>
+                                    <Text style={{ fontSize: 16, lineHeight: 24, fontFamily: "Poppins_500Medium", color: "white" }}>Network fee</Text>
+                                    <Pressable onPress={() => setModalVisible(true)}>
+                                        <Text style={{ fontSize: 16, lineHeight: 24, fontFamily: "Poppins_500Medium", color: "#FEBF32" }}>Edit</Text>
+                                    </Pressable>
+                                </View>
+                                <EditNetworkEdit
+                                    setModalVisible={setModalVisible}
+                                    modalVisible={modalVisible}
+                                    onchangeFee={onchangeFee}
+                                />
+                                <Text style={{ fontSize: 16, lineHeight: 24, fontFamily: "Poppins_500Medium", color: "white" }}>{editFee} {sentCoin?.currency}</Text>
+                            </View>
+                        </View>
+                        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 16, paddingTop: 8 }}>
+                            <Text style={{ fontSize: 16, lineHeight: 24, fontFamily: "Poppins_500Medium", color: "white" }}>Total Amount</Text>
+                            <Text style={{ fontSize: 16, lineHeight: 24, fontFamily: "Poppins_500Medium", color: "white" }}>
+                                {parseFloat(totalAmount.toFixed(4))} {sentCoin?.currency}
+                            </Text>
+                        </View>
+                        <Text style={{ marginLeft: "auto", color: "#ABAFC4", fontSize: 12, lineHeight: 18, fontFamily: "Poppins_500Medium", paddingHorizontal: 16 }}>
+                            ${parseFloat(totalInUSD).toFixed(2)}
+                        </Text>
+                    </View>
+                </View>
+            </View>
+
+            <PrimaryButton text='Send' onPress={() => sentOperation()} />
+
+        </>
+
+
+
     )
 }
 

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, Text, Pressable, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, Pressable, StyleSheet, ScrollView, Modal, TextInput, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { AntDesign, Entypo, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useAppNavigation } from '../../Router/useAppNavigation';
@@ -16,6 +16,9 @@ import { BlurView } from 'expo-blur';
 import { Feather } from '@expo/vector-icons';
 import Receive from '../../Screens/Homescreen/Receive';
 import TabBar from '../TabBar';
+import PrimaryButton from '../Buttons/Primary';
+import Account from './Account';
+import SelectToken from './Modals/SelectToken';
 
 type TokenDetailProps = NativeStackScreenProps<OnboardingStackParamList, 'TokenDetail'>;
 
@@ -43,7 +46,7 @@ const TokenDetail: React.FC<TokenDetailProps> = ({ route }) => {
             setDetails(upgradeDetails);
         }
 
-    }, [ sentAccount]);
+    }, [sentAccount]);
     useEffect(() => {
         if (sentMessage === "Submitted") {
             setTimeout(() => {
@@ -111,7 +114,7 @@ const TokenDetail: React.FC<TokenDetailProps> = ({ route }) => {
                         }
                     ]}
                 >
-                    <AntDesign name="left" size={24} color="white" style={{paddingLeft:10}} />
+                    <AntDesign name="left" size={24} color="white" style={{ paddingLeft: 10 }} />
                 </Pressable>
 
                 <View style={styles.navigationContainer}>
@@ -134,10 +137,70 @@ const TokenDetail: React.FC<TokenDetailProps> = ({ route }) => {
                 </View>
             </View>
             <View style={styles.buttonGroup}>
-                <Pressable onPress={() => setSentModalVisible(true)} style={styles.button}>
+                <Pressable onPress={() => {
+                    setSentModalVisible(!sentModalVisible);
+                }} style={styles.button}>
                     <AntDesign name="arrowup" size={24} color="#FEBF32" />
                     <Text style={{ color: "#FEBF32", fontFamily: "Poppins_500Medium", fontSize: 14, lineHeight: 24 }}>Sent</Text>
                 </Pressable>
+                <Modal
+                    style={styles.blur}
+                    visible={sentModalVisible}
+                    animationType="slide"
+                    transparent={true}
+                >
+                    <BlurView intensity={80} style={{ flex: 1 }}>
+                        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                            <View style={styles.centeredView}>
+                            <View style={{ backgroundColor: "#ABAFC4", height: 4, width: 40, borderRadius: 100, marginBottom: 5 }} />
+                            <View style={[styles.modalView, { position: "relative" }]}>
+                            <View style={{ paddingBottom: modalStep === 1 ? 32 : 0 }}>
+                            <Text style={styles.modalText}>{modalStep ===1?"Sent To":modalStep===2?"Amount":"Confirm"}</Text>
+                                <Pressable onPress={() => setSentModalVisible(false)} style={{ position: "absolute", top: "12%", right: 0, padding:10 }}>
+                                    <AntDesign name="close" size={18} color="white" />
+                                </Pressable>
+                                <Pressable onPress={() => setModalStep(modalStep - 1)} style={{ position: "absolute", top: "25%", left: 0 }}>
+                                    <AntDesign name="left" size={18} color="white" />
+                                </Pressable>
+                            </View>
+                                    
+                                    {
+                                        modalStep === 1 ?
+                                            <SentToV1
+                                                setModalStep={setModalStep}
+                                                modalStep={modalStep}
+                                                paymentTo={paymentTo}
+                                                currency={currency}
+                                                recent={recent}
+                                                setPaymentTo={setPaymentTo}
+                                            />
+                                            : modalStep === 2 ?
+                                                <Amount
+                                                    setAmount={setAmount}
+                                                    amount={amount}
+                                                    setModalStep={setModalStep}
+                                                    modalStep={modalStep}
+                                                    coin={coin}
+                                                    setCoin={setCoin}
+
+                                                /> : modalStep === 3 ?
+                                                    <Confirm
+                                                        setModalStep={setModalStep}
+                                                        modalStep={modalStep}
+                                                        setSentModalVisible={setSentModalVisible}
+                                                        sentModalVisible={sentModalVisible}
+                                                        timer={timer}
+                                                    />
+                                                    : null
+
+                                    }
+
+
+                                </View>
+                            </View>
+                        </TouchableWithoutFeedback>
+                    </BlurView>
+                </Modal>
                 <Pressable style={styles.button} onPress={() => setReceiveModal(true)}>
                     <AntDesign name="arrowdown" size={24} color="#FEBF32" />
                     <Text style={{ color: "#FEBF32", fontFamily: "Poppins_500Medium", fontSize: 14, lineHeight: 24 }}>Receive</Text>
@@ -147,39 +210,8 @@ const TokenDetail: React.FC<TokenDetailProps> = ({ route }) => {
                     setReceiveModal={setReceiveModal}
                 />
             </View>
-            {
-                modalStep === 1 ?
-                    <SentToV1
-                        setModalStep={setModalStep}
-                        modalStep={modalStep}
-                        paymentTo={paymentTo}
-                        sentModalVisible={sentModalVisible}
-                        setSentModalVisible={setSentModalVisible}
-                        currency={currency}
-                        recent={recent}
-                        setPaymentTo={setPaymentTo}
-                    />
-                    : modalStep === 2 ?
-                        <Amount
-                            setAmount={setAmount}
-                            amount={amount}
-                            setModalStep={setModalStep}
-                            setSentModalVisible={setSentModalVisible}
-                            sentModalVisible={sentModalVisible}
-                            modalStep={modalStep}
-                            coin={coin}
-                            setCoin={setCoin}
 
-                        /> : modalStep === 3 ?
-                            <Confirm
-                                setModalStep={setModalStep}
-                                modalStep={modalStep}
-                                setSentModalVisible={setSentModalVisible}
-                                sentModalVisible={sentModalVisible}
-                                timer={timer}
-                            />
-                            : null
-            }
+
             {
                 sentMessage === "Submitted" ?
                     <View style={{ position: "absolute", bottom: 90, zIndex: 1, width: "100%", paddingHorizontal: 16, borderRadius: 8, overflow: "hidden" }}>
@@ -208,6 +240,7 @@ const TokenDetail: React.FC<TokenDetailProps> = ({ route }) => {
                         </BlurView>
                     </View> : null
             }
+
 
             <ScrollView style={{ paddingHorizontal: 24, gap: 8, overflow: "scroll", maxHeight: 450 }}>
                 {
@@ -252,6 +285,7 @@ const TokenDetail: React.FC<TokenDetailProps> = ({ route }) => {
                     fee={tokenFee}
                 />
             </ScrollView>
+
             <TabBar />
         </View >
     );
@@ -344,7 +378,7 @@ const styles = StyleSheet.create({
         top: "45%",
         borderRadius: 50,
         padding: 10,
-        zIndex:100
+        zIndex: 100
     },
     tabBar: {
         position: "absolute",

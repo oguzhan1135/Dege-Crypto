@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { View, StyleSheet, Text, Pressable, ScrollView } from "react-native";
+import { View, StyleSheet, Text, Pressable, ScrollView, Keyboard, Modal, TouchableWithoutFeedback } from "react-native";
 import User1 from '../../../assets/images/User-1.svg';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import GradiantText from "../../Components/GradiantText";
@@ -95,10 +95,13 @@ const Homescreen: React.FC = () => {
                 </View>
             </View>
             <View style={styles.buttonGroup}>
-                <Pressable onPress={() => { setSentModalVisible(true); }} style={styles.button}>
+            <Pressable onPress={() => {
+                    setSentModalVisible(!sentModalVisible);
+                }} style={styles.button}>
                     <AntDesign name="arrowup" size={24} color="#FEBF32" />
                     <Text style={{ color: "#FEBF32", fontFamily: "Poppins_500Medium", fontSize: 14, lineHeight: 24 }}>Sent</Text>
                 </Pressable>
+                
 
 
                 <Pressable style={styles.button} onPress={() => setReceiveModal(true)}>
@@ -155,15 +158,33 @@ const Homescreen: React.FC = () => {
                                                 <Text style={styles.coinTitle}>{coinBalance(coin)} {coin.currency}</Text>
                                             </View>
                                         </Pressable>
-                                        <>
+                                        <Modal
+                style={styles.blur}
+                visible={sentModalVisible}
+                animationType="slide"
+                transparent={true}
+            >
+                <BlurView intensity={80} style={{ flex: 1 }}>
+                    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                        <View style={styles.centeredView}>
+                            <View style={{ backgroundColor: "#ABAFC4", height: 4, width: 40, borderRadius: 100, marginBottom: 5 }} />
+                            <View style={[styles.modalView, { position: "relative" }]}>
+                            <View style={{ paddingBottom: modalStep === 1 ? 32 : 0 }}>
+                            <Text style={styles.modalText}>{modalStep ===1?"Sent To":modalStep===2?"Amount":"Confirm"}</Text>
+                                <Pressable onPress={() => setSentModalVisible(false)} style={{ position: "absolute", top: "12%", right: 0, padding:10 }}>
+                                    <AntDesign name="close" size={18} color="white" />
+                                </Pressable>
+                                <Pressable onPress={() => setModalStep(modalStep - 1)} style={{ position: "absolute", top: "25%", left: 0 }}>
+                                    <AntDesign name="left" size={18} color="white" />
+                                </Pressable>
+                            </View>
+                            <>
                                             {
                                                 modalStep === 1 ?
                                                     <SentToV1
                                                         setModalStep={setModalStep}
                                                         modalStep={modalStep}
                                                         paymentTo={paymentTo}
-                                                        sentModalVisible={sentModalVisible}
-                                                        setSentModalVisible={setSentModalVisible}
                                                         currency={coin.currency}
                                                         recent={recent}
                                                         setPaymentTo={setPaymentTo}
@@ -173,9 +194,7 @@ const Homescreen: React.FC = () => {
                                                             setAmount={setAmount}
                                                             amount={amount}
                                                             setModalStep={setModalStep}
-                                                            setSentModalVisible={setSentModalVisible}
                                                             modalStep={modalStep}
-                                                            sentModalVisible={sentModalVisible}
                                                             coin={coin}
                                                             setCoin={setCoin}
 
@@ -191,6 +210,11 @@ const Homescreen: React.FC = () => {
                                             }
 
                                         </>
+                            </View>
+                        </View>
+                    </TouchableWithoutFeedback>
+                </BlurView>
+            </Modal>
                                     </View>
 
                                 )
@@ -340,7 +364,36 @@ const Homescreen: React.FC = () => {
 }
 
 const styles = StyleSheet.create({
-
+    modalView: {
+        width: "100%",
+        backgroundColor: "#17171A",
+        paddingBottom: 40,
+        paddingHorizontal: 24,
+    },
+    modalText: {
+        fontSize: 16,
+        lineHeight: 24,
+        color: "white",
+        fontFamily: "Poppins_500Medium",
+        textAlign: "center",
+        paddingTop: 16,
+        paddingBottom: 24
+    },
+    blur: {
+        position: "absolute",
+        top: 0,
+        right: 0,
+        bottom: 0,
+        left: 0,
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    centeredView: {
+        flex: 1,
+        justifyContent: "flex-end",
+        alignItems: "center",
+        backgroundColor: 'rgb(0,0,0,10)',
+    },
     coinTitle: {
         fontSize: 16,
         lineHeight: 24,
